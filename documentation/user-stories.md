@@ -35,7 +35,7 @@ We keep the project lean: all user stories are for the crew member. Each one is 
 - Bins without valid sensor data (fixed schedule) need one tap: "Emptied"
 - Problems only, one tap: not reachable / unsafe / bin damaged
 - Large buttons usable with gloves; undo right after tapping
-- A sensor that shows no drop after a visit is flagged as faulty automatically
+- A sensor that shows no drop after a visit triggers an alert: the phone buzzes and the crew confirms "sensor broken" or "bin is emptied" with one tap; without an answer it confirms itself after a few seconds, like a navigation alert. The answer is ground truth for fault detection
 - Reports are stored per bin, not per worker: no time tracking, no ranking of workers
 
 ### 3 · Stay in control: skip a stop or add a bin

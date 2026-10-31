@@ -15,16 +15,16 @@ Open `http://localhost:5050` on the laptop. To use it on a phone on the same Wi-
 
 The map tiles and Leaflet load from the internet. Everything else works offline.
 
-## Demo script (about 10 seconds)
+## Demo script (about 20 seconds)
 
 1. **Sign in** as a team (e.g. Team KB-3).
-2. Tap **▶ Start collecting**. A simulated sensor feed checks off one stop every 1.5 s.
+2. Tap **▶ Start collecting**. A simulated sensor feed handles one stop about every 3 s. Each event is animated: the map marker pings, the fill bar drains, and the card glows. Events show in the live line under the status bar.
 3. The four demo bins show one case each:
 
 | # | Bin | Case | What the app shows |
 |---|---|---|---|
 | 1 | Messeplatz | Sensor sees the fill drop | ✓ detected by sensor |
-| 2 | Claraplatz | No fill drop after the visit | ⚠ Sensor fault, sent to maintenance |
+| 2 | Claraplatz | No fill drop after the visit | Alert pops up: "Sensor problem?" Yes / No; confirms itself after 6 s |
 | 3 | Mittlere Brücke | No valid sensor: fixed schedule | ✓ emptied · tapped |
 | 4 | Barfüsserplatz | Crew reports a problem | skipped · Bin damaged |
 
