@@ -63,6 +63,19 @@
     return m < 1000 ? `${Math.round(m / 10) * 10} m` : `${(m / 1000).toFixed(1)} km`;
   }
 
+  // Route progress by distance: depot → stops in order; skipped stops drop out of the route.
+  function routeProgress() {
+    let prev = DATA.tour.depot, total = 0, done = 0;
+    stops.forEach((s) => {
+      if (s.status === "skipped") return;
+      const leg = distanceM(prev, s);
+      total += leg;
+      if (s.status === "done") done += leg;
+      prev = s;
+    });
+    return { total, done, pct: total ? Math.round((done / total) * 100) : 100 };
+  }
+
   const nextIndex = () => stops.findIndex((s) => s.status === "todo");
 
   // Where the crew is now: last finished stop, or the depot at the start.
@@ -133,8 +146,11 @@
     $("tour-date").textContent = new Date(DATA.tour.date).toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long" });
     $("tour-name").textContent = DATA.tour.name;
     $("crew-name").textContent = DATA.tour.crew;
-    $("progress-num").textContent = `${finished}/${total}`;
-    $("progress-fill").style.width = `${(finished / total) * 100}%`;
+    const route = routeProgress();
+    $("status-pct").textContent = `${route.pct}%`;
+    $("status-stops").textContent = `${finished}/${total} stops`;
+    $("status-left").textContent = `${formatDistance(route.total - route.done)} left`;
+    $("progress-fill").style.width = `${route.pct}%`;
 
     $("screen-tour").hidden = next === -1;
     $("screen-done").hidden = next !== -1;

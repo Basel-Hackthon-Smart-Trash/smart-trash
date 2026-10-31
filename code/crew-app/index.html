@@ -11,22 +11,22 @@
 <body>
   <div class="phone">
     <header class="topbar">
-      <div class="brand">Smart Trash</div>
-      <div class="crew" aria-label="Signed in team"><span class="crew-dot" aria-hidden="true"></span><span id="crew-name"></span></div>
+      <div class="topbar-row">
+        <div class="brand">Smart Trash</div>
+        <div class="crew" aria-label="Signed in team"><span class="crew-dot" aria-hidden="true"></span><span id="crew-name"></span></div>
+      </div>
+      <!-- Route status: stays visible while scrolling -->
+      <div class="status" aria-live="polite">
+        <div class="status-text"><b id="status-pct"></b><span id="status-stops"></span><span id="status-left"></span></div>
+        <div class="progress-bar"><div id="progress-fill"></div></div>
+      </div>
     </header>
 
     <main id="screen-tour" class="screen">
       <section class="tour-head">
-        <div>
-          <p class="eyebrow"><span id="tour-date"></span> <span class="badge badge--data" id="data-label">SIMULATED</span></p>
-          <h1 id="tour-name"></h1>
-        </div>
-        <div class="progress" aria-live="polite">
-          <span class="progress-num" id="progress-num"></span>
-          <span class="progress-label">done</span>
-        </div>
+        <p class="eyebrow"><span id="tour-date"></span> <span class="badge badge--data" id="data-label">SIMULATED</span></p>
+        <h1 id="tour-name"></h1>
       </section>
-      <div class="progress-bar"><div id="progress-fill"></div></div>
 
       <div id="map" class="map" role="img" aria-label="Map of today's stops"></div>
 
