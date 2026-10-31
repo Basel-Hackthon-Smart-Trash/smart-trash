@@ -211,10 +211,17 @@ h1 { margin: 2px 0 0; font-size: 26px; line-height: 1.15; }
 }
 
 .done { min-height: 70vh; display: grid; place-content: center; justify-items: center; gap: 8px; text-align: center; }
-.done-icon { display: grid; place-items: center; width: 88px; height: 88px; border-radius: 50%; background: var(--accent); color: #fff; font-size: 48px; font-weight: 800; }
+.done-icon { display: grid; place-items: center; width: 88px; height: 88px; margin-bottom: 12px; border-radius: 50%; background: var(--accent); color: #fff; font-size: 48px; font-weight: 800; }
 .done-sub { margin: 0; font-size: 18px; font-weight: 700; color: var(--ink-soft); }
-.done-report { list-style: none; margin: 8px 0 20px; padding: 0; display: grid; gap: 6px; text-align: left; font-size: 18px; }
-.done-report b { display: inline-block; min-width: 32px; font-size: 22px; }
+/* Report card: set apart from the title, one row per line */
+.done-report {
+  list-style: none; margin: 8px 0 20px; padding: 4px 16px; display: grid; text-align: left; font-size: 18px;
+  background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+}
+.done .done-report { width: 100%; margin: 32px 0 24px; }
+.done-report li { display: flex; align-items: baseline; gap: 12px; padding: 12px 0; }
+.done-report li + li { border-top: 1px solid var(--line); }
+.done-report b { min-width: 24px; font-size: 22px; }
 
 /* Sign in */
 .login { display: grid; gap: 10px; padding-top: 12px; }
