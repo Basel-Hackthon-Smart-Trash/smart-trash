@@ -73,7 +73,7 @@
       if (s.status === "done") done += leg;
       prev = s;
     });
-    return { total, done, pct: total ? Math.round((done / total) * 100) : 100 };
+    return { total, done };
   }
 
   const nextIndex = () => stops.findIndex((s) => s.status === "todo");
@@ -148,10 +148,11 @@
     $("crew-name").textContent = DATA.tour.crew;
     const route = routeProgress();
     $("status").hidden = !started;
-    $("status-pct").textContent = `${route.pct}%`;
-    $("status-stops").textContent = `${finished}/${total} stops`;
+    $("status-stops").textContent = `${finished}/${total}`;
     $("status-left").textContent = `${formatDistance(route.total - route.done)} left`;
-    $("progress-fill").style.width = `${route.pct}%`;
+    // One segment per bin, coloured by its status
+    $("segments").innerHTML = stops.map((s, i) =>
+      `<i class="seg seg--${i === next ? "next" : s.status}"></i>`).join("");
 
     $("screen-tour").hidden = next === -1;
     $("screen-done").hidden = next !== -1;

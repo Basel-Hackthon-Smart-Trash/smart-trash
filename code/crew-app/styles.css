@@ -74,8 +74,11 @@ h1 { margin: 2px 0 0; font-size: 26px; line-height: 1.15; }
 .status-text { display: flex; align-items: baseline; gap: 12px; font-size: 15px; font-weight: 700; color: rgba(255,255,255,.75); }
 .status-text b { font-size: 24px; font-weight: 800; color: #fff; }
 .status-text span:last-child { margin-left: auto; }
-.progress-bar { height: 8px; margin-top: 6px; background: rgba(255,255,255,.2); border-radius: 99px; overflow: hidden; }
-#progress-fill { height: 100%; width: 0; background: var(--fill-low); transition: width .3s; }
+.segments { display: flex; gap: 4px; margin-top: 8px; }
+.seg { flex: 1; height: 10px; border-radius: 3px; background: rgba(255,255,255,.2); transition: background .3s; }
+.seg--done { background: var(--fill-low); }
+.seg--next { background: #fff; }
+.seg--skipped { background: repeating-linear-gradient(45deg, rgba(255,255,255,.45) 0 3px, transparent 3px 6px); }
 
 .map { height: 340px; border-radius: var(--radius); overflow: hidden; border: 1px solid var(--line); }
 .marker {
