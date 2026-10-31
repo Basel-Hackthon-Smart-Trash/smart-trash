@@ -74,7 +74,7 @@ h1 { margin: 2px 0 0; font-size: 26px; line-height: 1.15; }
 .progress-bar { height: 8px; margin: 12px 0 16px; background: var(--line); border-radius: 99px; overflow: hidden; }
 #progress-fill { height: 100%; width: 0; background: var(--accent); transition: width .3s; }
 
-.map { height: 260px; border-radius: var(--radius); overflow: hidden; border: 1px solid var(--line); }
+.map { height: 340px; border-radius: var(--radius); overflow: hidden; border: 1px solid var(--line); }
 .marker {
   display: grid; place-items: center;
   width: 30px; height: 30px; border-radius: 50%;
@@ -135,11 +135,17 @@ h1 { margin: 2px 0 0; font-size: 26px; line-height: 1.15; }
   font-weight: 800; font-size: 19px;
 }
 .btn--primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
-.btn--demo { border-style: dashed; border-color: var(--ink-soft); color: var(--ink-soft); font-size: 17px; }
+.btn--start { min-height: 72px; font-size: 22px; }
+.live { margin-left: 6px; color: var(--fill-low); letter-spacing: .02em; text-transform: none; }
 .hint { margin: 12px 0 0; font-weight: 700; }
 .btn--ghost { border-color: transparent; background: transparent; color: var(--ink-soft); text-decoration: underline; font-weight: 700; }
 
-.add-bin { margin-top: 16px; }
+/* Secondary action: discreet, but still a glove-sized target */
+.add-bin {
+  display: flex; align-items: center; margin: 16px 0 0 auto; min-height: 48px; padding: 0 16px;
+  border: 1px solid var(--line); border-radius: 999px; background: var(--surface);
+  color: var(--ink-soft); font-size: 15px; font-weight: 700;
+}
 
 /* Bottom sheet */
 .sheet-backdrop { position: fixed; inset: 0; z-index: 900; background: rgba(10,16,12,.5); }
@@ -190,6 +196,7 @@ h1 { margin: 2px 0 0; font-size: 26px; line-height: 1.15; }
 
 .done { min-height: 70vh; display: grid; place-content: center; justify-items: center; gap: 8px; text-align: center; }
 .done-icon { display: grid; place-items: center; width: 88px; height: 88px; border-radius: 50%; background: var(--accent); color: #fff; font-size: 48px; font-weight: 800; }
-.done p { margin: 0 0 16px; color: var(--ink-soft); }
+.done-report { list-style: none; margin: 8px 0 20px; padding: 0; display: grid; gap: 6px; text-align: left; font-size: 18px; }
+.done-report b { display: inline-block; min-width: 32px; font-size: 22px; }
 
 .leaflet-control-attribution { font-size: 10px; }

@@ -15,11 +15,16 @@
     { id: "bin-damaged", label: "Bin damaged" },
   ];
 
-  let stops, nearby, map, routeLayer, undoTimer, lastAction;
+  // Demo pace of the simulated sensor feed: one fill-drop event every few seconds.
+  const SENSOR_TICK_MS = 6000;
+
+  let stops, nearby, map, routeLayer, undoTimer, lastAction, started, sensorTimer;
 
   const $ = (id) => document.getElementById(id);
 
   function reset() {
+    started = false;
+    clearInterval(sensorTimer);
     stops = DATA.stops.map((s) => ({ ...s, status: "todo", result: null }));
     nearby = DATA.nearby.map((b) => ({ ...b }));
   }
@@ -135,24 +140,33 @@
     $("screen-done").hidden = next !== -1;
     if (next === -1) return renderDone();
 
-    const n = stops[next];
-    const from = currentPosition();
-    $("next-card").innerHTML = `
-      <p class="next-label">Next stop</p>
-      <h2>${escapeHtml(n.name)}</h2>
-      <div class="row">
-        ${fillHtml(n.fill)}
-        <span class="stop-meta">${formatDistance(distanceM(from, n))} · ${escapeHtml(n.area)}</span>
-      </div>
-      ${whyHtml(n.why)}
-      <p class="hint">${n.source === "sensor" ? "Just empty it. The sensor checks it off." : "No sensor here: tap when emptied."}</p>
-      <div class="actions" style="display:grid;gap:8px;margin-top:10px">
-        ${n.source === "sensor"
-          ? `<button class="btn btn--demo" type="button" data-sensor="${next}">▶ Demo: sensor sees emptying</button>`
-          : `<button class="btn btn--primary" type="button" data-emptied="${next}">✓ Emptied</button>`}
-        <a class="btn" href="https://www.google.com/maps/dir/?api=1&destination=${n.lat},${n.lon}" target="_blank" rel="noopener">Navigate</a>
-        <button class="btn btn--ghost" type="button" data-open="${next}">Problem?</button>
-      </div>`;
+    if (!started) {
+      const bySensor = stops.filter((s) => s.source === "sensor").length;
+      $("next-card").innerHTML = `
+        <p class="next-label">Today</p>
+        <h2>${total} stops</h2>
+        <p class="hint">${bySensor} with sensor: checked off automatically. ${total - bySensor} fixed schedule: one tap.</p>
+        <div class="actions" style="display:grid;margin-top:14px">
+          <button class="btn btn--primary btn--start" type="button" data-start>▶ Start collecting</button>
+        </div>`;
+    } else {
+      const n = stops[next];
+      const from = currentPosition();
+      $("next-card").innerHTML = `
+        <p class="next-label">Next stop <span class="live">● sensors live</span></p>
+        <h2>${escapeHtml(n.name)}</h2>
+        <div class="row">
+          ${fillHtml(n.fill)}
+          <span class="stop-meta">${formatDistance(distanceM(from, n))} · ${escapeHtml(n.area)}</span>
+        </div>
+        ${whyHtml(n.why)}
+        <p class="hint">${n.source === "sensor" ? "Just empty it. The sensor checks it off." : "No sensor here: tap when emptied."}</p>
+        <div class="actions" style="display:grid;gap:8px;margin-top:10px">
+          ${n.source === "sensor" ? "" : `<button class="btn btn--primary" type="button" data-emptied="${next}">✓ Emptied</button>`}
+          <a class="btn" href="https://www.google.com/maps/dir/?api=1&destination=${n.lat},${n.lon}" target="_blank" rel="noopener">Navigate</a>
+          <button class="btn btn--ghost" type="button" data-open="${next}">Problem?</button>
+        </div>`;
+    }
 
     $("stops").innerHTML = stops.map((s, i) => {
       const state = s.status === "done" ? (s.result === "sensor" ? "✓ Sensor" : "✓ Emptied")
@@ -171,12 +185,17 @@
     renderMap();
   }
 
+  // Report about the tour and the bins, never about the worker: no times, no speed.
   function renderDone() {
-    const done = stops.filter((s) => s.status === "done").length;
-    const skipped = stops.filter((s) => s.status === "skipped").length;
-    const bySensor = stops.filter((s) => s.result === "sensor").length;
-    const added = stops.filter((s) => s.source === "crew-added").length;
-    $("done-summary").textContent = `${done} emptied · ${bySensor} checked off by sensor, no tap · ${skipped} skipped · ${added} added`;
+    clearInterval(sensorTimer);
+    const count = (fn) => stops.filter(fn).length;
+    const rows = [
+      [count((s) => s.result === "sensor"), "emptied · detected by sensor"],
+      [count((s) => s.result === "crew"), "emptied · tapped (fixed schedule)"],
+      ...PROBLEMS.map((p) => [count((s) => s.result === p.id), `skipped · ${p.label.toLowerCase()}`]),
+      [count((s) => s.source === "crew-added"), "added by crew"],
+    ].filter(([n]) => n > 0);
+    $("done-summary").innerHTML = rows.map(([n, label]) => `<li><b>${n}</b> ${label}</li>`).join("");
   }
 
   // ---------- stop sheet: problems only (stories #2 and #3) ----------
@@ -208,7 +227,22 @@
       <div class="actions"><button class="btn btn--ghost" type="button" data-close>Back</button></div>`);
   }
 
-  // In the real system this comes from the backend when the fill level drops; here a demo button triggers it.
+  // Start collecting: from here the crew needs no taps; sensor events check off the stops.
+  function startTour() {
+    started = true;
+    clearInterval(sensorTimer);
+    sensorTimer = setInterval(sensorTick, SENSOR_TICK_MS);
+    render();
+  }
+
+  // In the real system the backend pushes a fill-drop event; here a timer simulates the feed.
+  // A fixed-schedule bin has no sensor, so the feed waits for the crew's tap.
+  function sensorTick() {
+    const i = nextIndex();
+    if (i === -1 || !$("sheet").hidden || stops[i].source === "fixed-schedule") return;
+    sensorEmptied(i);
+  }
+
   function sensorEmptied(i) {
     const s = stops[i];
     s.status = "done";
@@ -290,8 +324,8 @@
     const t = e.target.closest("button, [data-close]");
     if (!t) return;
     const d = t.dataset;
-    if (d.open !== undefined) openStop(Number(d.open));
-    else if (d.sensor !== undefined) sensorEmptied(Number(d.sensor));
+    if (d.start !== undefined) startTour();
+    else if (d.open !== undefined) openStop(Number(d.open));
     else if (d.emptied !== undefined) crewEmptied(Number(d.emptied));
     else if (d.problem) reportProblem(Number(d.stop), d.problem);
     else if (d.add) addBin(d.add);
