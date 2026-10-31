@@ -1,0 +1,51 @@
+# Local environment configuration
+.env
+.env.local
+.env.*.local
+
+# Secrets and certificates
+*.key
+*.pfx
+*.p12
+*.pem
+!*.example.pem
+
+# Mosquitto runtime data
+*mosquitto/data/*
+*!mosquitto/data/.gitkeep
+*mosquitto/log/*
+*!mosquitto/log/.gitkeep
+
+# PostgreSQL runtime data
+*database/data/
+
+# Grafana runtime data
+*grafana/data/
+
+# Node-RED runtime and credential data
+*node-red/data/
+*node-red/.config.runtime.json
+
+# .NET build output
+**/bin/
+**/obj/
+*.user
+*.suo
+
+# JetBrains Rider
+.idea/
+*.sln.iml
+
+# Visual Studio Code
+.vscode/
+!.vscode/extensions.json
+!.vscode/settings.example.json
+
+# Operating-system files
+.DS_Store
+Thumbs.db
+
+# Logs and temporary data
+*.log
+tmp/
+temp/
