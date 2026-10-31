@@ -274,9 +274,11 @@
     $("action-bar").hidden = next === -1;
     $("stop-btn").textContent = !started ? t("start") : paused ? t("resume") : t("stop");
     $("stop-btn").classList.toggle("stop-btn--go", !started || paused);
-    $("bar-info").hidden = started;
-    if (!started && next !== -1) {
-      $("bar-info").textContent = t("barInfo", { n: total, d: formatDistance(route.total), name: stops[next].name });
+    // The info line always stays, so the bar keeps one height from Start to Stop to Resume
+    if (next !== -1) {
+      $("bar-info").textContent = !started ? t("barInfo", { n: total, d: formatDistance(route.total), name: stops[next].name })
+        : paused ? t("pTitle")
+        : t("barNext", { name: stops[next].name, d: formatDistance(distanceM(currentPosition(), stops[next])) });
     }
     $("screen-tour").classList.toggle("collecting", started);
     $("status-stops").textContent = `${finished}/${total}`;
