@@ -1,6 +1,17 @@
 """Contracts, validation, and fill classification for smart-bin routing."""
 
 from .adapters.bin_geojson import BinGeoJSONError, load_bin_geojson
+from .adapters.osmnx_graph import (
+    GraphArea,
+    GraphArtifact,
+    GraphError,
+    GraphProvenance,
+    GraphSettings,
+    acquire_graph,
+    add_edge_travel_times,
+    load_graph,
+    save_graph,
+)
 from .classification import (
     ClassifiedBin,
     ClassifiedSnapshot,
@@ -39,6 +50,11 @@ from .solver import CostMetric, SolverConfig, optimize_route
 __all__ = [
     "BinMetadata",
     "BinGeoJSONError",
+    "GraphArea",
+    "GraphArtifact",
+    "GraphError",
+    "GraphProvenance",
+    "GraphSettings",
     "ClassifiedBin",
     "ClassifiedSnapshot",
     "CollectionDemand",
@@ -67,4 +83,8 @@ __all__ = [
     "optimize_route",
     "plan_collection",
     "load_bin_geojson",
+    "acquire_graph",
+    "add_edge_travel_times",
+    "load_graph",
+    "save_graph",
 ]

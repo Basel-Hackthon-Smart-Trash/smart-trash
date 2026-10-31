@@ -4,7 +4,8 @@ Stages 1 and 2 provide source-independent Python contracts, structural
 validation, and deterministic contextual fill classification. Stage 3 assembles
 validated planning inputs, and Stage 4 provides a bounded OR-Tools optimizer
 for one mandatory-visit truck trip. G1 adds an offline GeoJSON adapter for the
-approved bin export; it does not use OSMnx or connect to a backend.
+approved bin export. G2 adds an explicit OSMnx graph adapter, but no graph is
+downloaded during imports, tests, or normal package use.
 
 Stage 5 adds `plan_collection`, an application-level composition of
 classification, planning-input assembly, and route optimization. It accepts
@@ -55,6 +56,46 @@ invalid coordinates, missing or duplicate identities, and ID mismatches. It
 does not create observations, demand, or snapped network positions. See
 `../../documentation/routing-g1-bin-geojson.md` for the verified asset and
 handoff.
+
+## OSMnx graph acquisition and reuse
+
+The graph cache is reusable geographic infrastructure, not a route request or
+cost matrix. It contains `graph.graphml` and a matching `graph.json` provenance
+sidecar. The sidecar records the graph hash, acquisition time, WGS84 area,
+margin, driving settings, speed assumptions, and relevant versions.
+
+The only online command is an explicit acquisition command. Supply a Basel
+municipality bounding box (or a bounding box from an approved Basel boundary),
+every bin coordinate, and the explicitly accepted depot coordinate:
+
+```text
+uv run python -m smart_bin_routing.adapters.osmnx_graph acquire \
+  --output .cache/basel-drive \
+  --bbox WEST SOUTH EAST NORTH \
+  --margin-meters 500 \
+  --coverage-point BIN_LON,BIN_LAT \
+  --coverage-point DEPOT_LON,DEPOT_LAT \
+  --speed-fallback-kph 30
+```
+
+This is a template only: coordinates and speed assumptions must come from an
+approved configuration. It downloads nothing until deliberately executed. The
+area is checked to cover all listed bins and the depot; no depot coordinate is
+invented. A positive margin may include nearby roads outside Basel so border
+routes are not cut off.
+
+Reuse is offline and never falls back to another graph or downloads a missing
+one:
+
+```text
+uv run python -m smart_bin_routing.adapters.osmnx_graph load .cache/basel-drive
+```
+
+Missing, corrupt, hash-mismatched, or provenance-mismatched caches fail
+explicitly. Edge length, speed, and travel time are required finite positive
+values. Missing speeds fail unless a tagged-speed mapping or explicit fallback
+speed was configured. G2 does not yet snap bins to nodes or build a directed
+bin/depot cost matrix; that is G3.
 
 ## Contract boundaries
 
