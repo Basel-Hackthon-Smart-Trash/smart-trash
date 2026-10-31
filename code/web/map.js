@@ -148,7 +148,7 @@ function buildZoneFilter(data) {
     const route = data.routes.find(r => r.zone === zone);
     if (zone === 0) {
       const label = document.createElement("label");
-      label.innerHTML = `<input type="checkbox" value="0" checked> Not emptied today`;
+      label.innerHTML = `<input type="checkbox" value="0" checked><span class="row-text">Not emptied today</span>`;
       label.querySelector("input").addEventListener("change", e => {
         const layer = zoneLayers[0];
         if (layer) e.target.checked ? layer.addTo(map) : map.removeLayer(layer);
@@ -160,7 +160,7 @@ function buildZoneFilter(data) {
     label.innerHTML = `
       <input type="checkbox" value="${zone}" checked>
       <span class="zone-swatch" style="background:${zoneColor(zone)}"></span>
-      Truck ${zone} · ${route && route.stops.length ? `${route.stops.length} stops · ${route.distance_km} km${route.duration_h ? ` · ${route.duration_h} h` : ""}` : "no tour today"}`;
+      <span class="row-text">Truck ${zone}<small>${route && route.stops.length ? `${route.stops.length} stops · ${route.distance_km} km${route.duration_h ? ` · ${route.duration_h} h` : ""}` : "no tour today"}</small></span>`;
     label.querySelector("input").addEventListener("change", e => {
       const layer = zoneLayers[zone];
       if (!layer) return;
