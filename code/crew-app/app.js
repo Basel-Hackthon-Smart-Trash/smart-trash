@@ -361,6 +361,7 @@
         <button class="menu-item" type="button" data-menu="report">${t("mReport")}</button>
         <button class="menu-item" type="button" data-menu="problems">${t("mProblems")}</button>
         <button class="menu-item" type="button" data-menu="legend">${t("mLegend")}</button>
+        <a class="menu-item menu-item--call" href="tel:${DATA.tour.depot.phone}">${t("mCall")}</a>
       </div>
       <p class="question">${t("language")}</p>
       <div class="lang-list">${langButtons()}</div>
