@@ -39,11 +39,11 @@ button { font: inherit; cursor: pointer; }
   min-height: 100vh;
   margin: 0 auto;
   background: var(--bg);
-  overflow-x: hidden;
+  overflow-x: clip;          /* not hidden: hidden would break the sticky top bar */
 }
 @media (min-width: 600px) {
   body { background: #cfd6d1; padding: 24px 0; }
-  .phone { min-height: calc(100vh - 48px); border-radius: 28px; box-shadow: 0 20px 60px rgba(0,0,0,.25); overflow: hidden; }
+  .phone { min-height: calc(100vh - 48px); border-radius: 28px; box-shadow: 0 20px 60px rgba(0,0,0,.25); overflow: clip; }
 }
 
 .topbar {
