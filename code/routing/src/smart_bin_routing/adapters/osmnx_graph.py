@@ -12,8 +12,9 @@ import hashlib
 import json
 import math
 import platform
+import re
 import tempfile
-from collections.abc import Sequence
+from collections.abc import Mapping, Sequence
 from dataclasses import asdict, dataclass
 from datetime import UTC, datetime
 from importlib.metadata import version
@@ -83,6 +84,7 @@ class GraphSettings:
     truncate_by_edge: bool = False
     tagged_speeds_kph: tuple[tuple[str, float], ...] = ()
     speed_fallback_kph: float | None = None
+    speed_fallback_scope: str = "disabled"
 
     def __post_init__(self) -> None:
         if not self.network_type.strip():
@@ -94,6 +96,12 @@ class GraphSettings:
             not math.isfinite(self.speed_fallback_kph) or self.speed_fallback_kph <= 0
         ):
             raise GraphError("speed_fallback_kph must be positive and finite when provided")
+        if self.speed_fallback_scope not in {"disabled", "base_area_only"}:
+            raise GraphError("speed_fallback_scope must be disabled or base_area_only")
+        if self.speed_fallback_kph is None and self.speed_fallback_scope != "disabled":
+            raise GraphError("speed_fallback_scope requires speed_fallback_kph")
+        if self.speed_fallback_kph is not None and self.speed_fallback_scope == "disabled":
+            raise GraphError("speed_fallback_kph requires an explicit speed_fallback_scope")
 
     def as_dict(self) -> dict[str, object]:
         values = asdict(self)
@@ -173,21 +181,90 @@ def _validate_graph_edges(graph: Any) -> None:
                 raise GraphError(f"edge {source!r}->{target!r}/{key!r} has non-positive {name}")
 
 
-def add_edge_travel_times(graph: Any, settings: GraphSettings) -> Any:
-    """Apply explicitly configured speeds and calculate required edge times."""
+def _parse_tagged_speed(value: object) -> float:
+    if isinstance(value, bool):
+        raise GraphError("tagged edge speed must be a positive number")
+    if isinstance(value, (int, float)):
+        speed = float(value)
+    elif isinstance(value, str):
+        match = re.fullmatch(r"\s*(\d+(?:\.\d+)?)\s*(mph|km/h|kph)?\s*", value)
+        if match is None:
+            raise GraphError(f"unsupported maxspeed tag: {value!r}")
+        speed = float(match.group(1))
+        if match.group(2) == "mph":
+            speed *= 1.609344
+    else:
+        raise GraphError(f"unsupported maxspeed tag: {value!r}")
+    if not math.isfinite(speed) or speed <= 0:
+        raise GraphError("tagged edge speed must be positive and finite")
+    return speed
+
+
+def _edge_point(graph: Any, source: Any, target: Any, data: Mapping[str, Any]) -> Any:
+    geometry = data.get("geometry")
+    if geometry is not None and hasattr(geometry, "interpolate"):
+        return geometry.interpolate(0.5, normalized=True)
+    try:
+        from shapely.geometry import Point
+
+        return Point(
+            (float(graph.nodes[source]["x"]) + float(graph.nodes[target]["x"])) / 2,
+            (float(graph.nodes[source]["y"]) + float(graph.nodes[target]["y"])) / 2,
+        )
+    except (KeyError, TypeError, ValueError) as error:
+        raise GraphError("cannot locate an edge for scoped speed fallback") from error
+
+
+def _highway_values(value: object) -> tuple[str, ...]:
+    values = value if isinstance(value, list) else [value]
+    return tuple(item for item in values if isinstance(item, str))
+
+
+def _apply_edge_speeds(
+    graph: Any,
+    settings: GraphSettings,
+    *,
+    fallback_area: GraphArea | None,
+) -> None:
+    tagged_speeds = dict(settings.tagged_speeds_kph)
+    urban_polygon = _geometry(fallback_area) if fallback_area is not None else None
+    for source, target, key, data in graph.edges(keys=True, data=True):
+        if "speed_kph" in data:
+            data["speed_kph"] = _parse_tagged_speed(data["speed_kph"])
+            continue
+        if "maxspeed" in data:
+            data["speed_kph"] = _parse_tagged_speed(data["maxspeed"])
+            continue
+        configured = next(
+            (
+                tagged_speeds[highway]
+                for highway in _highway_values(data.get("highway"))
+                if highway in tagged_speeds
+            ),
+            None,
+        )
+        if configured is not None:
+            data["speed_kph"] = configured
+            continue
+        if settings.speed_fallback_kph is None:
+            raise GraphError(f"edge {source!r}->{target!r}/{key!r} has no accepted speed")
+        if urban_polygon is None or not urban_polygon.covers(
+            _edge_point(graph, source, target, data)
+        ):
+            raise GraphError(
+                f"edge {source!r}->{target!r}/{key!r} lacks speed outside the fallback area"
+            )
+        data["speed_kph"] = settings.speed_fallback_kph
+
+
+def add_edge_travel_times(
+    graph: Any, settings: GraphSettings, *, fallback_area: GraphArea | None = None
+) -> Any:
+    """Apply explicit speeds and calculate required edge travel times."""
 
     import osmnx as ox
 
-    if settings.tagged_speeds_kph:
-        ox.add_edge_speeds(graph, hwy_speeds=dict(settings.tagged_speeds_kph))
-    elif settings.speed_fallback_kph is not None:
-        ox.add_edge_speeds(graph, fallback=settings.speed_fallback_kph)
-    else:
-        missing = [
-            data for _, _, _, data in graph.edges(keys=True, data=True) if "speed_kph" not in data
-        ]
-        if missing:
-            raise GraphError("graph has edges without speeds and no speed imputation is configured")
+    _apply_edge_speeds(graph, settings, fallback_area=fallback_area)
     try:
         ox.add_edge_travel_times(graph)
     except (KeyError, TypeError, ValueError) as error:
@@ -223,7 +300,7 @@ def acquire_graph(
         retain_all=settings.retain_all,
         truncate_by_edge=settings.truncate_by_edge,
     )
-    return add_edge_travel_times(graph, settings)
+    return add_edge_travel_times(graph, settings, fallback_area=area)
 
 
 def save_graph(
@@ -356,7 +433,12 @@ def _cli() -> int:
             print(f"loaded {artifact.graph_path} ({artifact.provenance.graph_sha256})")
             return 0
         area = GraphArea.from_bbox(*args.bbox, margin_meters=args.margin_meters)
-        settings = GraphSettings(speed_fallback_kph=args.speed_fallback_kph)
+        settings = GraphSettings(
+            speed_fallback_kph=args.speed_fallback_kph,
+            speed_fallback_scope=(
+                "base_area_only" if args.speed_fallback_kph is not None else "disabled"
+            ),
+        )
         graph = acquire_graph(
             area, tuple(_parse_point(value) for value in args.coverage_point), settings
         )

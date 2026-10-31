@@ -75,14 +75,17 @@ uv run python -m smart_bin_routing.adapters.osmnx_graph acquire \
   --margin-meters 500 \
   --coverage-point BIN_LON,BIN_LAT \
   --coverage-point DEPOT_LON,DEPOT_LAT \
-  --speed-fallback-kph 30
+  --speed-fallback-kph 40
 ```
 
 This is a template only: coordinates and speed assumptions must come from an
-approved configuration. It downloads nothing until deliberately executed. The
-area is checked to cover all listed bins and the depot; no depot coordinate is
-invented. A positive margin may include nearby roads outside Basel so border
-routes are not cut off.
+approved configuration. The `40 km/h` value is a synthetic demo fallback for
+missing speeds inside the Basel area, not a legal limit or measured traffic
+speed. Valid OSM speed tags always win. Missing speeds in the margin outside
+the Basel area fail instead of receiving the fallback. The command downloads
+nothing until deliberately executed. The area is checked to cover all listed
+bins and the depot; no depot coordinate is invented. A positive margin may
+include nearby roads outside Basel so border routes are not cut off.
 
 Reuse is offline and never falls back to another graph or downloads a missing
 one:

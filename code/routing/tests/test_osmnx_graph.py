@@ -72,10 +72,51 @@ def test_load_graph_rejects_mismatched_settings(tmp_path: Path):
 
 def test_missing_speed_requires_explicit_imputation():
     graph = nx.MultiDiGraph()
+    graph.graph["crs"] = "EPSG:4326"
+    graph.add_node(1, x=7.58, y=47.55)
+    graph.add_node(2, x=7.59, y=47.56)
     graph.add_edge(1, 2, length=100.0)
 
-    with pytest.raises(GraphError, match="without speeds"):
+    with pytest.raises(GraphError, match="no accepted speed"):
         add_edge_travel_times(graph, GraphSettings())
+
+
+def test_missing_speed_uses_explicit_urban_fallback():
+    graph = nx.MultiDiGraph()
+    graph.graph["crs"] = "EPSG:4326"
+    graph.add_node(1, x=7.58, y=47.55)
+    graph.add_node(2, x=7.59, y=47.56)
+    graph.add_edge(1, 2, length=100.0)
+    settings = GraphSettings(speed_fallback_kph=40.0, speed_fallback_scope="base_area_only")
+
+    add_edge_travel_times(graph, settings, fallback_area=area())
+
+    assert graph.edges[1, 2, 0]["speed_kph"] == 40.0
+
+
+def test_missing_speed_outside_urban_fallback_fails():
+    graph = nx.MultiDiGraph()
+    graph.graph["crs"] = "EPSG:4326"
+    graph.add_node(1, x=7.70, y=47.60)
+    graph.add_node(2, x=7.71, y=47.61)
+    graph.add_edge(1, 2, length=100.0)
+    settings = GraphSettings(speed_fallback_kph=40.0, speed_fallback_scope="base_area_only")
+
+    with pytest.raises(GraphError, match="outside the fallback area"):
+        add_edge_travel_times(graph, settings, fallback_area=area())
+
+
+def test_tagged_speed_wins_over_fallback():
+    graph = nx.MultiDiGraph()
+    graph.graph["crs"] = "EPSG:4326"
+    graph.add_node(1, x=7.58, y=47.55)
+    graph.add_node(2, x=7.59, y=47.56)
+    graph.add_edge(1, 2, length=100.0, maxspeed="30 km/h")
+    settings = GraphSettings(speed_fallback_kph=40.0, speed_fallback_scope="base_area_only")
+
+    add_edge_travel_times(graph, settings, fallback_area=area())
+
+    assert graph.edges[1, 2, 0]["speed_kph"] == 30.0
 
 
 def test_import_and_default_graph_functions_do_not_acquire():

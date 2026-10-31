@@ -29,10 +29,12 @@ acquisition. A positive margin intentionally permits nearby roads outside the
 municipal boundary so border paths are not truncated.
 
 `GraphSettings` makes driving network type, OSMnx filter/construction settings,
-tagged speed mappings, and optional speed fallback explicit. No speed fallback
-is used unless configured. Every persisted edge must have finite positive
-`length`, `speed_kph`, and `travel_time` attributes. Missing or invalid values
-raise `GraphError`.
+tagged speed mappings, and optional speed fallback explicit. The approved demo
+policy is to use valid OSM speed tags first, use synthetic `40 km/h` only for
+missing speeds inside the base Basel area, and reject missing speeds in the
+outer margin. OSMnx's implicit mean-speed imputation is not used. Every
+persisted edge must have finite positive `length`, `speed_kph`, and
+`travel_time` attributes. Missing or invalid values raise `GraphError`.
 
 `save_graph` writes a GraphML artifact and JSON sidecar. Provenance contains the
 schema version, SHA-256 of the GraphML bytes, UTC acquisition time, area,
@@ -53,9 +55,9 @@ Executed from `code/routing/`:
 
 - `uv add 'osmnx>=2.0,<3.0'`: passed; resolved OSMnx 2.1.1 on Python 3.14.2.
 - `uv run python -c ...`: passed; OSMnx 2.1.1 and OR-Tools 9.15.6755 import.
-- `uv run pytest tests/test_osmnx_graph.py`: passed, 7 tests after the final
-  provenance normalization fix.
-- `uv run pytest`: passed, 119 tests; 3 pre-existing dependency deprecation
+- `uv run pytest tests/test_osmnx_graph.py`: passed, 10 tests including the
+  explicit speed-policy coverage.
+- `uv run pytest`: passed, 122 tests; 3 pre-existing dependency deprecation
   warnings were emitted.
 - `uv run ruff check src/smart_bin_routing/adapters/osmnx_graph.py tests/test_osmnx_graph.py`: passed.
 - `uv run ruff format --check src/smart_bin_routing/adapters/osmnx_graph.py tests/test_osmnx_graph.py`: passed.
