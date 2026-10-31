@@ -1,0 +1,25 @@
+11. Test MQTT without installing local MQTT tools
+You can use temporary Mosquitto containers as test clients.
+
+Terminal 1: start a subscriber
+
+docker run --rm -it \
+  --network smart-trash-network \
+  eclipse-mosquitto:2 \
+  mosquitto_sub \
+  -h mosquitto \
+  -p 1883 \
+  -t "poc/v1/+/+/measurements" \
+  -q 1 \
+  -v
+  
+Terminal 2: publish a test batch
+docker run --rm \
+  --network smart-trash-network \
+  eclipse-mosquitto:2 \
+  mosquitto_pub \
+  -h mosquitto \
+  -p 1883 \
+  -t "poc/v1/area-01/sensor-00001/measurements" \
+  -q 1 \
+  -m '{"schemaVersion":1,"messageId":"test-message-001","batchId":"test-batch-001","deviceId":"sensor-00001","areaId":"area-01","sentAt":"2026-10-31T10:00:00Z","sequenceNumber":1,"samples":[{"recordedAt":"2026-10-31T09:55:00Z","fulfilment":18.7,"weight":63.1,"batteryVoltage":3.62}]}'
