@@ -1,5 +1,6 @@
 """Contracts, validation, and fill classification for smart-bin routing."""
 
+from .adapters.bin_geojson import BinGeoJSONError, load_bin_geojson
 from .classification import (
     ClassifiedBin,
     ClassifiedSnapshot,
@@ -37,6 +38,7 @@ from .solver import CostMetric, SolverConfig, optimize_route
 
 __all__ = [
     "BinMetadata",
+    "BinGeoJSONError",
     "ClassifiedBin",
     "ClassifiedSnapshot",
     "CollectionDemand",
@@ -64,4 +66,5 @@ __all__ = [
     "SolverConfig",
     "optimize_route",
     "plan_collection",
+    "load_bin_geojson",
 ]

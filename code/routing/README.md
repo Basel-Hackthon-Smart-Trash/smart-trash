@@ -3,8 +3,8 @@
 Stages 1 and 2 provide source-independent Python contracts, structural
 validation, and deterministic contextual fill classification. Stage 3 assembles
 validated planning inputs, and Stage 4 provides a bounded OR-Tools optimizer
-for one mandatory-visit truck trip. The package does not read GeoJSON, use
-OSMnx, or connect to a backend.
+for one mandatory-visit truck trip. G1 adds an offline GeoJSON adapter for the
+approved bin export; it does not use OSMnx or connect to a backend.
 
 Stage 5 adds `plan_collection`, an application-level composition of
 classification, planning-input assembly, and route optimization. It accepts
@@ -37,6 +37,24 @@ or real Stadtreinigung Basel travel distances.
 
 The package supports Python 3.12 through 3.15. OR-Tools is the routing runtime
 dependency; Pytest and Ruff are development dependencies.
+
+## Bin GeoJSON adapter
+
+Load the approved export without involving the optimizer:
+
+```python
+from smart_bin_routing import load_bin_geojson
+
+bins = load_bin_geojson("../../assets/geojson/bin-locations.geojson")
+```
+
+The adapter accepts CRS-omitted WGS84 GeoJSON `Point` features, uses the stable
+feature ID as `bin_id`, retains the original position and source ID, and sorts
+the result by ID. It rejects unsupported CRS declarations, malformed geometry,
+invalid coordinates, missing or duplicate identities, and ID mismatches. It
+does not create observations, demand, or snapped network positions. See
+`../../documentation/routing-g1-bin-geojson.md` for the verified asset and
+handoff.
 
 ## Contract boundaries
 

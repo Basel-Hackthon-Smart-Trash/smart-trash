@@ -52,12 +52,17 @@ class GeoLocation:
 
 @dataclass(frozen=True, slots=True)
 class BinMetadata:
-    """Normalized identity and optional descriptive metadata for one bin."""
+    """Normalized identity and original position metadata for one bin.
+
+    ``location`` is the source position. A future network adapter must produce
+    a separate snapped position rather than replacing this value.
+    """
 
     bin_id: str
     source_id: str | None = None
     label: str | None = None
     location: GeoLocation | None = None
+    provenance: tuple[tuple[str, str], ...] = ()
 
     def __post_init__(self) -> None:
         _require_text(self.bin_id, "bin_id")
@@ -65,6 +70,18 @@ class BinMetadata:
             _require_text(self.source_id, "source_id")
         if self.label is not None:
             _require_text(self.label, "label")
+        provenance = tuple(self.provenance)
+        if any(
+            not isinstance(item, tuple)
+            or len(item) != 2
+            or not isinstance(item[0], str)
+            or not item[0].strip()
+            or not isinstance(item[1], str)
+            or not item[1].strip()
+            for item in provenance
+        ):
+            raise ValueError("provenance must contain non-empty string key/value pairs")
+        object.__setattr__(self, "provenance", provenance)
 
 
 @dataclass(frozen=True, slots=True)
