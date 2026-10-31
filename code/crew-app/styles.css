@@ -97,13 +97,19 @@ h1 { margin: 2px 0 0; font-size: 26px; line-height: 1.15; }
 .status-text { display: flex; align-items: baseline; gap: 12px; font-size: 15px; font-weight: 700; color: rgba(255,255,255,.75); }
 .status-text b { font-size: 24px; font-weight: 800; color: #fff; }
 .status-text #status-left { margin-left: auto; }
-.stop-btn {
-  min-height: 44px; padding: 0 14px; border: 2px solid rgba(255,255,255,.5); border-radius: var(--radius-btn);
-  background: transparent; color: #fff; font-size: 15px; font-weight: 800;
+.action-bar {
+  position: fixed; left: 50%; bottom: 0; transform: translateX(-50%); z-index: 600;
+  width: 100%; max-width: 440px; padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
+  background: var(--brand);
 }
+.stop-btn {
+  width: 100%; min-height: 64px; border: 0; border-radius: var(--radius-btn);
+  background: #fff; color: var(--brand); font-size: 22px; font-weight: 800;
+}
+.stop-btn--paused { background: var(--accent); color: var(--accent-ink); }
 .reported { display: flex; align-items: center; justify-content: space-between; }
 .undo-link { min-height: 40px; padding: 0 12px; border: 2px solid currentColor; border-radius: var(--radius-btn); background: transparent; color: inherit; font-weight: 800; }
-.stop-btn--paused { background: #fff; border-color: #fff; color: var(--brand); }
+.collecting { padding-bottom: 120px; }  /* keep the last content clear of the action bar */
 .segments { display: flex; gap: 4px; margin-top: 8px; }
 .seg { flex: 1; height: 10px; border-radius: 3px; background: rgba(255,255,255,.2); transition: background .3s; }
 .seg--done { background: var(--fill-low); }
@@ -275,7 +281,7 @@ h1 { margin: 2px 0 0; font-size: 26px; line-height: 1.15; }
 }
 
 .toast {
-  position: fixed; left: 50%; bottom: calc(16px + env(safe-area-inset-bottom)); transform: translateX(-50%);
+  position: fixed; left: 50%; bottom: calc(100px + env(safe-area-inset-bottom)); transform: translateX(-50%);
   z-index: 1100; display: flex; align-items: center; gap: 16px;
   width: calc(100% - 32px); max-width: 408px; padding: 12px 12px 12px 18px;
   background: var(--ink); color: #fff; border-radius: var(--radius); font-weight: 700;

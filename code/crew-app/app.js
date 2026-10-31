@@ -249,7 +249,7 @@
     $("crew-name").textContent = session.team;
     const route = routeProgress();
     $("status").hidden = !started;
-    $("stop-btn").hidden = next === -1;
+    $("action-bar").hidden = !started || next === -1;
     $("stop-btn").textContent = paused ? t("resume") : t("stop");
     $("stop-btn").classList.toggle("stop-btn--paused", paused);
     $("screen-tour").classList.toggle("collecting", started);
