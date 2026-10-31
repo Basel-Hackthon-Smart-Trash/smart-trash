@@ -61,7 +61,10 @@
         <h1 id="done-title"></h1>
         <p class="done-sub" id="done-sub"></p>
         <ul class="done-report" id="done-summary"></ul>
-        <button class="btn btn--primary" type="button" id="restart-btn" data-i18n="restart"></button>
+        <div class="done-actions">
+          <button class="btn" type="button" id="edit-report-btn" data-i18n="editReport"></button>
+          <button class="btn btn--primary" type="button" id="restart-btn" data-i18n="restart"></button>
+        </div>
       </div>
     </main>
 
@@ -75,10 +78,6 @@
     <div class="sheet-backdrop" id="sheet-backdrop" hidden></div>
     <section class="sheet" id="sheet" role="dialog" aria-modal="true" hidden></section>
 
-    <div class="toast" id="toast" role="status" hidden>
-      <span id="toast-text"></span>
-      <button type="button" id="toast-undo" data-i18n="undo"></button>
-    </div>
   </div>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>

@@ -24,7 +24,7 @@
   const ALERT_MS = 6000;  // fault alert confirms itself after this, like a navigation alert
   const NEAR_M = 40;      // crew opens the app this close to a suspect bin: ask about it
 
-  let stops, nearby, map, routeLayer, undoTimer, lastAction, started, sensorTimer;
+  let stops, nearby, map, routeLayer, started, sensorTimer;
   let lastSync = new Date(), pending = 0, faultAlert = null, alertTimer, defectStop = null, paused = false, geoWatch = null;
   let lastTour = null;  // finished tour kept after Done, so today's report can still be opened and corrected
   const asked = new Set();  // suspect bins already asked about by location  // reports stay on the phone while offline
@@ -386,7 +386,7 @@
     else if (key === "sensor") { s.status = "fault"; s.result = "sensor-fault"; }
     else { s.status = "skipped"; s.result = key; }
     saveFeedback({ binId: s.binId, corrected: key, at: new Date().toISOString() });
-    showToast(t("tCorrected", { name: s.name }));
+    liveEvent(t("tCorrected", { name: s.name }), "ok");
     render();
     openMenuPage("report");
   }
@@ -710,8 +710,7 @@
       liveEvent(t("tChecked", { name: s.name }), "ok");
       render();
     }
-    // Wrong answer? Undo puts the stop back; the pause sheet has its own Undo button.
-    if (!paused) showToast(t("tReported", { name: s.name }), () => undoStop(i));
+    // Wrong answer? It is corrected in today's report (pencil); the pause sheet also offers Undo.
   }
 
   function undoStop(i) {
@@ -761,10 +760,6 @@
     closeSheet();
     stops.forEach((s) => { if (s.status === "todo") { s.status = "skipped"; s.result = "not-done"; } });
     render();
-    showToast(t("tEnded"), () => {
-      stops.forEach((s) => { if (s.result === "not-done") { s.status = "todo"; s.result = null; } });
-      paused = true;  // back to the paused tour; Resume continues
-    });
   }
 
   function demoCrewTap(i) {
@@ -792,7 +787,7 @@
     s.result = "crew";
     saveFeedback({ binId: s.binId, emptied: true, at: new Date().toISOString() });
     closeSheet();
-    showToast(t("tEmptied", { name: s.name }), () => { s.status = "todo"; s.result = null; removeLastFeedback(); });
+    liveEvent(t("tEmptied", { name: s.name }), "ok");
     render();
   }
 
@@ -802,8 +797,7 @@
     s.result = problem;
     saveFeedback({ binId: s.binId, problem, at: new Date().toISOString() });
     closeSheet();
-    showToast(t("tSkipped", { name: s.name, reason: problemLabel(problem) }),
-      () => { s.status = "todo"; s.result = null; removeLastFeedback(); });
+    liveEvent(t("tSkipped", { name: s.name, reason: problemLabel(problem) }), "skip");
     render();
   }
 
@@ -855,23 +849,8 @@
     stops.splice(at, 0, { ...bin, source: "crew-added", why: ["added by crew"], status: "todo", result: null });
     saveFeedback({ binId: bin.binId, addedByCrew: true, at: new Date().toISOString() });
     closeSheet();
-    showToast(t("tAdded", { name: bin.name }), () => {
-      stops.splice(stops.findIndex((s) => s.binId === binId), 1);
-      nearby.push(bin);
-      removeLastFeedback();
-    });
+    liveEvent(t("tAdded", { name: bin.name }), "ok");
     render();
-  }
-
-  // ---------- toast with undo ----------
-
-  function showToast(text, undo) {
-    clearTimeout(undoTimer);
-    lastAction = undo || null;
-    $("toast-text").textContent = text;
-    $("toast-undo").hidden = !undo;
-    $("toast").hidden = false;
-    undoTimer = setTimeout(() => { $("toast").hidden = true; lastAction = null; }, 5000);
   }
 
   // ---------- events ----------
@@ -913,12 +892,7 @@
   document.addEventListener("visibilitychange", () => (document.hidden ? stopGeo() : startGeo()));
   $("stop-btn").addEventListener("click", () => (!started ? startTour() : paused ? openPause(false) : stopTour()));
   $("login-btn").addEventListener("click", login);
-  $("toast-undo").addEventListener("click", () => {
-    if (lastAction) lastAction();
-    lastAction = null;
-    $("toast").hidden = true;
-    render();
-  });
+  $("edit-report-btn").addEventListener("click", () => openMenuPage("report"));
   $("restart-btn").addEventListener("click", () => { lastTour = stops.map((s) => ({ ...s })); reset(); render(); });
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") closeSheet();
