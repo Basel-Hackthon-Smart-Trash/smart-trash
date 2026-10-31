@@ -28,7 +28,7 @@
 Swiss cities empty public bins **when they are full, not when the plan says so**, which saves staff time, bags, fuel and CO₂, and leaves fewer overflowing bins.
 
 ### Goal for this project phase (A: 6 weeks)
-A **working pilot-ready system** plus a **signed or agreed pilot** with the City of Lucerne (or one other Swiss city).
+A **working pilot-ready system** plus a **signed or agreed pilot** with the City of Basel (or one other Swiss city).
 
 ### In scope (MVP)
 - Fill-level forecast per bin
@@ -150,7 +150,7 @@ Swiss cities empty public waste bins on a fixed schedule. Half-empty bins get em
 - [ ] Test cases for faults: stuck value, jump-and-freeze, "full but 0 kg", full bins that are *not* faults (#2)
 - [ ] More realistic simulation; document every assumption
 - [ ] Data quality checks (missing values, gaps, duplicates)
-- [ ] Collect open data from Lucerne and other cities to check the simulation
+- [ ] Collect open data from Basel and other cities to check the simulation
 - [ ] Analyse real data from Abbas' sensor prototype
 
 **Evaluation & impact**
@@ -216,7 +216,7 @@ Swiss cities empty public waste bins on a fixed schedule. Half-empty bins get em
 - [ ] **SDG 11 impact story** with Andy's CO₂/bags/km numbers (#22)
 - [ ] Prepare **jury Q&A**: 15 hardest questions with answers (price, competitors, Bern failure, data protection, why us)
 - [ ] One-page flyer, landing page text, LinkedIn
-- [ ] Lead the pilot proposal for Lucerne
+- [ ] Lead the pilot proposal for Basel
 
 ### Shared (whole team)
 - [ ] Decide business model
@@ -329,6 +329,6 @@ Swiss cities empty public waste bins on a fixed schedule. Half-empty bins get em
 | A2 | Project phase = 6 weeks | Team decision | All |
 | A3 | CHF 20/month per bin | Price research + interviews | Open |
 | A4 | KPI targets in section 6 | Literature + pilot data | Andy |
-| A5 | LoRaWAN coverage in Lucerne | Coverage maps | Abbas |
-| A6 | City allows sensor test on its bins | Ask Lucerne | Open |
+| A5 | LoRaWAN coverage in Basel | Coverage maps | Abbas |
+| A6 | City allows sensor test on its bins | Ask Basel | Open |
 | A7 | Weekly sync on Monday evening | Team decision | Abbas |
