@@ -339,6 +339,7 @@
     return [
       [count((s) => s.result === "sensor"), t("rSensor")],
       [count((s) => s.result === "crew"), t("rTap")],
+      [count((s) => s.result === "corrected"), t("rCorrected")],
       [count((s) => s.result === "sensor-fault"), t("rFault")],
       [count((s) => s.result === "sensor-checked"), t("rChecked")],
       [count((s) => s.result === "defect-other"), t("rOther")],
@@ -346,6 +347,45 @@
       ...PROBLEMS.map((p) => [count((s) => s.result === p.id), t("rSkipped", { reason: t(p.key) })]),
       [count((s) => s.source === "crew-added"), t("rAdded")],
     ].filter(([n]) => n > 0);
+  }
+
+  function binStateLabel(s) {
+    if (s.status === "todo") return t("lgTodo");
+    if (s.status === "fault") return s.result === "defect-other" ? t("fdOther") : t("stateFault");
+    if (s.status === "done") return s.result === "sensor" ? t("stateSensor") : t("stateEmptied");
+    return s.result === "not-done" ? t("notDone") : problemLabel(s.result);
+  }
+
+  // Correct a bin in today's report, also after Done. The correction is saved as feedback.
+  const CORRECTIONS = () => [["emptied", t("stateEmptied")], ["sensor", t("fdSensor")],
+    ...PROBLEMS.map((p) => [p.id, t(p.key)]), ["not-done", t("notDone")]];
+
+  function currentKey(s) {
+    if (s.status === "done") return "emptied";
+    if (s.result === "sensor-fault") return "sensor";
+    return s.result;
+  }
+
+  function openEdit(i) {
+    const s = reportStops()[i];
+    openSheet(`
+      <h2>${t("edTitle")}</h2>
+      <p class="sub">${escapeHtml(s.name)} · ${escapeHtml(s.area)}</p>
+      <div class="choices">
+        ${CORRECTIONS().map(([key, label]) => `<button class="choice choice--wide ${key === currentKey(s) ? "choice--on" : ""}" type="button" data-set="${key}" data-edit-stop="${i}">${label}</button>`).join("")}
+      </div>
+      <div class="actions"><button class="btn btn--ghost" type="button" data-menu="report">${t("back")}</button></div>`);
+  }
+
+  function applyCorrection(i, key) {
+    const s = reportStops()[i];
+    if (key === "emptied") { s.status = "done"; s.result = "corrected"; }
+    else if (key === "sensor") { s.status = "fault"; s.result = "sensor-fault"; }
+    else { s.status = "skipped"; s.result = key; }
+    saveFeedback({ binId: s.binId, corrected: key, at: new Date().toISOString() });
+    showToast(t("tCorrected", { name: s.name }));
+    render();
+    openMenuPage("report");
   }
 
   const reportHtml = (rows) => rows.map(([n, label]) => `<li><b>${n}</b> ${label}</li>`).join("");
@@ -432,6 +472,12 @@
         <h2>${t("mReport")}</h2>
         <p class="sub">${escapeHtml(DATA.tour.name)} · ${list.filter((s) => s.status !== "todo").length}/${list.length}</p>
         ${rows.length ? `<ul class="done-report">${reportHtml(rows)}</ul>` : `<p class="stop-meta">${t("reportEmpty")}</p>`}
+        <p class="question">${t("rBins")}</p>
+        <ul class="bin-report">
+          ${list.map((s, i) => `<li><button class="bin-row" type="button" data-edit="${i}" ${s.status === "todo" ? "disabled" : ""}>
+            <span><span class="stop-name">${escapeHtml(s.name)}</span><br><span class="stop-meta">${escapeHtml(s.area)}</span></span>
+            <span class="bin-state bin-state--${s.status}">${binStateLabel(s)}</span></button></li>`).join("")}
+        </ul>
         ${backToMenu()}`);
     }
     if (page === "problems") {
@@ -847,6 +893,8 @@
     else if (d.defect) pickDefect(d.defect);
     else if (d.defectSend !== undefined) sendDefect();
     else if (d.menu) openMenuPage(d.menu);
+    else if (d.edit !== undefined) openEdit(Number(d.edit));
+    else if (d.set) applyCorrection(Number(d.editStop), d.set);
     else if (d.lang) setLang(d.lang);
     else if (d.team) { loginTeam = d.team; renderLogin(); }
     else if (d.close !== undefined) closeSheet();

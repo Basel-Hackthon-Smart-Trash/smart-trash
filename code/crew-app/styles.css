@@ -333,6 +333,16 @@ h1 { margin: 2px 0 0; font-size: 26px; line-height: 1.15; }
   color: var(--ink); font-size: 19px; font-weight: 800; text-align: left;
 }
 .menu-item--call { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); text-decoration: none; }
+.bin-report { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.bin-row {
+  display: flex; justify-content: space-between; align-items: center; gap: 8px; width: 100%; min-height: var(--tap); padding: 10px 12px;
+  border: 2px solid var(--line); border-radius: var(--radius-btn); background: var(--surface); color: inherit; text-align: left;
+}
+.bin-row:disabled { opacity: .5; }
+.bin-state { flex: none; padding: 4px 10px; border-radius: 999px; font-size: 14px; font-weight: 800; background: #e3f2ea; color: var(--accent); }
+.bin-state--fault { background: #ece9fb; color: var(--fault); }
+.bin-state--skipped { background: #eef0ee; color: var(--ink-soft); }
+.bin-state--todo { background: transparent; color: var(--ink-soft); }
 .problem-row {
   display: flex; justify-content: space-between; align-items: center; gap: 8px; min-height: var(--tap); padding: 12px;
   border: 2px solid var(--line); border-radius: var(--radius-btn);
