@@ -1,17 +1,78 @@
-# BaselHack Code Repo Template
+# Smart Trash: Empty When Full
 
-This is the template repository, which makes our lives (and especially the lives of the jury) easier,
-if you follow our structure.
+**Predict · Detect · Optimize.** Fill-level sensors and software that tell a city which public bins are full, which sensors are faulty, and which bins to empty today.
 
-## Explanation
+BaselHack 2026 · pilot city: Lucerne (about 960 public bins)
 
-Please make sure that everything, that is code related, goes into `code` directory.
+<p>
+  <img src="assets/screenshots/crew-login.png" width="200" alt="Sign in as a team">
+  <img src="assets/screenshots/crew-tour.png" width="200" alt="Tour with live sensor status">
+  <img src="assets/screenshots/crew-done.png" width="200" alt="End of tour report">
+  <img src="assets/screenshots/crew-menu.png" width="200" alt="Menu">
+</p>
 
-If you have documentation about the code (e.g. UML Diagrams, a readme etc.), that should go into the `documentation` directory.
+## The problem
 
-If you have assets (like videos, presentations etc.), this can go into the `assets` directory.
+Swiss cities empty public bins on a **fixed schedule**. Half-empty bins get emptied, while bins at lakesides, parks and events overflow on hot weekends. Lucerne spends around 16,100 working hours a year emptying its bins.
 
-You can use the MIT license in this template. Make sure to adjust the copy right holders in the placeholder `<copyright holder>` and add every team member to it.
-You are also free to choose any other license - depending on the consensus of your team.
+Sensors alone don't solve this. False readings made Bern stop two sensor pilots (2012, 2018).
 
-Thanks a lot!
+## Our solution
+
+1. **Predict** when each bin will be full (weekday, weather, events).
+2. **Detect** faulty sensors. A bin whose fill level doesn't drop after a visit is flagged for maintenance.
+3. **Optimize** which bins to empty today, and in which order.
+
+Every decision is explained ("full ~13:00 · shopping Saturday"). A bin without valid data goes back on the fixed schedule, and the app shows this.
+
+## What we built at the hack: the crew app
+
+A mobile web app for the street-cleaning crew:
+
+- **Start collecting**, then just work. The sensor sees the fill drop and checks off the stop with no tap.
+- **Only problems need a tap**: not reachable, unsafe, bin damaged. Bins without a sensor need one tap.
+- **Status bar** with one segment per bin, stops done and km left.
+- **End-of-tour report** about the bins, never about the worker.
+- **Menu**: today's report, problems, legend, privacy, call the depot, sync status, DE / FR / IT / EN.
+- **Team sign-in**: no personal accounts, no GPS tracking, no ranking of workers.
+
+## Try it
+
+```bash
+cd code/crew-app
+python3 -m http.server 5050
+```
+
+Open <http://localhost:5050>, sign in, and tap **▶ Start collecting**. The demo tour has four bins, one for each case (sensor OK, sensor fault, no sensor, bin damaged), and ends with the report after about 10 seconds.
+
+Details: [documentation/crew-app.md](documentation/crew-app.md)
+
+## Honest data
+
+- All fill levels, forecasts and sensor events in the demo are **SIMULATED**, and the app says so.
+- Real open data for Basel is in `assets/geojson/` (litter reports and the street cleanliness index). It is not bin fill-level data.
+- We compare only against the city's real fixed schedule.
+
+## Repository
+
+| Folder | Content |
+|---|---|
+| [`code/crew-app/`](code/crew-app/) | Crew mobile web app (HTML, CSS, JS, Leaflet) |
+| [`documentation/`](documentation/) | [Crew app](documentation/crew-app.md) · [User stories](documentation/user-stories.md) · [Architecture PoC](documentation/Proof_of_Concept_for_the_system_architecture.md) · [Tasks and roles](documentation/tasks.md) |
+| [`assets/`](assets/) | Screenshots, open data (GeoJSON), photos |
+
+Work is tracked on the [project board](https://github.com/orgs/Basel-Hackthon-Smart-Trash/projects/1).
+
+## Team
+
+| Name | Role |
+|---|---|
+| Abbas | Development, project lead |
+| Rai | UI/UX |
+| Andy | Data science |
+| Dennis | Backend |
+| Maria | Brand identity |
+
+## License
+
+[MIT](license.txt)
