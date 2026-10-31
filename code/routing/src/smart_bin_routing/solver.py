@@ -251,7 +251,7 @@ def _run_ortools(planning_input: PlanningInput, config: SolverConfig) -> Plannin
         node_id = node_ids[manager.IndexToNode(index)]
         return (
             0
-            if node_id == planning_input.depot_id
+            if node_id == planning_input.depot_id or node_id not in demands
             else _scaled(demands[node_id], config.demand_scale, ceiling=True)
         )
 
@@ -263,6 +263,13 @@ def _run_ortools(planning_input: PlanningInput, config: SolverConfig) -> Plannin
         True,
         "Capacity",
     )
+
+    # The provider may supply matrix nodes for bins excluded during assembly.
+    # They are not collection candidates and must not become mandatory stops.
+    candidate_ids = {candidate.bin_id for candidate in planning_input.candidates}
+    for node_id, node in indexes.items():
+        if node_id != planning_input.depot_id and node_id not in candidate_ids:
+            routing.ActiveVar(manager.NodeToIndex(node)).SetValue(0)
 
     # OR-Tools callbacks must return an integer. Explicit solver constraints
     # ensure a None matrix cell remains unavailable rather than zero cost.

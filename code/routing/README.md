@@ -11,7 +11,8 @@ classification, planning-input assembly, and route optimization. It accepts
 one coherent caller-supplied snapshot and returns classifications, readiness
 and exclusion diagnostics, plus the existing solver result. It does not own
 MQTT, snapshot state, persistence, scheduling, or result transport. See
-`../../documentation/routing-stage-5.md`.
+`../../documentation/routing-stage-5.md` and
+`../../documentation/routing-stage-6.md`.
 
 ## Development
 
@@ -23,6 +24,16 @@ uv run pytest
 uv run ruff check .
 uv run ruff format --check .
 ```
+
+Run the deterministic offline orchestration example with:
+
+```text
+uv run python examples/stage5_collection_plan.py
+```
+
+The example uses synthetic observations, explicit test demands, and
+approximate `synthetic-km` costs. It does not represent verified navigation
+or real KVA Basel travel distances.
 
 The package supports Python 3.12 through 3.15. Runtime dependencies are from
 the standard library. Pytest and Ruff are development dependencies.

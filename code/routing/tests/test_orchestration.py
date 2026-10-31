@@ -102,6 +102,101 @@ def test_classification_remains_visible_for_excluded_bin(synthetic_config):
     }
 
 
+def test_mixed_observations_keep_accepted_and_rejected_bins_visible(synthetic_config):
+    bins = (BinMetadata("fresh"), BinMetadata("stale"))
+    result = plan_collection(
+        request(
+            synthetic_config,
+            bins=bins,
+            observations=(
+                FillObservation("fresh", 0.9, NOW),
+                FillObservation("stale", 0.9, NOW.replace(year=2020)),
+            ),
+            demands=(
+                CollectionDemand("fresh", 2, "kg"),
+                CollectionDemand("stale", 2, "kg"),
+            ),
+        )
+    )
+
+    assert result.status == CollectionPlanStatus.FEASIBLE
+    assert result.stops == ("fresh",)
+    assessments = {item.bin_id: item for item in result.bins}
+    assert assessments["fresh"].included_in_route
+    assert not assessments["stale"].routing_ready
+    assert "stale_observation" in {item.code for item in assessments["stale"].diagnostics}
+    assert "unknown_classification_sensor_check" in {
+        item.code for item in assessments["stale"].diagnostics
+    }
+
+
+def test_unknown_observation_identifier_is_invalid_request(synthetic_config):
+    result = plan_collection(
+        request(
+            synthetic_config,
+            bins=(BinMetadata("known"),),
+            observations=(FillObservation("unknown", 0.9, NOW),),
+            demands=(),
+        )
+    )
+
+    assert result.status == CollectionPlanStatus.INVALID_REQUEST
+    assert result.solver_result is None
+    assert "unknown_observation_bin" in {item.code for item in result.diagnostics}
+
+
+def test_unknown_demand_identifier_is_invalid_request(synthetic_config):
+    result = plan_collection(
+        request(
+            synthetic_config,
+            bins=(BinMetadata("known"),),
+            observations=(FillObservation("known", 0.9, NOW),),
+            demands=(CollectionDemand("unknown", 2, "kg"),),
+        )
+    )
+
+    assert result.status == CollectionPlanStatus.INVALID_REQUEST
+    assert result.solver_result is None
+    assert "unknown_demand_bin" in {item.code for item in result.diagnostics}
+
+
+def test_individual_demand_over_capacity_is_infeasible(synthetic_config):
+    result = plan_collection(
+        request(
+            synthetic_config,
+            bins=(BinMetadata("oversized"),),
+            observations=(FillObservation("oversized", 0.9, NOW),),
+            demands=(CollectionDemand("oversized", 11, "kg"),),
+        )
+    )
+
+    assert result.status == CollectionPlanStatus.INFEASIBLE
+    assert result.solver_result.status == PlanningStatus.INFEASIBLE
+    assert result.stops == ()
+    assert "demand_exceeds_truck_capacity" in result.solver_result.diagnostics
+    assert not result.bins[0].included_in_route
+
+
+def test_missing_matrix_depot_is_invalid_request(synthetic_config):
+    result = plan_collection(
+        request(
+            synthetic_config,
+            bins=(BinMetadata("bin-1"),),
+            observations=(FillObservation("bin-1", 0.9, NOW),),
+            demands=(CollectionDemand("bin-1", 1, "kg"),),
+            costs=TravelCostMatrix(
+                ("bin-1",),
+                distances=((0,),),
+                distance_unit="km",
+            ),
+        )
+    )
+
+    assert result.status == CollectionPlanStatus.INVALID_REQUEST
+    assert result.solver_result is None
+    assert "missing_depot_node" in {item.code for item in result.diagnostics}
+
+
 def test_missing_demand_skips_optimizer(synthetic_config):
     calls = 0
 
@@ -218,6 +313,26 @@ def test_non_success_solver_status_is_returned(synthetic_config):
 
     assert result.status == CollectionPlanStatus.TIME_LIMIT
     assert result.solver_result.diagnostics == ("controlled",)
+
+
+def test_solver_exception_is_reported_as_solver_error(synthetic_config):
+    def backend(_planning_input, _config):
+        raise RuntimeError("controlled solver failure")
+
+    result = plan_collection(
+        request(
+            synthetic_config,
+            bins=(BinMetadata("bin-1"),),
+            observations=(FillObservation("bin-1", 0.9, NOW),),
+            demands=(CollectionDemand("bin-1", 1, "kg"),),
+        ),
+        backend=backend,
+    )
+
+    assert result.status == CollectionPlanStatus.SOLVER_ERROR
+    assert result.solver_result.status == PlanningStatus.SOLVER_ERROR
+    assert "solver_exception" in result.solver_result.diagnostics
+    assert not result.bins[0].included_in_route
 
 
 def test_invalid_observation_shape_is_rejected():

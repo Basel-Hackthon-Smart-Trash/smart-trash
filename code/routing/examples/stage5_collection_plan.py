@@ -44,19 +44,34 @@ travel_costs = TravelCostMatrix(
 
 result = plan_collection(CollectionPlanRequest(snapshot, config, planning_time, travel_costs))
 
-print("data: SIMULATED")
+print("data: SIMULATED (synthetic observations and approximate test distances)")
+print("depot: KVA Basel (modeled, vehicle access unconfirmed)")
+print("input bins:", len(snapshot.bins))
+print("eligible bins:", sum(item.routing_ready for item in result.bins))
 print("status:", result.status.value)
-print("classifications:", [(item.bin_id, item.classification.value) for item in result.bins])
-print(
-    "readiness:",
-    [(item.bin_id, item.routing_ready, item.included_in_route) for item in result.bins],
-)
+
+print("excluded bins:")
+for item in result.bins:
+    if not item.routing_ready or not item.included_in_route:
+        reasons = ", ".join(diagnostic.code for diagnostic in item.diagnostics) or "not included"
+        print(f"  - {item.bin_id}: {reasons}")
+
+print("route stops:")
+if result.solver_result and result.solver_result.stops:
+    for bin_id, load in zip(result.solver_result.stops, result.solver_result.loads_after_stop):
+        print(f"  - {bin_id}: load {load:g} {result.solver_result.demand_unit}")
+else:
+    print("  - none")
+print("route nodes:", result.route_nodes)
 print("diagnostics:", [item.code for item in result.diagnostics])
-print("route:", result.route_nodes)
 if result.solver_result:
-    print("demand:", result.solver_result.collected_demand, result.solver_result.demand_unit)
     print(
-        "travel cost:",
-        result.solver_result.total_travel_cost,
+        "collected:",
+        result.solver_result.collected_demand,
+        result.solver_result.demand_unit,
+    )
+    print(
+        "distance:",
+        result.solver_result.travel_distance,
         result.solver_result.travel_cost_unit,
     )
