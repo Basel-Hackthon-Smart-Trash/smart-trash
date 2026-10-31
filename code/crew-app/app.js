@@ -31,6 +31,7 @@
   function reset() {
     started = false;
     clearInterval(sensorTimer);
+    $("live-event").hidden = true;
     stops = DATA.stops.map((s) => ({ ...s, status: "todo", result: null }));
     nearby = DATA.nearby.map((b) => ({ ...b }));
   }
@@ -449,11 +450,21 @@
     if (navigator.onLine) lastSync = new Date();
   }
 
+  // Sensor events go to the live line in the top bar, so they never cover the next-stop card.
+  function liveEvent(text, kind) {
+    const el = $("live-event");
+    el.textContent = text;
+    el.className = `live-event live-event--${kind}`;
+    el.hidden = false;
+    void el.offsetWidth;  // restart the fade-in for every event
+    el.classList.add("live-event--in");
+  }
+
   function sensorEmptied(i) {
     const s = stops[i];
     s.status = "done";
     s.result = "sensor";
-    showToast(t("tSensor", { name: s.name }));
+    liveEvent(t("tSensor", { name: s.name }), "ok");
     render();
   }
 
@@ -462,7 +473,7 @@
     const s = stops[i];
     s.status = "fault";
     s.result = "sensor-fault";
-    showToast(t("tFault", { name: s.name }));
+    liveEvent(t("tFault", { name: s.name }), "fault");
     render();
   }
 
@@ -470,7 +481,7 @@
     const s = stops[i];
     s.status = "done";
     s.result = "crew";
-    showToast(t("tTap", { name: s.name }));
+    liveEvent(t("tTap", { name: s.name }), "ok");
     render();
   }
 
@@ -478,7 +489,7 @@
     const s = stops[i];
     s.status = "skipped";
     s.result = problem;
-    showToast(t("tSkipped", { name: s.name, reason: problemLabel(problem) }));
+    liveEvent(t("tSkipped", { name: s.name, reason: problemLabel(problem) }), "skip");
     render();
   }
 
