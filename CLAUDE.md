@@ -26,3 +26,11 @@ Team: Rai (UI/UX), Andy (Data Science), Abbas (Development, lead), Achim (Busine
 - **Outdoor-ready crew view:** big touch targets (gloves), high contrast (sunlight), works offline.
 - **Fallback visible:** a bin with no valid data shows it is back on the fixed schedule.
 - Three views: crew (mobile), city administration (desktop), maintenance (desktop). DE + EN.
+- Real open data for Basel lives in `assets/geojson/` (`100070`: litter reports, `100288`: street cleanliness index). It is not bin fill-level data; fill levels stay `SIMULATED`.
+
+## Design system
+
+- Use the [Swiss Federal Design System](https://github.com/swiss/designsystem) (MIT, [Storybook](https://swiss.github.io/designsystem/)) with the green `body--freebrand` skin and Noto Sans. Keep its MIT copyright notice.
+- **Never use Swiss Government brand elements** (federal logo, coat of arms, "Schweizerische Eidgenossenschaft" header, favicon). They are excluded from the license, and the app must not look like an official government app. The brand is "Smart Bins".
+- It has no map or chart components: use Leaflet and a chart library styled with its color tokens.
+- Crew view needs larger touch targets than the defaults.
