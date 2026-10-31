@@ -13,6 +13,8 @@
 | Rai | UI/UX | Dashboard, mobile crew app, user research, pitch design |
 | Andy | Data Science | Forecast, fault detection, simulation, evaluation, impact numbers |
 | Achim | Marketing, Value & Finance | Business model, pricing, finance, market, legal/compliance, sales, pitch content |
+| Dennis | Backend | API and data flow that connects sensors, models and the dashboard |
+| Maria | Brand identity | Smart Trash visual identity (logo, colours, typography) |
 
 ### Decision rules
 - Each owner decides within their own area.
@@ -299,6 +301,9 @@ Swiss cities empty public waste bins on a fixed schedule. Half-empty bins get em
 | Andy | Real sensor data + crew feedback data | Abbas + Rai |
 | Abbas | Final model and test cases | Andy |
 | Abbas | Screen designs | Rai |
+| Dennis | Data each screen needs (data contract) | Rai |
+| Rai | API endpoints for the screens | Dennis |
+| Rai | Brand identity (colours, logo, fonts) | Maria |
 
 ---
 
