@@ -86,6 +86,9 @@ input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--accent);
 
 /* Mobile: brand bar, map, then the sidebar */
 @media (max-width: 760px) {
+  /* The page grows and scrolls as a whole; no fixed viewport height */
+  html, body { height: auto; }
   body { grid-template-columns: 1fr; grid-template-rows: auto 60vh auto; grid-template-areas: "brand" "map" "side"; }
-  .sidebar { border-right: none; border-top: 1px solid var(--border); }
+  #map { height: 60vh; }
+  .sidebar { overflow: visible; border-right: none; border-top: 1px solid var(--border); }
 }
