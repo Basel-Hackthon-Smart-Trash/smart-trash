@@ -28,6 +28,19 @@ from .adapters.road_costs import (
     build_road_costs,
     match_locations,
 )
+from .adapters.route_export import (
+    EXPORT_SCHEMA_VERSION,
+    RouteExportError,
+    encode_collection_plan,
+    serialize_collection_plan,
+)
+from .adapters.route_geometry import (
+    RouteGeometry,
+    RouteGeometryError,
+    RouteLeg,
+    RoutePosition,
+    build_route_geometry,
+)
 from .classification import (
     ClassifiedBin,
     ClassifiedSnapshot,
@@ -117,4 +130,13 @@ __all__ = [
     "UnusableMatchPolicy",
     "build_road_costs",
     "match_locations",
+    "EXPORT_SCHEMA_VERSION",
+    "RouteExportError",
+    "encode_collection_plan",
+    "serialize_collection_plan",
+    "RouteGeometry",
+    "RouteGeometryError",
+    "RouteLeg",
+    "RoutePosition",
+    "build_route_geometry",
 ]
