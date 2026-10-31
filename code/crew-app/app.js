@@ -147,6 +147,7 @@
     $("tour-name").textContent = DATA.tour.name;
     $("crew-name").textContent = DATA.tour.crew;
     const route = routeProgress();
+    $("status").hidden = !started;
     $("status-pct").textContent = `${route.pct}%`;
     $("status-stops").textContent = `${finished}/${total} stops`;
     $("status-left").textContent = `${formatDistance(route.total - route.done)} left`;

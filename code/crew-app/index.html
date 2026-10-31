@@ -15,8 +15,8 @@
         <div class="brand">Smart Trash</div>
         <div class="crew" aria-label="Signed in team"><span class="crew-dot" aria-hidden="true"></span><span id="crew-name"></span></div>
       </div>
-      <!-- Route status: stays visible while scrolling -->
-      <div class="status" aria-live="polite">
+      <!-- Route status: appears after "Start collecting", stays visible while scrolling -->
+      <div class="status" id="status" aria-live="polite" hidden>
         <div class="status-text"><b id="status-pct"></b><span id="status-stops"></span><span id="status-left"></span></div>
         <div class="progress-bar"><div id="progress-fill"></div></div>
       </div>
