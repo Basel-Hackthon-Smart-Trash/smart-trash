@@ -53,14 +53,22 @@ button { font: inherit; cursor: pointer; }
 }
 .topbar-row { display: flex; align-items: center; justify-content: space-between; }
 .brand { font-weight: 800; font-size: 20px; letter-spacing: -.01em; }
-.crew { display: flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: 999px; background: rgba(255,255,255,.12); font-weight: 700; font-size: 16px; }
+.crew { display: flex; align-items: center; gap: 8px; height: 48px; padding: 0 14px; border-radius: 999px; background: rgba(255,255,255,.12); font-weight: 700; font-size: 16px; }
 .crew-dot { width: 10px; height: 10px; border-radius: 50%; background: #51cf66; }
 .topbar-right { display: flex; align-items: center; gap: 8px; }
 .menu-btn {
   display: grid; place-items: center; width: 48px; height: 48px;
   border: 2px solid rgba(255,255,255,.35); border-radius: var(--radius-btn);
-  background: transparent; color: #fff; font-size: 24px; font-weight: 800;
+  background: transparent; color: #fff;
 }
+/* Three bars drawn in CSS: a text glyph sits at a different height in every font */
+.menu-icon, .menu-icon::before, .menu-icon::after {
+  display: block; width: 20px; height: 2.5px; border-radius: 2px; background: currentColor;
+}
+.menu-icon { position: relative; }
+.menu-icon::before, .menu-icon::after { content: ""; position: absolute; left: 0; }
+.menu-icon::before { top: -6px; }
+.menu-icon::after { top: 6px; }
 
 .badge {
   display: inline-block; padding: 3px 9px; border-radius: 999px;
