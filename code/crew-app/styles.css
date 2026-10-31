@@ -198,6 +198,15 @@ h1 { margin: 2px 0 0; font-size: 26px; line-height: 1.15; }
 .btn--start { min-height: 72px; font-size: 22px; }
 .live { margin-left: 6px; color: var(--fill-low); letter-spacing: .02em; text-transform: none; }
 .hint { margin: 12px 0 0; font-weight: 700; }
+.btn--fault { background: var(--fault); border-color: var(--fault); color: #fff; }
+
+/* Fault alert: big, centred, with a countdown like a navigation alert */
+.alert { text-align: center; }
+.alert-icon { margin: 4px 0 0; font-size: 44px; line-height: 1; color: var(--fault); }
+.alert h2 { margin-top: 6px; font-size: 26px; }
+.countdown { height: 6px; margin-top: 16px; border-radius: 99px; background: var(--line); overflow: hidden; }
+.countdown i { display: block; height: 100%; background: var(--fault); animation: countdown linear forwards; }
+@keyframes countdown { from { width: 100%; } to { width: 0; } }
 .btn--ghost { border-color: transparent; background: transparent; color: var(--ink-soft); text-decoration: underline; font-weight: 700; }
 
 /* Secondary action: discreet, but still a glove-sized target */

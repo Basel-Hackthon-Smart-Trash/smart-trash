@@ -21,9 +21,10 @@
   // Demo pace of the simulated sensor feed: a pause at each stop, then the event animates.
   const SENSOR_TICK_MS = 1600;
   const EVENT_MS = 1300;
+  const ALERT_MS = 6000;  // fault alert confirms itself after this, like a navigation alert
 
   let stops, nearby, map, routeLayer, undoTimer, lastAction, started, sensorTimer;
-  let lastSync = new Date(), pending = 0;  // reports stay on the phone while offline
+  let lastSync = new Date(), pending = 0, faultAlert = null, alertTimer;  // reports stay on the phone while offline
   const session = loadSession();        // { team, lang }: a team, never a person
   let loginTeam = session.team || DATA.teams[0];
 
@@ -32,6 +33,8 @@
   function reset() {
     started = false;
     clearTimeout(sensorTimer);
+    clearTimeout(alertTimer);
+    faultAlert = null;
     $("live-event").hidden = true;
     stops = DATA.stops.map((s) => ({ ...s, status: "todo", result: null }));
     nearby = DATA.nearby.map((b) => ({ ...b }));
@@ -309,6 +312,7 @@
       [count((s) => s.result === "sensor"), t("rSensor")],
       [count((s) => s.result === "crew"), t("rTap")],
       [count((s) => s.result === "sensor-fault"), t("rFault")],
+      [count((s) => s.result === "sensor-checked"), t("rChecked")],
       ...PROBLEMS.map((p) => [count((s) => s.result === p.id), t("rSkipped", { reason: t(p.key) })]),
       [count((s) => s.source === "crew-added"), t("rAdded")],
     ].filter(([n]) => n > 0);
@@ -332,6 +336,8 @@
   }
 
   function closeSheet() {
+    // Dismissing the fault alert without an answer keeps the sensor flagged
+    if (faultAlert !== null) return answerFault(true);
     $("sheet").hidden = true;
     $("sheet-backdrop").hidden = true;
   }
@@ -452,7 +458,7 @@
     sensorTimer = setTimeout(() => {
       if (s.status === "todo") {
         if (kind === "tap") demoCrewTap(i);
-        else if (kind === "fault") sensorFault(i);
+        else if (kind === "fault") openFaultAlert(i);
         else if (kind === "skip") demoProblem(i, "bin-damaged");
         else sensorEmptied(i);
         if (navigator.onLine) lastSync = new Date();
@@ -504,6 +510,43 @@
     s.status = "fault";
     s.result = "sensor-fault";
     liveEvent(t("tFault", { name: s.name }), "fault");
+    render();
+  }
+
+  // No fill drop after the visit: the phone buzzes and asks the crew, like a navigation alert.
+  // The answer is ground truth for the fault detector.
+  function openFaultAlert(i) {
+    faultAlert = i;
+    if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
+    openSheet(`
+      <div class="alert">
+        <p class="alert-icon" aria-hidden="true">${"⚠\ufe0e"}</p>
+        <h2>${t("faTitle")}</h2>
+        <p class="sub">${t("faSub", { name: escapeHtml(stops[i].name) })}</p>
+        <div class="actions">
+          <button class="btn btn--fault" type="button" data-fault="yes">${t("faYes")}</button>
+          <button class="btn" type="button" data-fault="no">${t("faNo")}</button>
+        </div>
+        <div class="countdown"><i style="animation-duration:${ALERT_MS}ms"></i></div>
+        <p class="privacy">${t("faAuto", { s: ALERT_MS / 1000 })}</p>
+      </div>`);
+    clearTimeout(alertTimer);
+    alertTimer = setTimeout(() => answerFault(true), ALERT_MS);
+  }
+
+  function answerFault(broken) {
+    const i = faultAlert;
+    if (i === null) return;
+    faultAlert = null;
+    clearTimeout(alertTimer);
+    closeSheet();
+    const s = stops[i];
+    if (s.status !== "todo") return;
+    saveFeedback({ binId: s.binId, sensorBroken: broken, at: new Date().toISOString() });
+    if (broken) return sensorFault(i);
+    s.status = "done";
+    s.result = "sensor-checked";
+    liveEvent(t("tChecked", { name: s.name }), "ok");
     render();
   }
 
@@ -626,6 +669,7 @@
     else if (d.problem) reportProblem(Number(d.stop), d.problem);
     else if (d.add) addBin(d.add);
     else if (d.sup !== undefined) checkSupervisor();
+    else if (d.fault) answerFault(d.fault === "yes");
     else if (d.menu) openMenuPage(d.menu);
     else if (d.lang) setLang(d.lang);
     else if (d.team) { loginTeam = d.team; renderLogin(); }
