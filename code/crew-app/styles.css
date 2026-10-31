@@ -343,6 +343,8 @@ h1 { margin: 2px 0 0; font-size: 26px; line-height: 1.15; }
   border: 2px solid var(--line); border-radius: var(--radius-btn); background: var(--surface); color: inherit; text-align: left;
 }
 .bin-row:disabled { opacity: .5; }
+.bin-row > span:first-child { margin-right: auto; }
+.pencil { flex: none; width: 22px; height: 22px; color: var(--ink-soft); }
 .bin-state { flex: none; padding: 4px 10px; border-radius: 999px; font-size: 14px; font-weight: 800; background: #e3f2ea; color: var(--accent); }
 .bin-state--fault { background: #ece9fb; color: var(--fault); }
 .bin-state--skipped { background: #eef0ee; color: var(--ink-soft); }

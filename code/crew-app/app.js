@@ -347,6 +347,9 @@
     ].filter(([n]) => n > 0);
   }
 
+  // Pencil = this row can be edited (inline SVG, not an emoji, so it takes the text colour)
+  const PENCIL = `<svg class="pencil" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M13.5 6.5l4 4" stroke="currentColor" stroke-width="2"/></svg>`;
+
   function binStateLabel(s) {
     if (s.status === "todo") return t("lgTodo");
     if (s.status === "fault") return s.result === "defect-other" ? t("fdOther") : t("stateFault");
@@ -474,7 +477,7 @@
         <ul class="bin-report">
           ${list.map((s, i) => `<li><button class="bin-row" type="button" data-edit="${i}" ${s.status === "todo" ? "disabled" : ""}>
             <span><span class="stop-name">${escapeHtml(s.name)}</span><br><span class="stop-meta">${escapeHtml(s.area)}</span></span>
-            <span class="bin-state bin-state--${s.status}">${binStateLabel(s)}</span></button></li>`).join("")}
+            <span class="bin-state bin-state--${s.status}">${binStateLabel(s)}</span>${s.status === "todo" ? "" : PENCIL}</button></li>`).join("")}
         </ul>
         ${backToMenu()}`);
     }
