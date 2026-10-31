@@ -40,7 +40,7 @@ body {
 }
 
 .brandbar { grid-area: brand; padding: 16px 20px; background: var(--brand); }
-.brandbar img { display: block; height: 26px; }
+.brandbar img { display: block; height: 31px; }
 
 .sidebar {
   grid-area: side;
