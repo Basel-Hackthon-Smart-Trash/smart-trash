@@ -16,7 +16,7 @@
   ];
 
   // Demo pace of the simulated sensor feed: one fill-drop event every few seconds.
-  const SENSOR_TICK_MS = 2500;
+  const SENSOR_TICK_MS = 1500;
 
   let stops, nearby, map, routeLayer, undoTimer, lastAction, started, sensorTimer;
 
@@ -258,11 +258,12 @@
   }
 
   // In the real system the backend pushes a fill-drop event; here a timer simulates the feed.
-  // A fixed-schedule bin has no sensor, so the feed waits for the crew's tap.
+  // A fixed-schedule bin has no sensor: in the demo the crew's tap is simulated too, so the run never stalls.
   function sensorTick() {
     const i = nextIndex();
-    if (i === -1 || !$("sheet").hidden || stops[i].source === "fixed-schedule") return;
-    if (stops[i].demo === "sensor-fault") sensorFault(i);
+    if (i === -1 || !$("sheet").hidden) return;
+    if (stops[i].source === "fixed-schedule") demoCrewTap(i);
+    else if (stops[i].demo === "sensor-fault") sensorFault(i);
     else sensorEmptied(i);
   }
 
@@ -280,6 +281,14 @@
     s.status = "fault";
     s.result = "sensor-fault";
     showToast(`${s.name} ⚠ no fill drop · sensor flagged`);
+    render();
+  }
+
+  function demoCrewTap(i) {
+    const s = stops[i];
+    s.status = "done";
+    s.result = "crew";
+    showToast(`${s.name} ✓ emptied · tapped (no sensor)`);
     render();
   }
 
