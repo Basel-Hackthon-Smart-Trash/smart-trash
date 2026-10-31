@@ -10,7 +10,8 @@ window.SMART_TRASH_DATA = {
     name: "Kleinbasel & Centre",
     date: "2026-10-31",
     crew: "Team KB-3", // a team, never a person: no worker tracking
-    depot: { name: "Depot", lat: 47.5700, lon: 7.5930, phone: "+41610000000" }, // placeholder number, not a real line
+    // Same depot as the prediction pipeline and the city dashboard (approx. position)
+    depot: { name: "Werkhof Stadtreinigung, Brüssel-Strasse 22", lat: 47.536, lon: 7.606, phone: "+41610000000" }, // placeholder number, not a real line
   },
   // Ordered stops for today. source: "sensor" | "fixed-schedule" (no valid sensor data)
   // Demo: four bins, one per case. demo: scripted outcome when the simulated feed reaches the stop.
