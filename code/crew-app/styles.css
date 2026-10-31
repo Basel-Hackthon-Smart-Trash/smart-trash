@@ -96,7 +96,12 @@ h1 { margin: 2px 0 0; font-size: 26px; line-height: 1.15; }
 .status { margin-top: 10px; }
 .status-text { display: flex; align-items: baseline; gap: 12px; font-size: 15px; font-weight: 700; color: rgba(255,255,255,.75); }
 .status-text b { font-size: 24px; font-weight: 800; color: #fff; }
-.status-text span:last-child { margin-left: auto; }
+.status-text #status-left { margin-left: auto; }
+.stop-btn {
+  min-height: 44px; padding: 0 14px; border: 2px solid rgba(255,255,255,.5); border-radius: var(--radius-btn);
+  background: transparent; color: #fff; font-size: 15px; font-weight: 800;
+}
+.stop-btn--paused { background: #fff; border-color: #fff; color: var(--brand); }
 .segments { display: flex; gap: 4px; margin-top: 8px; }
 .seg { flex: 1; height: 10px; border-radius: 3px; background: rgba(255,255,255,.2); transition: background .3s; }
 .seg--done { background: var(--fill-low); }
@@ -206,7 +211,7 @@ h1 { margin: 2px 0 0; font-size: 26px; line-height: 1.15; }
 .alert h2 { margin-top: 6px; font-size: 26px; }
 .alert-choices { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 14px; }
 .alert-choices .btn--help { grid-column: 1 / -1; text-decoration: none; }
-.btn--help { border-color: var(--line); color: var(--ink-soft); }
+.btn--help { border-color: var(--line); color: var(--ink-soft); text-decoration: none; }
 .choice.choice--on { border-color: var(--fault); background: #ece9fb; color: var(--fault); }
 .note {
   width: 100%; min-height: var(--tap); margin-top: 12px; padding: 0 16px;

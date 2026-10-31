@@ -24,7 +24,7 @@
   const ALERT_MS = 6000;  // fault alert confirms itself after this, like a navigation alert
 
   let stops, nearby, map, routeLayer, undoTimer, lastAction, started, sensorTimer;
-  let lastSync = new Date(), pending = 0, faultAlert = null, alertTimer;  // reports stay on the phone while offline
+  let lastSync = new Date(), pending = 0, faultAlert = null, alertTimer, defectStop = null, paused = false;  // reports stay on the phone while offline
   const session = loadSession();        // { team, lang }: a team, never a person
   let loginTeam = session.team || DATA.teams[0];
 
@@ -35,6 +35,7 @@
     clearTimeout(sensorTimer);
     clearTimeout(alertTimer);
     faultAlert = null;
+    paused = false;
     $("live-event").hidden = true;
     stops = DATA.stops.map((s) => ({ ...s, status: "todo", result: null }));
     nearby = DATA.nearby.map((b) => ({ ...b }));
@@ -248,6 +249,9 @@
     $("crew-name").textContent = session.team;
     const route = routeProgress();
     $("status").hidden = !started;
+    $("stop-btn").hidden = next === -1;
+    $("stop-btn").textContent = paused ? t("resume") : t("stop");
+    $("stop-btn").classList.toggle("stop-btn--paused", paused);
     $("screen-tour").classList.toggle("collecting", started);
     $("status-stops").textContent = `${finished}/${total}`;
     $("status-left").textContent = t("left", { d: formatDistance(route.total - route.done) });
@@ -290,7 +294,7 @@
     $("stops").innerHTML = stops.map((s, i) => {
       const state = s.status === "fault" ? t("stateFault")
         : s.status === "done" ? (s.result === "sensor" ? t("stateSensor") : t("stateEmptied"))
-        : s.status === "skipped" ? problemLabel(s.result) : i === next ? t("stateNext") : "";
+        : s.status === "skipped" ? (s.result === "not-done" ? t("notDone") : problemLabel(s.result)) : i === next ? t("stateNext") : "";
       const tag = s.source === "crew-added" ? `<span class="badge badge--added">${t("addedByCrew")}</span>` : "";
       return `<li><button class="stop stop--${i === next ? "next" : s.status}" type="button" data-open="${i}">
           <span class="stop-num">${s.status === "done" ? "✓" : i + 1}</span>
@@ -314,6 +318,7 @@
       [count((s) => s.result === "sensor-fault"), t("rFault")],
       [count((s) => s.result === "sensor-checked"), t("rChecked")],
       [count((s) => s.result === "defect-other"), t("rOther")],
+      [count((s) => s.result === "not-done"), t("rNotDone")],
       ...PROBLEMS.map((p) => [count((s) => s.result === p.id), t("rSkipped", { reason: t(p.key) })]),
       [count((s) => s.source === "crew-added"), t("rAdded")],
     ].filter(([n]) => n > 0);
@@ -324,7 +329,8 @@
   function renderDone() {
     clearTimeout(sensorTimer);
     $("done-title").textContent = t("wellDone", { crew: session.team });
-    $("done-sub").textContent = t("allDone", { n: stops.length });
+    const notDone = stops.filter((s) => s.result === "not-done").length;
+    $("done-sub").textContent = notDone ? t("endedEarly", { n: notDone }) : t("allDone", { n: stops.length });
     $("done-summary").innerHTML = reportHtml(reportRows());
   }
 
@@ -403,7 +409,7 @@
         ${backToMenu()}`);
     }
     if (page === "problems") {
-      const list = stops.filter((s) => s.status === "fault" || s.status === "skipped");
+      const list = stops.filter((s) => s.status === "fault" || (s.status === "skipped" && s.result !== "not-done"));
       return openSheet(`
         <h2>${t("mProblems")}</h2>
         <ul class="nearby">
@@ -451,7 +457,7 @@
   // Each event first animates (so the jury sees the process), then updates the tour.
   function sensorTick() {
     const i = nextIndex();
-    if (i === -1) return;
+    if (i === -1 || paused) return;
     if (!$("sheet").hidden) { sensorTimer = setTimeout(sensorTick, 500); return; }
     const s = stops[i];
     const kind = s.source === "fixed-schedule" ? "tap" : s.demo === "sensor-fault" ? "fault" : s.demo === "bin-damaged" ? "skip" : "ok";
@@ -544,11 +550,12 @@
   }
 
   // Common defects with one tap; the note is optional (typing with gloves is hard).
-  function openDefectList() {
+  function openDefectList(i) {
+    defectStop = i;
     stopCountdown();
     openSheet(`
       <h2>${t("fdTitle")}</h2>
-      <p class="sub">${escapeHtml(stops[faultAlert].name)}</p>
+      <p class="sub">${escapeHtml(stops[i].name)}</p>
       <div class="choices">
         ${["sensor", "bin", "other"].map((k) =>
           `<button class="choice choice--wide" type="button" data-defect="${k}">${t({ sensor: "fdSensor", bin: "fdBin", other: "fdOther" }[k])}</button>`).join("")}
@@ -566,7 +573,12 @@
 
   function sendDefect() {
     const picked = $("sheet").querySelector(".choice--on");
-    if (picked) answerFault(picked.dataset.defect, $("defect-note").value.trim());
+    if (!picked) return;
+    const note = $("defect-note").value.trim();
+    if (faultAlert !== null) return answerFault(picked.dataset.defect, note);
+    closeSheet();
+    applyDefect(defectStop, picked.dataset.defect, note);
+    if (paused) openPause(true);
   }
 
   // kind: "sensor" | "bin" | "other" (defect) or "ok" (bin was emptied, sensor fine)
@@ -576,8 +588,12 @@
     faultAlert = null;
     clearTimeout(alertTimer);
     closeSheet();
+    applyDefect(i, kind, note);
+  }
+
+  function applyDefect(i, kind, note) {
     const s = stops[i];
-    if (s.status !== "todo") return;
+    if (!s || s.status !== "todo") return;
     saveFeedback({ binId: s.binId, defect: kind === "ok" ? null : kind, note: note || undefined, at: new Date().toISOString() });
     s.note = note;
     if (kind === "sensor") return sensorFault(i);
@@ -591,6 +607,44 @@
     s.status = "done";
     s.result = "sensor-checked";
     liveEvent(t("tChecked", { name: s.name }), "ok");
+    render();
+  }
+
+  // ---------- stop: pause the tour (sensor feed stops) ----------
+
+  // Three choices and a small link: Resume is the big, safe default; End is hard to hit by mistake.
+  function openPause(reported) {
+    openSheet(`
+      <h2>${t("pTitle")}</h2>
+      ${reported ? `<p class="sync sync--on">${t("pReported")}</p>` : ""}
+      <div class="actions">
+        <button class="btn btn--primary btn--start" type="button" data-resume>${t("resume")}</button>
+        <button class="btn" type="button" data-pause-report>${t("pReport")}</button>
+        <a class="btn btn--help" href="tel:${DATA.tour.depot.phone}">${t("mCall")}</a>
+        <button class="btn btn--ghost" type="button" data-end>${t("pEnd")}</button>
+      </div>`);
+  }
+
+  function stopTour() {
+    if (faultAlert !== null) return;
+    paused = true;
+    clearTimeout(sensorTimer);
+    openPause(false);
+    render();
+  }
+
+  function resumeTour() {
+    paused = false;
+    closeSheet();
+    render();
+    sensorTimer = setTimeout(sensorTick, SENSOR_TICK_MS);
+  }
+
+  // Remaining stops are kept in the report as "not done", never hidden.
+  function endTour() {
+    paused = false;
+    closeSheet();
+    stops.forEach((s) => { if (s.status === "todo") { s.status = "skipped"; s.result = "not-done"; } });
     render();
   }
 
@@ -713,7 +767,10 @@
     else if (d.problem) reportProblem(Number(d.stop), d.problem);
     else if (d.add) addBin(d.add);
     else if (d.sup !== undefined) checkSupervisor();
-    else if (d.fault === "yes") openDefectList();
+    else if (d.fault === "yes") openDefectList(faultAlert);
+    else if (d.resume !== undefined) resumeTour();
+    else if (d.pauseReport !== undefined) openDefectList(nextIndex());
+    else if (d.end !== undefined) endTour();
     else if (d.fault === "no") answerFault("ok");
     else if (d.help !== undefined) stopCountdown();  // the tel: link still opens the call
     else if (d.defect) pickDefect(d.defect);
@@ -729,6 +786,7 @@
   window.addEventListener("offline", () => { if (!$("sheet").hidden && $("sheet").querySelector(".sync")) openMenu(); });
   $("add-bin-btn").addEventListener("click", openSupervisor);
   $("menu-btn").addEventListener("click", openMenu);
+  $("stop-btn").addEventListener("click", () => (paused ? openPause(false) : stopTour()));
   $("login-btn").addEventListener("click", login);
   $("toast-undo").addEventListener("click", () => {
     if (lastAction) lastAction();
