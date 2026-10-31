@@ -243,6 +243,7 @@
     $("crew-name").textContent = session.team;
     const route = routeProgress();
     $("status").hidden = !started;
+    $("screen-tour").classList.toggle("collecting", started);
     $("status-stops").textContent = `${finished}/${total}`;
     $("status-left").textContent = t("left", { d: formatDistance(route.total - route.done) });
     // One segment per bin, coloured by its status
