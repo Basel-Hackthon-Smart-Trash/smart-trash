@@ -113,6 +113,7 @@ Work is tracked on the [project board](https://github.com/orgs/Basel-Hackthon-Sm
 
 ## Credits
 
+- Brand: logo by Maria; fonts [Jost](https://fonts.google.com/specimen/Jost) and [JetBrains Mono](https://fonts.google.com/specimen/JetBrains+Mono) (SIL Open Font License), self-hosted in `code/crew-app/fonts/`
 - Map: [Leaflet](https://leafletjs.com) and © [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors
 - Open data: [Open Data Basel-Stadt](https://data.bs.ch) (datasets 100070 and 100288)
 - AI tooling (allowed by the hackathon rules) helped write code and documentation; all code was written during the hack
