@@ -915,7 +915,7 @@
     if (e.key === "Enter" && e.target.id === "sup-pin") checkSupervisor();
   });
 
-  // Start: live routes if bins.json is there (and no ?demo), otherwise the demo tour
+  // Start: today's routes from bins.json (real routes, simulated sensors) unless ?demo; without the file, the demo tour
   (async function init() {
     live = await window.SMART_TRASH_LIVE.load();
     if (live) {
