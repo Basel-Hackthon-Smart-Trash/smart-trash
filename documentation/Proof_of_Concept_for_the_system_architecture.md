@@ -19,12 +19,12 @@ The proof of concept should validate the complete data path from simulated senso
 
 ```mermaid
 flowchart LR
-    Sensors["<b>Sensor Simulator</b><br/>1,000+ simulated sensors<br/><i>Collect measurements locally<br/>Buffer for one hour<br/>Upload one batch per hour<br/>Use randomized upload delay</i>"]
-    Broker[["<b>Eclipse Mosquitto</b><br/>MQTT Broker"]]
-    Processor["<b>Processing / Ingestion Service</b><br/>Node-RED initially<br/>.NET Worker Service later<br/><i>Validate messages<br/>Deserialize payloads<br/>Detect duplicates<br/>Store valid measurements<br/>Route failures</i>"]
-    Database[("<b>PostgreSQL + TimescaleDB</b><br/>Time-series and metadata storage")]
-    Grafana["<b>Grafana</b><br/>Dashboards and monitoring"]
-    DeadLetter[["Dead-Letter Topic"]]
+    Sensors["Sensor Simulator<br/>1,000+ simulated sensors<br/>Collect measurements locally<br/>Buffer for one hour<br/>Upload one batch per hour<br/>Use randomized upload delay"]
+    Broker["Eclipse Mosquitto<br/>MQTT Broker"]
+    Processor["Processing / Ingestion Service<br/>Node-RED initially<br/>.NET Worker Service later<br/>Validate messages<br/>Deserialize payloads<br/>Detect duplicates<br/>Store valid measurements<br/>Route failures"]
+    Database[("PostgreSQL + TimescaleDB<br/>Time-series and metadata storage")]
+    Grafana["Grafana<br/>Dashboards and monitoring"]
+    DeadLetter["Dead-Letter Topic"]
 
     Sensors -->|"MQTT 5 over TLS<br/>Port 8883, QoS 1"| Broker
     Broker -->|"MQTT subscription<br/>poc/v1/+/+/measurements"| Processor
@@ -190,7 +190,7 @@ Use a stable MQTT client ID and a persistent session for the processing service.
 
 ```mermaid
 flowchart TD
-    A([Start]) --> B[Collect measurements locally]
+    A(Start) --> B[Collect measurements locally]
     B --> C[Buffer measurements for up to one hour]
     C --> D[Apply randomized upload delay]
     D --> E[Wake communication subsystem]
@@ -207,7 +207,7 @@ flowchart TD
     K -- no --> P[Keep batch in local persistent storage]
     P --> Q[Schedule retry with backoff]
     Q --> R[Disconnect and return to low-power mode]
-    O --> Z([Stop])
+    O --> Z(Stop)
     R --> Z
 ```
 
@@ -485,7 +485,6 @@ IoTMeasurementPlatform.sln
 
 ```mermaid
 sequenceDiagram
-    title Hourly Measurement Batch - End-to-End Flow
     participant Sensor
     participant Network as 5G Network
     participant Broker as Mosquitto<br/>MQTT Broker
