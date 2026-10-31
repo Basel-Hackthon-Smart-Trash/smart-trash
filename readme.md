@@ -36,6 +36,17 @@ A mobile web app for the street-cleaning crew:
 - **Menu**: today's report, problems, legend, privacy, call the depot, sync status, DE / FR / IT / EN.
 - **Team sign-in**: no personal accounts, no tracking, no ranking of workers. Location is read only while the app is open, and only on the phone.
 
+## User stories
+
+All for the crew member (street-cleaning worker, gloves, phone in the pocket). Details and acceptance criteria: [documentation/user-stories.md](documentation/user-stories.md)
+
+1. See which bins need me today and why
+2. Zero taps: the sensor detects emptying, I only answer when a sensor looks broken
+3. Stay in control: skip a stop or add a bin
+4. Start collecting, sensors check off bins, tour report
+5. Always see how far along the route I am
+6. Menu: report, problems, help, language, sign in / out
+
 ## How a tour works
 
 The phone stays in the pocket. The app only asks the crew when a sensor looks broken, or when the crew taps Stop.
