@@ -6,6 +6,13 @@ validated planning inputs, and Stage 4 provides a bounded OR-Tools optimizer
 for one mandatory-visit truck trip. The package does not read GeoJSON, use
 OSMnx, or connect to a backend.
 
+Stage 5 adds `plan_collection`, an application-level composition of
+classification, planning-input assembly, and route optimization. It accepts
+one coherent caller-supplied snapshot and returns classifications, readiness
+and exclusion diagnostics, plus the existing solver result. It does not own
+MQTT, snapshot state, persistence, scheduling, or result transport. See
+`../../documentation/routing-stage-5.md`.
+
 ## Development
 
 From this directory:

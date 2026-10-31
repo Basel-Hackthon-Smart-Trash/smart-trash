@@ -20,6 +20,13 @@ from .models import (
     PlanningSnapshot,
     PlanningStatus,
 )
+from .orchestration import (
+    BinPlanAssessment,
+    CollectionPlanRequest,
+    CollectionPlanResult,
+    CollectionPlanStatus,
+    plan_collection,
+)
 from .planning import (
     PlanningInput,
     PlanningInputAssembly,
@@ -42,6 +49,10 @@ __all__ = [
     "PlanningResult",
     "PlanningSnapshot",
     "PlanningStatus",
+    "BinPlanAssessment",
+    "CollectionPlanRequest",
+    "CollectionPlanResult",
+    "CollectionPlanStatus",
     "PlanningInput",
     "PlanningInputAssembly",
     "RoutingCandidate",
@@ -52,4 +63,5 @@ __all__ = [
     "CostMetric",
     "SolverConfig",
     "optimize_route",
+    "plan_collection",
 ]
