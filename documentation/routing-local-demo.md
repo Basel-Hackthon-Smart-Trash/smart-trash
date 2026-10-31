@@ -31,9 +31,13 @@ open examples/real-bin-demo.html
 ```
 
 The downloader is the only demo command that uses the network. It saves a
-local `real-bin-demo-streets.geojson` background. The downloaded street graph
-is used only for visual shapes; it is not speed-validated or used as an
-operational route result.
+local `real-bin-demo-streets.geojson` background and a validated GraphML cache
+under `code/routing/.cache/real-bin-demo-graph/`. The graph cache is ignored
+and must be regenerated locally when needed.
+
+The demo accepts location snaps up to 300 m from a drivable graph node. This is
+an explicit prototype matching limit, not confirmation that a collection
+vehicle can access the bin or depot.
 
 ## What The Demo Shows
 
@@ -43,7 +47,9 @@ operational route result.
 - Synthetic explicit demand for every demo bin.
 - The existing `plan_collection` optimizer's visit order.
 - Route sequence numbers for admitted yellow and red bins, not only red bins.
-- Synthetic straight-line objective cost and diagnostics.
+- Directed road-network objective cost and diagnostics when the graph cache is
+  available; otherwise a clearly-labelled synthetic straight-line fallback.
+- Exact selected road geometry when the graph cache is available.
 - Optional real OpenStreetMap street background rendered locally.
 - The provided Stadtreinigung address as both the route start and end.
 
@@ -54,11 +60,12 @@ their order; it does not select only red bins.
 
 ## Data Labels And Limits
 
-The locations, optional street background, and accepted address point are real
-source data. Fill levels, demands, and travel costs are simulated. The cost
-matrix is a deterministic straight-line coordinate model, not road distance or
-driving time. The dashed route line is based on that model; it is not verified
-Basel navigation.
+The locations, street background, accepted address point, and cached road
+geometry are real source data. Fill levels and demands are simulated. In road
+mode, the graph uses OSM edge lengths and explicit speed assumptions; the route
+is still a prototype result, not verified Basel navigation. Without the graph
+cache, the cost matrix and dashed route line use a deterministic straight-line
+coordinate model.
 
 A future real-Basel demo can replace the synthetic cost matrix after explicit
 approval of a graph, depot coordinate, snapping limit, and speed policy.

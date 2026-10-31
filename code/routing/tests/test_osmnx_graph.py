@@ -132,6 +132,19 @@ def test_multi_value_tagged_speed_uses_conservative_lowest_value():
     assert graph.edges[1, 2, 0]["speed_kph"] == 80.0
 
 
+def test_symbolic_urban_tag_uses_explicit_implied_speed():
+    graph = nx.MultiDiGraph()
+    graph.graph["crs"] = "EPSG:4326"
+    graph.add_node(1, x=7.58, y=47.55)
+    graph.add_node(2, x=7.59, y=47.56)
+    graph.add_edge(1, 2, length=100.0, maxspeed="FR:urban")
+    settings = GraphSettings(speed_fallback_kph=40.0, speed_fallback_scope="base_area_only")
+
+    add_edge_travel_times(graph, settings, fallback_area=area())
+
+    assert graph.edges[1, 2, 0]["speed_kph"] == 50.0
+
+
 def test_import_and_default_graph_functions_do_not_acquire():
     import osmnx as ox
 

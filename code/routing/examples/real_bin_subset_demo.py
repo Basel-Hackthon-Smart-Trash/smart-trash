@@ -22,8 +22,14 @@ from smart_bin_routing import (
     CollectionPlanRequest,
     FillObservation,
     GeoLocation,
+    MatchingConfig,
     PlanningConfig,
     PlanningSnapshot,
+    RoadCostMetric,
+    RoadLocation,
+    build_road_costs,
+    build_route_geometry,
+    load_graph,
     plan_collection,
 )
 from smart_bin_routing.adapters.bin_geojson import load_bin_geojson
@@ -36,6 +42,8 @@ DEMO_DEMAND = 1.0
 DEMO_DEMAND_UNIT = "synthetic-load-units"
 DEPOT_ID = "stadtreinigung-basel"
 DEPOT_ADDRESS = "Stadtreinigung (SR), Brüssel-Strasse 22, 4053 Basel, Switzerland"
+GRAPH_DIRECTORY_NAME = "real-bin-demo-graph"
+MAX_SNAP_DISTANCE_METERS = 300.0
 PLANNING_TIME = datetime(2026, 10, 31, 12, 0, tzinfo=UTC)
 
 
@@ -114,8 +122,8 @@ def _html(payload: dict[str, object]) -> str:
     <div><p class="muted">SMART TRASH · LOCAL DEMO</p><h1>Collection route</h1></div>
     <p class="muted">Seed: <strong id="seed"></strong></p>
   </header>
-  <div class="warning"><strong>SIMULATED DEMO</strong> · real bin locations and street background ·
-     simulated fill, demand, and straight-line travel costs · no verified route geometry</div>
+  <div class="warning"><strong>DEMO</strong> · real bin locations and street background ·
+     simulated fill and demand · route mode shown in the plan · no operational navigation</div>
   <div class="layout">
     <section class="panel"><svg id="map" role="img" aria-label="Bin locations"></svg></section>
     <aside>
@@ -139,6 +147,7 @@ const stats = document.getElementById('stats');
 stats.innerHTML = `<div><strong>${{data.plan.status}}</strong></div>
   <div>${{bins.length}} bins · ${{data.plan.included_bins}} routed</div>
   <div>${{data.plan.collected_demand}} ${{data.plan.demand_unit}}</div>
+  <div>Route: ${{data.plan.route_mode}}</div>
   <div class="muted">Objective: ${{data.plan.objective_cost}} ${{data.plan.objective_unit}}</div>`;
 const depotLabel = `<div class="stop"><span>START · ${{data.depot.address}}</span>` +
   `<span>DEPOT</span></div>`;
@@ -165,6 +174,15 @@ const streetLines = streets.map(feature => {{
   return `<polyline points="${{points}}" fill="none" stroke="#809494" ` +
     `stroke-width="1" opacity=".7"/>`;
 }}).join('');
+const roadFeatures = data.road_route?.geometry?.features || [];
+const roadRouteMarkup = roadFeatures.map(feature => {{
+  const coordinates = feature.geometry?.coordinates || [];
+  const points = coordinates.map(([lon, lat]) => `${{x(lon)}},${{y(lat)}}`).join(' ');
+  return points
+    ? `<polyline points="${{points}}" fill="none" stroke="#102022" ` +
+      `stroke-width="3" stroke-dasharray="8 5" opacity=".95"/>`
+    : '';
+}}).join('');
 const locations = new Map(bins.map(bin => [bin.bin_id, bin]));
 if (data.depot.location) locations.set(data.depot.id, data.depot.location);
 const routePoints = data.plan.route_nodes
@@ -176,6 +194,7 @@ const routeMarkup = routePoints
   ? `<polyline points="${{routePoints}}" fill="none" stroke="#102022" ` +
     `stroke-width="3" stroke-dasharray="8 5" opacity=".9"/>`
   : '';
+const routeDisplay = roadRouteMarkup || routeMarkup;
 const depotMarkup = data.depot.location
   ? (() => {{
     const depotX = x(data.depot.location.longitude), depotY = y(data.depot.location.latitude);
@@ -191,7 +210,7 @@ svg.innerHTML = `<text x="${{pad}}" y="24" fill="#294044" font-size="14">` +
   (streets.length
     ? `REAL STREET NETWORK · NO VERIFIED ROUTE`
     : `REAL BIN POSITIONS · NO STREET DATA`) +
-  `</text>` + streetLines + routeMarkup + depotMarkup +
+  `</text>` + streetLines + routeDisplay + depotMarkup +
   bins.map(bin => {{
     const sequence = included.get(bin.bin_id);
     const cx = x(bin.longitude), cy = y(bin.latitude);
@@ -229,13 +248,30 @@ def main() -> None:
     locations = {DEPOT_ID: depot_record.location}
     locations.update({item.bin_id: item.location for item in selected if item.location is not None})
     node_ids = (DEPOT_ID, *(item.bin_id for item in selected))
+    graph_directory = output_dir.parent / ".cache" / GRAPH_DIRECTORY_NAME
+    road_costs = None
+    route_geometry = None
+    if graph_directory.is_dir():
+        graph_artifact = load_graph(graph_directory)
+        road_costs = build_road_costs(
+            graph_artifact,
+            tuple(RoadLocation(node_id, locations[node_id]) for node_id in node_ids),
+            depot_id=DEPOT_ID,
+            matching=MatchingConfig(MAX_SNAP_DISTANCE_METERS),
+            objective=RoadCostMetric.DISTANCE,
+        )
+        travel_costs = road_costs.costs
+    else:
+        travel_costs = _synthetic_costs({node_id: locations[node_id] for node_id in node_ids})
     request = CollectionPlanRequest(
         PlanningSnapshot(selected, observations, demands),
         PlanningConfig(DEPOT_ID, DEPOT_ID, 20, DEMO_DEMAND_UNIT, 0.6, 0.8, 3600),
         PLANNING_TIME,
-        _synthetic_costs({node_id: locations[node_id] for node_id in node_ids}),
+        travel_costs,
     )
     result = plan_collection(request)
+    if road_costs is not None and result.status.value == "feasible":
+        route_geometry = build_route_geometry(result, road_costs, graph_artifact)
     assessments = {item.bin_id: item for item in result.bins}
     fills = {
         item.bin_id: observation.fill_fraction for item, observation in zip(selected, observations)
@@ -274,6 +310,9 @@ def main() -> None:
             "objective_unit": (
                 result.solver_result.travel_cost_unit if result.solver_result else None
             ),
+            "route_mode": (
+                "REAL_ROAD_NETWORK" if road_costs is not None else "SIMULATED_STRAIGHT_LINE"
+            ),
         },
         "bins": [
             {
@@ -297,12 +336,44 @@ def main() -> None:
             for item in selected
             if item.bin_id in sequence
         ],
+        "road_route": (
+            {
+                "data_status": "REAL_OPENSTREETMAP_GRAPH",
+                "geometry": {
+                    "type": "FeatureCollection",
+                    "features": [
+                        {
+                            "type": "Feature",
+                            "properties": {
+                                "source_id": leg.source_id,
+                                "target_id": leg.target_id,
+                                "distance_meters": leg.distance_meters,
+                            },
+                            "geometry": (
+                                {
+                                    "type": "LineString",
+                                    "coordinates": [list(point) for point in leg.geometry],
+                                }
+                                if leg.geometry is not None
+                                else None
+                            ),
+                        }
+                        for leg in route_geometry.legs
+                    ],
+                },
+                "physical_distance": {"value": route_geometry.distance_meters, "unit": "m"},
+            }
+            if route_geometry is not None
+            else None
+        ),
         "diagnostics": [item.code for item in result.diagnostics],
         "limitations": [
             "real bin locations are used",
             "fill levels, demands, and travel costs are simulated",
-            "street background is real; route numbers and costs are simulated",
-            "synthetic demo depot has no operational coordinate",
+            "street background is real; fill levels and demands are simulated",
+            "road mode uses real OSM geometry with modeled speed assumptions",
+            f"location snapping limit is {MAX_SNAP_DISTANCE_METERS:.0f} m",
+            "the depot address is not proof of vehicle access or unloading permission",
         ],
     }
     street_path = output_dir / "real-bin-demo-streets.geojson"

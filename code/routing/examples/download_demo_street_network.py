@@ -1,12 +1,12 @@
-"""Explicitly download and export a small OSMnx street background for the demo.
+"""Explicitly download and cache a small OSMnx street graph for the demo.
 
 Run manually from ``code/routing/``. This is the demo's only network action::
 
     uv run python examples/download_demo_street_network.py
 
-The downloaded graph is used only as visual background data. It is not passed
-through the routing speed contract or used as the demo's route-cost provider,
-and the generated route remains explicitly synthetic.
+The command saves both a visual GeoJSON background and a validated GraphML
+cache. The demo uses the GraphML cache for directed road costs and route
+geometry; its fill levels and demands remain simulated.
 """
 
 from __future__ import annotations
@@ -17,12 +17,19 @@ from pathlib import Path
 from typing import Any
 
 from pyproj import CRS, Transformer
-from shapely.geometry import LineString, Polygon, mapping
+from shapely.geometry import LineString, mapping
 
-from smart_bin_routing import GraphArea, load_bin_geojson
+from smart_bin_routing import (
+    GraphArea,
+    GraphSettings,
+    acquire_graph,
+    load_bin_geojson,
+    save_graph,
+)
 from smart_bin_routing.adapters.depot_geocoding import load_depot_location
 
 STREET_FILE_NAME = "real-bin-demo-streets.geojson"
+GRAPH_DIRECTORY_NAME = "real-bin-demo-graph"
 # Keep the graph inside the explicitly covered bin area. The SVG adds visual
 # padding itself; no speed fallback is claimed outside this area.
 DISPLAY_MARGIN_METERS = 0
@@ -102,14 +109,24 @@ def main() -> None:
         raise ValueError("accepted Stadtreinigung depot geocode is required")
     depot_record = load_depot_location(depot_record_path)
     area = _area_from_bins(bins, (depot_record.location,))
-    import osmnx as ox
-
-    polygon = Polygon(area.polygon_coordinates[0])
-    graph = ox.graph_from_polygon(polygon, network_type="drive", simplify=True, retain_all=True)
+    graph_settings = GraphSettings(
+        network_type="drive",
+        simplify=True,
+        retain_all=True,
+        speed_fallback_kph=30.0,
+        speed_fallback_scope="base_area_only",
+    )
+    coverage_points = tuple(item.location for item in bins if item.location) + (
+        depot_record.location,
+    )
+    graph = acquire_graph(area, coverage_points, graph_settings)
+    graph_directory = output_dir.parent / ".cache" / GRAPH_DIRECTORY_NAME
+    artifact = save_graph(graph, graph_directory, area=area, settings=graph_settings)
     street_path = output_dir / STREET_FILE_NAME
     street_path.write_text(json.dumps(_street_payload(graph), indent=2) + "\n", encoding="utf-8")
     print(f"saved street background: {street_path}")
-    print("street data: REAL OpenStreetMap; route costs: SIMULATED")
+    print(f"saved routing graph: {artifact.graph_path}")
+    print("street data and route costs: REAL OpenStreetMap graph; speed fallback: SIMULATED")
 
 
 if __name__ == "__main__":

@@ -26,6 +26,16 @@ from ..models import GeoLocation
 SCHEMA_VERSION = 1
 GRAPH_FILENAME = "graph.graphml"
 METADATA_FILENAME = "graph.json"
+IMPLIED_SPEEDS_KPH = {
+    "CH:urban": 50.0,
+    "CH:rural": 80.0,
+    "CH:trunk": 100.0,
+    "CH:motorway": 120.0,
+    "DE:urban": 50.0,
+    "DE:rural": 100.0,
+    "FR:urban": 50.0,
+    "FR:rural": 80.0,
+}
 
 
 class GraphError(ValueError):
@@ -193,11 +203,14 @@ def _parse_tagged_speed(value: object) -> float:
         speed = float(value)
     elif isinstance(value, str):
         match = re.fullmatch(r"\s*(\d+(?:\.\d+)?)\s*(mph|km/h|kph)?\s*", value)
-        if match is None:
+        if match is None and value.strip() in IMPLIED_SPEEDS_KPH:
+            speed = IMPLIED_SPEEDS_KPH[value.strip()]
+        elif match is None:
             raise GraphError(f"unsupported maxspeed tag: {value!r}")
-        speed = float(match.group(1))
-        if match.group(2) == "mph":
-            speed *= 1.609344
+        else:
+            speed = float(match.group(1))
+            if match.group(2) == "mph":
+                speed *= 1.609344
     else:
         raise GraphError(f"unsupported maxspeed tag: {value!r}")
     if not math.isfinite(speed) or speed <= 0:
