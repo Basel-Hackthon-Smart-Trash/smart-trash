@@ -11,24 +11,18 @@ window.SMART_TRASH_DATA = {
     depot: { name: "Depot", lat: 47.5700, lon: 7.5930 },
   },
   // Ordered stops for today. source: "sensor" | "fixed-schedule" (no valid sensor data)
+  // Demo: four bins, one per case. demo: scripted outcome when the simulated feed reaches the stop.
   stops: [
     { binId: "BS-0412", name: "Messeplatz", area: "Kleinbasel", lat: 47.5636, lon: 7.6002,
-      fill: 95, source: "sensor", why: ["full ~11:00", "Herbstmesse", "Saturday"] },
+      fill: 95, source: "sensor", why: ["full ~11:00", "Herbstmesse", "Saturday"] }, // sensor sees the drop
     { binId: "BS-0388", name: "Claraplatz", area: "Kleinbasel", lat: 47.5627, lon: 7.5939,
-      fill: 88, source: "sensor", why: ["full ~13:00", "shopping Saturday"] },
-    { binId: "BS-0301", name: "Kaserne", area: "Kleinbasel", lat: 47.5635, lon: 7.5900,
-      fill: 81, source: "sensor", why: ["full ~15:00", "Rhine walk"] },
-    { binId: "BS-0297", name: "Oberer Rheinweg", area: "Kleinbasel", lat: 47.5598, lon: 7.5935,
-      fill: 90, source: "sensor", why: ["full ~12:00", "Rhine walk", "dry weather"] },
+      fill: 88, source: "sensor", why: ["full ~13:00", "shopping Saturday"],
+      demo: "sensor-fault" }, // no fill drop after the visit: sensor gets flagged
     { binId: "BS-0290", name: "Mittlere Brücke", area: "Kleinbasel", lat: 47.5603, lon: 7.5898,
-      fill: null, source: "fixed-schedule", why: ["sensor fault", "fixed schedule"] },
+      fill: null, source: "fixed-schedule", why: ["sensor fault", "fixed schedule"] }, // no sensor: one tap
     { binId: "BS-0105", name: "Barfüsserplatz", area: "Grossbasel", lat: 47.5547, lon: 7.5893,
-      fill: 97, source: "sensor", why: ["full ~10:00", "Herbstmesse"] },
-    { binId: "BS-0132", name: "Petersplatz", area: "Grossbasel", lat: 47.5592, lon: 7.5824,
-      fill: 85, source: "sensor", why: ["full ~14:00", "Herbstmesse"],
-      demo: "sensor-fault" }, // demo script: no fill drop after the visit, sensor gets flagged
-    { binId: "BS-0177", name: "Schützenmattpark", area: "Grossbasel", lat: 47.5550, lon: 7.5735,
-      fill: 78, source: "sensor", why: ["full ~16:00", "park", "Saturday"] },
+      fill: 97, source: "sensor", why: ["full ~10:00", "Herbstmesse"],
+      demo: "bin-damaged" }, // crew reports a problem and skips
   ],
   // Bins near the route that are not on today's tour (crew can add them).
   nearby: [

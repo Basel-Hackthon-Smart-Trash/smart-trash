@@ -264,6 +264,7 @@
     if (i === -1 || !$("sheet").hidden) return;
     if (stops[i].source === "fixed-schedule") demoCrewTap(i);
     else if (stops[i].demo === "sensor-fault") sensorFault(i);
+    else if (stops[i].demo === "bin-damaged") demoProblem(i, "bin-damaged");
     else sensorEmptied(i);
   }
 
@@ -289,6 +290,14 @@
     s.status = "done";
     s.result = "crew";
     showToast(`${s.name} ✓ emptied · tapped (no sensor)`);
+    render();
+  }
+
+  function demoProblem(i, problem) {
+    const s = stops[i];
+    s.status = "skipped";
+    s.result = problem;
+    showToast(`${s.name} skipped · ${PROBLEMS.find((p) => p.id === problem).label.toLowerCase()}`);
     render();
   }
 
