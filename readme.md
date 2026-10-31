@@ -53,6 +53,18 @@ flowchart LR
     B -.->|any time| S["■ Stop: resume, report,<br/>call depot, end early"]
 ```
 
+## Design decisions
+
+| Decision | Why |
+|---|---|
+| Zero taps on a normal stop | The crew works with gloves and both hands full; the app must add no work |
+| The app asks only on a suspected fault | Turns a guess into ground truth that trains the fault detector, and answers "how do you know the sensor is broken?" |
+| One defect list everywhere | The same three choices in the alert and after Stop: learned once |
+| Yes / No / Help, auto-confirm after 6 s | Like a navigation alert: never blocks the crew when nobody answers |
+| Undo after every report | Mistakes with gloves happen; nothing is final after one tap |
+| Team sign-in, reports per bin | No GPS tracking, no times per person, no ranking: the crew must not feel monitored |
+| Bins without valid data show "fixed schedule" | The fallback is visible, never hidden |
+
 ## Try it
 
 ```bash
