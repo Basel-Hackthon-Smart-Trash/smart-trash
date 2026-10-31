@@ -1,4 +1,4 @@
-# Proof of Concept for the System Architecture
+﻿# Proof of Concept for the System Architecture
 
 ## 1. Purpose and Scenario
 
@@ -17,42 +17,20 @@ The proof of concept should validate the complete data path from simulated senso
 
 ## 2. Recommended Proof-of-Concept Architecture
 
-```plantuml
-@startuml
-skinparam componentStyle rectangle
-skinparam shadowing false
-skinparam linetype ortho
+```mermaid
+flowchart LR
+    Sensors["<b>Sensor Simulator</b><br/>1,000+ simulated sensors<br/><i>Collect measurements locally<br/>Buffer for one hour<br/>Upload one batch per hour<br/>Use randomized upload delay</i>"]
+    Broker[["<b>Eclipse Mosquitto</b><br/>MQTT Broker"]]
+    Processor["<b>Processing / Ingestion Service</b><br/>Node-RED initially<br/>.NET Worker Service later<br/><i>Validate messages<br/>Deserialize payloads<br/>Detect duplicates<br/>Store valid measurements<br/>Route failures</i>"]
+    Database[("<b>PostgreSQL + TimescaleDB</b><br/>Time-series and metadata storage")]
+    Grafana["<b>Grafana</b><br/>Dashboards and monitoring"]
+    DeadLetter[["Dead-Letter Topic"]]
 
-title IoT Measurement Platform - Proof-of-Concept Architecture
-
-component "Sensor Simulator\n1,000+ simulated sensors" as Sensors
-queue "Eclipse Mosquitto\nMQTT Broker" as Broker
-component "Processing / Ingestion Service\nNode-RED initially\n.NET Worker Service later" as Processor
-database "PostgreSQL + TimescaleDB\nTime-series and metadata storage" as Database
-component "Grafana\nDashboards and monitoring" as Grafana
-queue "Dead-Letter Topic" as DeadLetter
-
-Sensors --> Broker : MQTT 5 over TLS\nPort 8883, QoS 1
-Broker --> Processor : MQTT subscription\npoc/v1/+/+/measurements
-Processor --> Database : PostgreSQL protocol\nPort 5432
-Database --> Grafana : SQL queries\nRead-only account
-Processor --> DeadLetter : Invalid messages\nMQTT publish
-
-note right of Sensors
-Collect measurements locally
-Buffer for one hour
-Upload one batch per hour
-Use randomized upload delay
-end note
-
-note right of Processor
-Validate messages
-Deserialize payloads
-Detect duplicates
-Store valid measurements
-Route failures
-end note
-@enduml
+    Sensors -->|"MQTT 5 over TLS<br/>Port 8883, QoS 1"| Broker
+    Broker -->|"MQTT subscription<br/>poc/v1/+/+/measurements"| Processor
+    Processor -->|"PostgreSQL protocol<br/>Port 5432"| Database
+    Database -->|"SQL queries<br/>Read-only account"| Grafana
+    Processor -->|"Invalid messages<br/>MQTT publish"| DeadLetter
 ```
 
 The sensors must not connect directly to the database. Only the processing service should possess database credentials.
@@ -210,36 +188,27 @@ Use a stable MQTT client ID and a persistent session for the processing service.
 
 ### 7.4 Sensor Connection Lifecycle
 
-```plantuml
-@startuml
-skinparam shadowing false
-
-title Hourly Sensor Upload Lifecycle
-
-start
-:Collect measurements locally;
-:Buffer measurements for up to one hour;
-:Apply randomized upload delay;
-:Wake communication subsystem;
-:Establish 5G connection;
-:Establish TLS session;
-:Connect to MQTT broker;
-:Publish hourly batch with QoS 1;
-:Wait for PUBACK;
-
-if (PUBACK received?) then (yes)
-  :Store successful transmission state;
-  :Disconnect from MQTT;
-  :Release 5G connection;
-  :Return to low-power mode;
-else (no)
-  :Keep batch in local persistent storage;
-  :Schedule retry with backoff;
-  :Disconnect and return to low-power mode;
-endif
-
-stop
-@enduml
+```mermaid
+flowchart TD
+    A([Start]) --> B[Collect measurements locally]
+    B --> C[Buffer measurements for up to one hour]
+    C --> D[Apply randomized upload delay]
+    D --> E[Wake communication subsystem]
+    E --> F[Establish 5G connection]
+    F --> G[Establish TLS session]
+    G --> H[Connect to MQTT broker]
+    H --> I[Publish hourly batch with QoS 1]
+    I --> J[Wait for PUBACK]
+    J --> K{PUBACK received?}
+    K -- yes --> L[Store successful transmission state]
+    L --> M[Disconnect from MQTT]
+    M --> N[Release 5G connection]
+    N --> O[Return to low-power mode]
+    K -- no --> P[Keep batch in local persistent storage]
+    P --> Q[Schedule retry with backoff]
+    Q --> R[Disconnect and return to low-power mode]
+    O --> Z([Stop])
+    R --> Z
 ```
 
 The sensor should not remain connected for the entire hour solely to maintain an MQTT session.
@@ -514,48 +483,43 @@ IoTMeasurementPlatform.sln
 
 ## 12. End-to-End Data Flow
 
-```plantuml
-@startuml
-skinparam shadowing false
-skinparam sequenceMessageAlign center
+```mermaid
+sequenceDiagram
+    title Hourly Measurement Batch - End-to-End Flow
+    participant Sensor
+    participant Network as 5G Network
+    participant Broker as Mosquitto<br/>MQTT Broker
+    participant Processor as Ingestion Service
+    participant Database as TimescaleDB
+    participant Grafana
+    participant DLQ as Dead-Letter Topic
 
-title Hourly Measurement Batch - End-to-End Flow
+    Sensor->>Sensor: Collect and buffer measurements
+    Sensor->>Network: Establish connection
+    Network-->>Sensor: Connection available
+    Sensor->>Broker: CONNECT with device identity
+    Broker-->>Sensor: CONNACK
+    Sensor->>Broker: PUBLISH hourly batch, QoS 1
+    Broker-->>Sensor: PUBACK
+    Broker->>Processor: Deliver measurement batch
 
-participant "Sensor" as Sensor
-participant "5G Network" as Network
-participant "Mosquitto\nMQTT Broker" as Broker
-participant "Ingestion Service" as Processor
-database "TimescaleDB" as Database
-participant "Grafana" as Grafana
-queue "Dead-Letter Topic" as DLQ
+    Processor->>Processor: Validate topic, schema and identity
 
-Sensor -> Sensor : Collect and buffer measurements
-Sensor -> Network : Establish connection
-Network --> Sensor : Connection available
-Sensor -> Broker : CONNECT with device identity
-Broker --> Sensor : CONNACK
-Sensor -> Broker : PUBLISH hourly batch, QoS 1
-Broker --> Sensor : PUBACK
-Broker -> Processor : Deliver measurement batch
+    alt Valid and not previously processed
+        Processor->>Database: Insert batch and measurements<br/>in one transaction
+        Database-->>Processor: Commit successful
+    else Duplicate batch
+        Processor->>Database: Check uniqueness constraint
+        Database-->>Processor: Batch already exists
+        Processor->>Processor: Treat as idempotent success
+    else Invalid message
+        Processor->>DLQ: Publish original payload and error details
+    end
 
-Processor -> Processor : Validate topic, schema and identity
-
-alt Valid and not previously processed
-  Processor -> Database : Insert batch and measurements\nin one transaction
-  Database --> Processor : Commit successful
-else Duplicate batch
-  Processor -> Database : Check uniqueness constraint
-  Database --> Processor : Batch already exists
-  Processor -> Processor : Treat as idempotent success
-else Invalid message
-  Processor -> DLQ : Publish original payload and error details
-end
-
-Grafana -> Database : Query measurements and statistics
-Database --> Grafana : Time-series result
-Sensor -> Broker : DISCONNECT
-Sensor -> Sensor : Return to low-power mode
-@enduml
+    Grafana->>Database: Query measurements and statistics
+    Database-->>Grafana: Time-series result
+    Sensor->>Broker: DISCONNECT
+    Sensor->>Sensor: Return to low-power mode
 ```
 
 ## 13. Important Architectural Decisions
