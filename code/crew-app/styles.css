@@ -239,6 +239,9 @@ h1 { margin: 2px 0 0; font-size: 26px; line-height: 1.15; }
 .lang--on { background: var(--ink); border-color: var(--ink); color: #fff; }
 
 /* Menu */
+.sync { margin: -6px 0 14px; padding: 10px 12px; border-radius: var(--radius-btn); font-weight: 800; font-size: 15px; }
+.sync--on { background: #e3f2ea; color: var(--accent); }
+.sync--off { background: #fdecea; color: var(--fill-over); }
 .menu-list { display: grid; gap: 8px; }
 .menu-item {
   display: flex; align-items: center; gap: 14px; min-height: var(--tap); padding: 0 16px;

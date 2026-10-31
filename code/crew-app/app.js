@@ -22,6 +22,7 @@
   const SENSOR_TICK_MS = 1500;
 
   let stops, nearby, map, routeLayer, undoTimer, lastAction, started, sensorTimer;
+  let lastSync = new Date(), pending = 0;  // reports stay on the phone while offline
   const session = loadSession();        // { team, lang }: a team, never a person
   let loginTeam = session.team || DATA.teams[0];
 
@@ -148,6 +149,8 @@
 
   // Crew reports are stored per bin only: no worker id, no timing per person.
   function saveFeedback(entry) {
+    if (navigator.onLine) lastSync = new Date();
+    else pending++;
     try {
       const all = JSON.parse(localStorage.getItem(FEEDBACK_KEY) || "[]");
       all.push(entry);
@@ -353,6 +356,7 @@
     openSheet(`
       <h2>${t("menu")}</h2>
       <p class="sub">${escapeHtml(session.team)}</p>
+      ${syncHtml()}
       <div class="menu-list">
         <button class="menu-item" type="button" data-menu="report">${t("mReport")}</button>
         <button class="menu-item" type="button" data-menu="problems">${t("mProblems")}</button>
@@ -364,6 +368,13 @@
         <button class="btn" type="button" data-menu="logout">${t("mLogout")}</button>
         <button class="btn btn--ghost" type="button" data-close>${t("back")}</button>
       </div>`);
+  }
+
+  function syncHtml() {
+    const time = lastSync.toLocaleTimeString(locale(), { hour: "2-digit", minute: "2-digit" });
+    return navigator.onLine
+      ? `<p class="sync sync--on">● ${t("syncOnline", { t: time })}</p>`
+      : `<p class="sync sync--off">● ${t("syncOffline", { n: pending })}</p>`;
   }
 
   const backToMenu = () => `<div class="actions"><button class="btn btn--ghost" type="button" data-menu="menu">${t("back")}</button></div>`;
@@ -422,6 +433,7 @@
     else if (stops[i].demo === "sensor-fault") sensorFault(i);
     else if (stops[i].demo === "bin-damaged") demoProblem(i, "bin-damaged");
     else sensorEmptied(i);
+    if (navigator.onLine) lastSync = new Date();
   }
 
   function sensorEmptied(i) {
@@ -543,6 +555,9 @@
     else if (d.close !== undefined) closeSheet();
   });
   $("sheet-backdrop").addEventListener("click", closeSheet);
+  // Back online: waiting reports are sent
+  window.addEventListener("online", () => { pending = 0; lastSync = new Date(); if (!$("sheet").hidden && $("sheet").querySelector(".sync")) openMenu(); });
+  window.addEventListener("offline", () => { if (!$("sheet").hidden && $("sheet").querySelector(".sync")) openMenu(); });
   $("add-bin-btn").addEventListener("click", openAddBin);
   $("menu-btn").addEventListener("click", openMenu);
   $("login-btn").addEventListener("click", login);
