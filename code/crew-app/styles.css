@@ -245,7 +245,6 @@ h1 { margin: 2px 0 0; font-size: 26px; line-height: 1.15; }
   border: 2px solid var(--line); border-radius: var(--radius-btn); background: var(--surface);
   color: var(--ink); font-size: 19px; font-weight: 800; text-align: left;
 }
-.menu-item span { width: 28px; text-align: center; font-size: 22px; }
 .problem-row {
   display: flex; justify-content: space-between; align-items: center; gap: 8px; min-height: var(--tap); padding: 12px;
   border: 2px solid var(--line); border-radius: var(--radius-btn);

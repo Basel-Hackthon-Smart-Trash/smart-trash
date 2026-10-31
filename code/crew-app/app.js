@@ -354,9 +354,9 @@
       <h2>${t("menu")}</h2>
       <p class="sub">${escapeHtml(session.team)}</p>
       <div class="menu-list">
-        <button class="menu-item" type="button" data-menu="report"><span aria-hidden="true">📋</span>${t("mReport")}</button>
-        <button class="menu-item" type="button" data-menu="problems"><span aria-hidden="true">⚠</span>${t("mProblems")}</button>
-        <button class="menu-item" type="button" data-menu="legend"><span aria-hidden="true">?</span>${t("mLegend")}</button>
+        <button class="menu-item" type="button" data-menu="report">${t("mReport")}</button>
+        <button class="menu-item" type="button" data-menu="problems">${t("mProblems")}</button>
+        <button class="menu-item" type="button" data-menu="legend">${t("mLegend")}</button>
       </div>
       <p class="question">${t("language")}</p>
       <div class="lang-list">${langButtons()}</div>
