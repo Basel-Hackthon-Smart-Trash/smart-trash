@@ -191,19 +191,23 @@ never rewritten.
 
 Structural errors are returned in `result.validation` and prevent classified
 entries from being produced. A structurally valid snapshot can still contain
-per-bin contextual diagnostics and unknown classifications. Color describes
-fill level only; it does not create collection demand or select a route. No
-sensor quality/status semantics are defined yet, so backend quality fields
-remain an unresolved integration requirement.
+per-bin contextual diagnostics and unknown classifications. Green is visible
+but below the collection threshold and is excluded from routing; yellow and
+red classifications are admitted when their other inputs are valid. Color
+does not create collection demand. No sensor quality/status semantics are
+defined yet, so backend quality fields remain an unresolved integration
+requirement.
 
 ## Stage 3 planning inputs
 
 `assemble_planning_input` combines a `ClassifiedSnapshot` and a validated,
 explicitly ordered `TravelCostMatrix` into immutable `PlanningInput` data for a
 future solver. Candidates retain their bin identity, classification, and
-explicit collection demand. Unknown classifications are excluded with a sensor
-review diagnostic; they are not silently treated as zero demand or declared
-faulty. Missing demand and missing travel nodes are visible exclusions.
+explicit collection demand. Green classifications remain visible but are
+excluded below the collection threshold. Unknown classifications are excluded
+with a sensor review diagnostic; they are not silently treated as zero demand
+or declared faulty. Missing demand and missing travel nodes are visible
+exclusions.
 
 An oversized demand remains intact and is marked with a diagnostic. `None` in a
 travel matrix is explicitly unreachable, while malformed dimensions and missing

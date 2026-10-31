@@ -102,6 +102,43 @@ def test_classification_remains_visible_for_excluded_bin(synthetic_config):
     }
 
 
+def test_green_bin_remains_visible_but_is_not_routed(synthetic_config):
+    result = plan_collection(
+        request(
+            synthetic_config,
+            bins=(BinMetadata("green"), BinMetadata("red")),
+            observations=(
+                FillObservation("green", 0.4, NOW),
+                FillObservation("red", 0.9, NOW),
+            ),
+            demands=(CollectionDemand("green", 2, "kg"), CollectionDemand("red", 2, "kg")),
+        )
+    )
+
+    assessments = {item.bin_id: item for item in result.bins}
+    assert result.status == CollectionPlanStatus.FEASIBLE
+    assert result.stops == ("red",)
+    assert assessments["green"].classification.value == "green"
+    assert not assessments["green"].routing_ready
+    assert not assessments["green"].included_in_route
+    assert "green_bin_excluded" in {item.code for item in assessments["green"].diagnostics}
+
+
+def test_all_green_bins_produce_no_routing_ready_candidates(synthetic_config):
+    result = plan_collection(
+        request(
+            synthetic_config,
+            bins=(BinMetadata("green"),),
+            observations=(FillObservation("green", 0.4, NOW),),
+            demands=(CollectionDemand("green", 2, "kg"),),
+        )
+    )
+
+    assert result.status == CollectionPlanStatus.NO_ROUTING_READY_CANDIDATES
+    assert result.solver_result is None
+    assert "green_bin_excluded" in {item.code for item in result.bins[0].diagnostics}
+
+
 def test_mixed_observations_keep_accepted_and_rejected_bins_visible(synthetic_config):
     bins = (BinMetadata("fresh"), BinMetadata("stale"))
     result = plan_collection(

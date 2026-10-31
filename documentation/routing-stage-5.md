@@ -124,8 +124,9 @@ with a missing observation remains visible as `unknown`, with
 `missing_observation` and `unknown_classification_sensor_check` diagnostics,
 but is not passed to the optimizer. Missing demand and missing travel nodes
 are also visible exclusions. A valid classified bin with explicit demand is a
-candidate even if its fill classification is green; the routing package does
-not invent a policy that selects bins from fill color.
+candidate when its fill classification is yellow or red. Green bins remain
+visible with an explicit below-threshold exclusion and are not passed to the
+optimizer.
 
 ## Backend and Infrastructure Boundaries
 
