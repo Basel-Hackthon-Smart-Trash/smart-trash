@@ -191,10 +191,23 @@
     map.fitBounds(pts, { padding: [20, 20] });
   }
 
+  // While collecting, the map fills the screen between the top bar and the Stop bar.
+  function sizeMap() {
+    const el = $("map");
+    const h = started && !$("action-bar").hidden
+      ? Math.max(260, Math.floor(window.innerHeight - (el.getBoundingClientRect().top + window.scrollY) - $("action-bar").offsetHeight - 12))
+      : 340;
+    if (el.offsetHeight === h) return false;
+    el.style.height = `${h}px`;
+    return true;
+  }
+
   function renderMap() {
     if (!map) initMap();
     if (!map) return;
+    const resized = sizeMap();
     map.invalidateSize();
+    if (resized) map.fitBounds([DATA.tour.depot, ...stops].map((s) => [s.lat, s.lon]), { padding: [36, 36] });
     routeLayer.clearLayers();
     const next = nextIndex();
     const line = [DATA.tour.depot, ...stops.filter((s) => s.status !== "skipped")].map((s) => [s.lat, s.lon]);
@@ -206,10 +219,12 @@
 
     stops.forEach((s, i) => {
       const cls = i === next ? "marker--next" : s.status !== "todo" ? `marker--${s.status}` : "";
-      L.marker([s.lat, s.lon], {
+      const m = L.marker([s.lat, s.lon], {
         icon: L.divIcon({ className: "", html: `<div class="marker ${cls}">${s.status === "done" ? "✓" : i + 1}</div>`, iconSize: [30, 30] }),
         zIndexOffset: i === next ? 1000 : 0,
       }).on("click", () => openStop(i)).addTo(routeLayer);
+      // Next stop's name sits on the map, since the card is hidden while collecting
+      if (i === next && started) m.bindTooltip(escapeHtml(s.name), { permanent: true, direction: "top", offset: [0, -16], className: "next-tip" });
     });
   }
 
@@ -835,6 +850,7 @@
   window.addEventListener("offline", () => { if (!$("sheet").hidden && $("sheet").querySelector(".sync")) openMenu(); });
   $("add-bin-btn").addEventListener("click", openSupervisor);
   $("menu-btn").addEventListener("click", openMenu);
+  window.addEventListener("resize", () => { if (map && sizeMap()) map.invalidateSize(); });
   // Phone back in the pocket: stop reading the location
   document.addEventListener("visibilitychange", () => (document.hidden ? stopGeo() : startGeo()));
   $("stop-btn").addEventListener("click", () => (paused ? openPause(false) : stopTour()));

@@ -81,15 +81,12 @@ button { font: inherit; cursor: pointer; }
 .screen { padding: 16px 16px 32px; }
 
 .tour-head { margin-bottom: 16px; }
-/* While collecting, a light dark scrim keeps only the status bar and the next stop in focus.
-   pointer-events: none, so the map and the list stay tappable. */
-#screen-tour { position: relative; }
-#screen-tour::after {
-  content: ""; position: absolute; inset: 0; z-index: 450;
-  background: rgba(10, 16, 12, .35); opacity: 0; pointer-events: none; transition: opacity .3s;
-}
-#screen-tour.collecting::after { opacity: 1; }
-.collecting .next { position: relative; z-index: 460; box-shadow: 0 8px 30px rgba(0,0,0,.25); }
+/* While collecting: header, map and Stop only. The map fills the space between them (height set in app.js). */
+.collecting .next, .collecting .section-title, .collecting .stops, .collecting .add-bin { display: none; }
+.collecting .tour-head { margin-bottom: 10px; }
+.collecting .tour-head h1 { font-size: 22px; }
+.next-tip { padding: 4px 10px; border: 0; border-radius: var(--radius-btn); background: var(--accent); color: #fff; font: 800 15px var(--font); box-shadow: 0 2px 8px rgba(0,0,0,.25); }
+.next-tip::before { border-top-color: var(--accent); }
 .eyebrow { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin: 0; color: var(--ink-soft); font-size: 15px; font-weight: 600; }
 h1 { margin: 2px 0 0; font-size: 26px; line-height: 1.15; }
 /* Route status in the sticky top bar */
@@ -109,7 +106,6 @@ h1 { margin: 2px 0 0; font-size: 26px; line-height: 1.15; }
 .stop-btn--paused { background: var(--accent); color: var(--accent-ink); }
 .reported { display: flex; align-items: center; justify-content: space-between; }
 .undo-link { min-height: 40px; padding: 0 12px; border: 2px solid currentColor; border-radius: var(--radius-btn); background: transparent; color: inherit; font-weight: 800; }
-.collecting { padding-bottom: 120px; }  /* keep the last content clear of the action bar */
 .segments { display: flex; gap: 4px; margin-top: 8px; }
 .seg { flex: 1; height: 10px; border-radius: 3px; background: rgba(255,255,255,.2); transition: background .3s; }
 .seg--done { background: var(--fill-low); }
@@ -127,7 +123,7 @@ h1 { margin: 2px 0 0; font-size: 26px; line-height: 1.15; }
 .seg--fault { background: var(--fault); }
 .seg--skipped { background: repeating-linear-gradient(45deg, rgba(255,255,255,.45) 0 3px, transparent 3px 6px); }
 
-.map { height: 340px; border-radius: var(--radius); overflow: hidden; border: 1px solid var(--line); isolation: isolate; } /* keeps Leaflet's z-index under the collecting scrim */
+.map { height: 340px; border-radius: var(--radius); overflow: hidden; border: 1px solid var(--line); isolation: isolate; } /* keeps Leaflet's z-index under the sheet and bars */
 .marker {
   position: relative; display: grid; place-items: center;
   width: 30px; height: 30px; border-radius: 50%;
