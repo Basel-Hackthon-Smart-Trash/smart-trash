@@ -15,7 +15,7 @@ python3 -m http.server 5050 --bind 0.0.0.0
 
 | URL | What |
 |---|---|
-| `http://localhost:5050/crew-app/` | Live routes from `code/web/data/bins.json` (one truck per team) |
+| `http://localhost:5050/crew-app/` | Today's routes from `code/web/data/bins.json`, one truck per team: real routes, simulated sensors |
 | `http://localhost:5050/crew-app/?demo` | The pitch demo: four bins, one per case |
 | `http://localhost:5050/web/` | City dashboard (all trucks) |
 
@@ -111,7 +111,7 @@ The supervisor code for **＋ Add a bin** is `1234`. It is a demo value, the app
 ## Known limits
 
 - Fill levels, the sensor feed and the depot phone number are simulated.
-- Live mode simulates the sensor events along the real route; real events will come from the MQTT broker.
+- With today's routes the sensor events along the real route are simulated; real events will come from the MQTT broker.
 - The location check (Defect alert near a suspect bin, 40 m) needs HTTPS, e.g. GitHub Pages; on plain http it does nothing and the demo feed triggers the alert instead.
 - FR and IT texts need a check by a native speaker.
 - City administration and maintenance views are not built yet.

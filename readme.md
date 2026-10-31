@@ -4,7 +4,7 @@
 
 BaselHack 2026 · pilot city: **Basel** (309 bins in the demo area, from OpenStreetMap)
 
-**Try it on your phone:** [crew app, live routes](https://basel-hackthon-smart-trash.github.io/smart-trash/code/crew-app/) · [crew app, pitch demo](https://basel-hackthon-smart-trash.github.io/smart-trash/code/crew-app/?demo) · [city dashboard](https://basel-hackthon-smart-trash.github.io/smart-trash/code/web/)
+**Try it on your phone:** [crew app, today's routes](https://basel-hackthon-smart-trash.github.io/smart-trash/code/crew-app/) (real routes, simulated sensors) · [crew app, pitch demo](https://basel-hackthon-smart-trash.github.io/smart-trash/code/crew-app/?demo) · [city dashboard](https://basel-hackthon-smart-trash.github.io/smart-trash/code/web/)
 
 <p>
   <img src="assets/screenshots/crew-login.png" width="200" alt="Sign in as a team">
@@ -95,7 +95,7 @@ Details: [documentation/crew-app.md](documentation/crew-app.md)
 
 | | |
 |---|---|
-| **Built** | Crew app: tour, live sensor events, defect alert, Stop / pause, editable report, menu, team sign-in, DE / FR / IT / EN |
+| **Built** | Crew app: tour, simulated sensor events, defect alert, Stop / pause, editable report, menu, team sign-in, DE / FR / IT / EN |
 | **Next** | Connect the backend ([architecture PoC](documentation/Proof_of_Concept_for_the_system_architecture.md)); city administration view; maintenance view |
 | **Later** | Real sensors on real bins; forecast model on real data; route optimisation with several vehicles |
 
