@@ -26,6 +26,7 @@
 
   let stops, nearby, map, routeLayer, undoTimer, lastAction, started, sensorTimer;
   let lastSync = new Date(), pending = 0, faultAlert = null, alertTimer, defectStop = null, paused = false, geoWatch = null;
+  let lastTour = null;  // finished tour kept after Done, so today's report can still be opened and corrected
   const asked = new Set();  // suspect bins already asked about by location  // reports stay on the phone while offline
   const session = loadSession();        // { team, lang }: a team, never a person
   let loginTeam = session.team || DATA.teams[0];
@@ -96,6 +97,7 @@
 
   function logout() {
     session.team = null;
+    lastTour = null;
     saveSession();
     closeSheet();
     reset();
@@ -329,8 +331,11 @@
   }
 
   // Report about the tour and the bins, never about the worker: no times, no speed.
-  function reportRows() {
-    const count = (fn) => stops.filter(fn).length;
+  // While a tour runs the report shows it; after Done it shows the finished tour.
+  const reportStops = () => (started || !lastTour ? stops : lastTour);
+
+  function reportRows(list = stops) {
+    const count = (fn) => list.filter(fn).length;
     return [
       [count((s) => s.result === "sensor"), t("rSensor")],
       [count((s) => s.result === "crew"), t("rTap")],
@@ -421,10 +426,11 @@
     if (page === "menu") return openMenu();
     if (page === "logout") return logout();
     if (page === "report") {
-      const rows = reportRows();
+      const list = reportStops();
+      const rows = reportRows(list);
       return openSheet(`
         <h2>${t("mReport")}</h2>
-        <p class="sub">${escapeHtml(DATA.tour.name)} · ${stops.filter((s) => s.status !== "todo").length}/${stops.length}</p>
+        <p class="sub">${escapeHtml(DATA.tour.name)} · ${list.filter((s) => s.status !== "todo").length}/${list.length}</p>
         ${rows.length ? `<ul class="done-report">${reportHtml(rows)}</ul>` : `<p class="stop-meta">${t("reportEmpty")}</p>`}
         ${backToMenu()}`);
     }
@@ -862,7 +868,7 @@
     $("toast").hidden = true;
     render();
   });
-  $("restart-btn").addEventListener("click", () => { reset(); render(); });
+  $("restart-btn").addEventListener("click", () => { lastTour = stops.map((s) => ({ ...s })); reset(); render(); });
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") closeSheet();
     if (e.key === "Enter" && e.target.id === "sup-pin") checkSupervisor();
