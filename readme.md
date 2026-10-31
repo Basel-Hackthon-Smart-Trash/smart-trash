@@ -4,6 +4,8 @@
 
 BaselHack 2026 · pilot city: Lucerne (about 960 public bins)
 
+**Try it on your phone:** [crew app demo](https://basel-hackthon-smart-trash.github.io/smart-trash/code/crew-app/?demo)
+
 <p>
   <img src="assets/screenshots/crew-login.png" width="200" alt="Sign in as a team">
   <img src="assets/screenshots/crew-tour.png" width="200" alt="Tour with live sensor status">
