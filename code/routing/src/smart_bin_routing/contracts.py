@@ -38,6 +38,7 @@ class TravelCostMatrix:
     durations_seconds: tuple[tuple[float | None, ...], ...] | None = None
     distance_unit: str | None = None
     duration_unit: str | None = None
+    provenance: tuple[tuple[str, str], ...] = ()
 
     def __post_init__(self) -> None:
         node_ids = tuple(self.node_ids)
@@ -77,6 +78,15 @@ class TravelCostMatrix:
             raise ValueError("distance_unit is required when distances are supplied")
         if self.durations_seconds is not None and not self.duration_unit:
             raise ValueError("duration_unit is required when durations are supplied")
+        provenance = tuple(self.provenance)
+        if any(
+            not isinstance(item, tuple)
+            or len(item) != 2
+            or not all(isinstance(value, str) and value.strip() for value in item)
+            for item in provenance
+        ):
+            raise ValueError("provenance must contain non-empty string key/value pairs")
+        object.__setattr__(self, "provenance", provenance)
 
 
 class TravelCostProvider(Protocol):

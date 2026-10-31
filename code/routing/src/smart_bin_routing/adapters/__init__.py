@@ -12,6 +12,22 @@ from .osmnx_graph import (
     load_graph,
     save_graph,
 )
+from .road_costs import (
+    DirectedPath,
+    GraphCoordinate,
+    LocationMatch,
+    MatchDiagnostic,
+    MatchingConfig,
+    MatchingResult,
+    RoadCostError,
+    RoadCostMetric,
+    RoadCostProvenance,
+    RoadCostResult,
+    RoadLocation,
+    UnusableMatchPolicy,
+    build_road_costs,
+    match_locations,
+)
 
 __all__ = [
     "AcceptedDepotLocation",
@@ -34,6 +50,20 @@ __all__ = [
     "save_depot_location",
     "save_graph",
     "search_depot_candidates",
+    "DirectedPath",
+    "GraphCoordinate",
+    "LocationMatch",
+    "MatchingConfig",
+    "MatchingResult",
+    "MatchDiagnostic",
+    "RoadCostError",
+    "RoadCostProvenance",
+    "RoadCostResult",
+    "RoadCostMetric",
+    "RoadLocation",
+    "UnusableMatchPolicy",
+    "build_road_costs",
+    "match_locations",
 ]
 from .depot_geocoding import (
     AcceptedDepotLocation,
