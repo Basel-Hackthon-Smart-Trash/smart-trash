@@ -36,6 +36,23 @@ A mobile web app for the street-cleaning crew:
 - **Menu**: today's report, problems, legend, privacy, call the depot, sync status, DE / FR / IT / EN.
 - **Team sign-in**: no personal accounts, no GPS tracking, no ranking of workers.
 
+## How a tour works
+
+The phone stays in the pocket. The app only asks the crew when a sensor looks broken, or when the crew taps Stop.
+
+```mermaid
+flowchart LR
+    A["▶ Start collecting"] --> B["Empty the bin<br/>and walk on"]
+    B --> C{"Fill level<br/>dropped?"}
+    C -->|yes| D["✓ Checked off<br/>by the sensor"]
+    C -->|no| E["Phone buzzes:<br/>Defect? Yes / No / Help"]
+    E --> D
+    D --> F{"More stops?"}
+    F -->|yes| B
+    F -->|no| G["Tour report"]
+    B -.->|any time| S["■ Stop: resume, report,<br/>call depot, end early"]
+```
+
 ## Try it
 
 ```bash
