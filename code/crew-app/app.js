@@ -30,6 +30,7 @@
   const asked = new Set();  // suspect bins already asked about by location  // reports stay on the phone while offline
   const session = loadSession();        // { team, lang }: a team, never a person
   let loginTeam = session.team || DATA.teams[0];
+  let live = null, mapFit = false;  // live: bins.json from the prediction pipeline (null = demo tour)
 
   const $ = (id) => document.getElementById(id);
 
@@ -88,8 +89,17 @@
     try { localStorage.setItem(SESSION_KEY, JSON.stringify(session)); } catch (e) { /* ignore */ }
   }
 
+  // Live data: the signed-in truck team gets its own route from bins.json
+  function applyTeamTour(team) {
+    if (!live) return;
+    Object.assign(DATA, window.SMART_TRASH_LIVE.tour(live, team));
+    lastTour = null;
+    mapFit = true;
+  }
+
   function login() {
     session.team = loginTeam;
+    applyTeamTour(loginTeam);
     saveSession();
     reset();
     render();
@@ -209,7 +219,8 @@
     if (!map) return;
     const resized = sizeMap();
     map.invalidateSize();
-    if (resized) map.fitBounds([DATA.tour.depot, ...stops].map((s) => [s.lat, s.lon]), { padding: [36, 36] });
+    if (resized || mapFit) map.fitBounds([DATA.tour.depot, ...stops].map((s) => [s.lat, s.lon]), { padding: [36, 36] });
+    mapFit = false;
     routeLayer.clearLayers();
     const next = nextIndex();
     const line = [DATA.tour.depot, ...stops.filter((s) => s.status !== "skipped")].map((s) => [s.lat, s.lon]);
@@ -254,7 +265,8 @@
 
   function renderLogin() {
     $("team-list").innerHTML = DATA.teams.map((team) =>
-      `<button class="team ${team === loginTeam ? "team--on" : ""}" type="button" data-team="${escapeHtml(team)}">${escapeHtml(team)}</button>`).join("");
+      `<button class="team ${team === loginTeam ? "team--on" : ""}" type="button" data-team="${escapeHtml(team)}">${escapeHtml(team)}${
+        DATA.teamMeta ? `<small>${escapeHtml(DATA.teamMeta[team])}</small>` : ""}</button>`).join("");
     $("login-langs").innerHTML = langButtons();
   }
 
@@ -276,7 +288,7 @@
     $("stop-btn").classList.toggle("stop-btn--go", !started || paused);
     // The info line always stays, so the bar keeps one height from Start to Stop to Resume
     if (next !== -1) {
-      $("bar-info").textContent = !started ? t("barInfo", { n: total, d: formatDistance(route.total), name: stops[next].name })
+      $("bar-info").textContent = !started ? t("barInfo", { n: total, d: DATA.tour.distanceKm ? `${DATA.tour.distanceKm} km` : formatDistance(route.total), name: stops[next].name })
         : paused ? t("pTitle")
         : t("barNext", { name: stops[next].name, d: formatDistance(distanceM(currentPosition(), stops[next])) });
     }
@@ -899,6 +911,18 @@
     if (e.key === "Enter" && e.target.id === "sup-pin") checkSupervisor();
   });
 
-  reset();
-  render();
+  // Start: live routes if bins.json is there (and no ?demo), otherwise the demo tour
+  (async function init() {
+    live = await window.SMART_TRASH_LIVE.load();
+    if (live) {
+      const teams = window.SMART_TRASH_LIVE.teams(live);
+      DATA.teams = teams.map((x) => x.name);
+      DATA.teamMeta = Object.fromEntries(teams.map((x) => [x.name, x.meta]));
+      if (!DATA.teams.includes(session.team)) session.team = null;
+      if (!DATA.teams.includes(loginTeam)) loginTeam = DATA.teams[0];
+      if (session.team) applyTeamTour(session.team);
+    }
+    reset();
+    render();
+  })();
 })();
