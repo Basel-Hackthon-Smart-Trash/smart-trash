@@ -192,6 +192,12 @@ h1 { margin: 2px 0 0; font-size: 26px; line-height: 1.15; }
 .privacy { margin: 14px 0 0; font-size: 14px; color: var(--ink-soft); text-align: center; }
 .sheet .actions { display: grid; gap: 8px; margin-top: 14px; }
 
+.pin {
+  width: 100%; min-height: 64px; padding: 0 16px;
+  border: 2px solid var(--ink); border-radius: var(--radius-btn);
+  font: 800 28px/1 var(--font); letter-spacing: .5em; text-align: center;
+}
+.pin-error { margin: 8px 0 0; color: var(--fill-over); font-weight: 800; text-align: center; }
 .nearby { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
 .nearby button {
   display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: center;

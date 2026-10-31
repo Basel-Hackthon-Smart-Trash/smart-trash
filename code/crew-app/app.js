@@ -505,6 +505,28 @@
     render();
   }
 
+  // Adding a bin changes the route, so a supervisor confirms it with a code first.
+  function openSupervisor() {
+    openSheet(`
+      <h2>${t("supTitle")}</h2>
+      <p class="sub">${t("supSub")}</p>
+      <input class="pin" id="sup-pin" type="password" inputmode="numeric" maxlength="4" autocomplete="off" aria-label="${t("supPin")}">
+      <p class="pin-error" id="sup-error" hidden>${t("supWrong")}</p>
+      <p class="privacy">${t("supHint", { pin: DATA.supervisorPin })}</p>
+      <div class="actions">
+        <button class="btn btn--primary" type="button" data-sup>${t("supOk")}</button>
+        <button class="btn btn--ghost" type="button" data-close>${t("cancel")}</button>
+      </div>`);
+    setTimeout(() => $("sup-pin").focus(), 50);
+  }
+
+  function checkSupervisor() {
+    if ($("sup-pin").value === DATA.supervisorPin) return openAddBin();
+    $("sup-error").hidden = false;
+    $("sup-pin").value = "";
+    $("sup-pin").focus();
+  }
+
   // Add a bin (story #3)
   function openAddBin() {
     const from = currentPosition();
@@ -561,6 +583,7 @@
     else if (d.emptied !== undefined) crewEmptied(Number(d.emptied));
     else if (d.problem) reportProblem(Number(d.stop), d.problem);
     else if (d.add) addBin(d.add);
+    else if (d.sup !== undefined) checkSupervisor();
     else if (d.menu) openMenuPage(d.menu);
     else if (d.lang) setLang(d.lang);
     else if (d.team) { loginTeam = d.team; renderLogin(); }
@@ -570,7 +593,7 @@
   // Back online: waiting reports are sent
   window.addEventListener("online", () => { pending = 0; lastSync = new Date(); if (!$("sheet").hidden && $("sheet").querySelector(".sync")) openMenu(); });
   window.addEventListener("offline", () => { if (!$("sheet").hidden && $("sheet").querySelector(".sync")) openMenu(); });
-  $("add-bin-btn").addEventListener("click", openAddBin);
+  $("add-bin-btn").addEventListener("click", openSupervisor);
   $("menu-btn").addEventListener("click", openMenu);
   $("login-btn").addEventListener("click", login);
   $("toast-undo").addEventListener("click", () => {
@@ -580,7 +603,10 @@
     render();
   });
   $("restart-btn").addEventListener("click", () => { reset(); render(); });
-  document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeSheet(); });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") closeSheet();
+    if (e.key === "Enter" && e.target.id === "sup-pin") checkSupervisor();
+  });
 
   reset();
   render();
