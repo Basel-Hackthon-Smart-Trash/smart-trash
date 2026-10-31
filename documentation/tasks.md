@@ -1,4 +1,4 @@
-# Smart Bins: Empty When Full
+# Smart Trash: Empty When Full
 **Predict · Detect · Optimize**
 
 > Living document. Every assumption is marked **(A)** and must be checked or replaced with real data.

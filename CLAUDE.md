@@ -1,4 +1,4 @@
-# Smart Bins: Empty When Full
+# Smart Trash: Empty When Full
 
 BaselHack project. Fill-level sensors + software that **predicts** when public bins are full, **detects** faulty sensors, and **optimizes** which bins to empty and the route. Pilot city: Lucerne (~960 bins). Tasks and roles: [documentation/tasks.md](documentation/tasks.md).
 
@@ -30,7 +30,7 @@ Team: Rai (UI/UX), Andy (Data Science), Abbas (Development, lead), Achim (Busine
 
 ## Brand and design
 
-- Smart Bins is independent software with **its own brand identity** (Maria is designing it). Until it lands, use neutral placeholder design tokens defined as CSS variables in one place, so the brand can be swapped in.
+- Smart Trash is independent software with **its own brand identity** (Maria is designing it). Until it lands, use neutral placeholder design tokens defined as CSS variables in one place, so the brand can be swapped in.
 - The Swiss Federal Design System was research only: do not use its CSS, components or skins, and never use Swiss Government brand elements (logo, coat of arms, favicon).
 - Maps: Leaflet. Charts: one chart library styled with our tokens.
 - Crew view needs large touch targets.

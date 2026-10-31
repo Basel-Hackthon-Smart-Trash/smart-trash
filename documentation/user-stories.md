@@ -122,7 +122,7 @@ Persona: City administrator · Priority: Must have · `US08`
 
 ## US09 · Litter hotspots from Basel open data
 
-**As a city administrator, I can see where litter complaints and dirty streets cluster, so that I know where smart bins help most.**
+**As a city administrator, I can see where litter complaints and dirty streets cluster, so that I know where Smart Trash helps most.**
 
 Persona: City administrator · Priority: Should have · `US09`
 
