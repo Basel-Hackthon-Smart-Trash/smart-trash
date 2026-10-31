@@ -1,11 +1,10 @@
-// UI texts: the four Swiss national languages + English. {name} placeholders are filled by app.js.
-// FR, IT and RM need a check by a native speaker before the pitch.
+// UI texts: German, French, Italian and English. {name} placeholders are filled by app.js.
+// FR and IT need a check by a native speaker before the pitch.
 window.SMART_TRASH_I18N = {
   languages: [
     { id: "de", label: "DE", locale: "de-CH" },
     { id: "fr", label: "FR", locale: "fr-CH" },
     { id: "it", label: "IT", locale: "it-CH" },
-    { id: "rm", label: "RM", locale: "rm-CH" },
     { id: "en", label: "EN", locale: "en-GB" },
   ],
 
@@ -135,38 +134,5 @@ window.SMART_TRASH_I18N = {
     lgSimulated: "Dati demo, non sensori reali", lgFixed: "Nessun sensore valido: torna all'orario fisso",
     full: "pieno ~{t}", Saturday: "sabato", "shopping Saturday": "sabato di shopping",
     "sensor fault": "sensore guasto", "fixed schedule": "orario fisso", "added by crew": "aggiunto dalla squadra",
-  },
-
-  // Rumantsch Grischun: draft, needs a native speaker's check.
-  rm: {
-    loginTitle: "S'annunziar", loginTeam: "Tia gruppa", loginBtn: "S'annunziar",
-    loginNote: "Ti t'annunzias sco gruppa, mai sco persuna.", language: "Lingua",
-    menu: "Menu", today: "Oz", stopsN: "{n} fermadas",
-    startHint: "{s} cun sensor: vegnan marcadas automaticamain. {f} plan fix: in tip.",
-    start: "▶ Cumenzar a rimnar", nextStop: "Proxima fermada", live: "● sensors activs",
-    hintSensor: "Mo svidar. Il sensor marca.", hintFixed: "Nagin sensor: tippar suenter svidar.",
-    emptied: "✓ Svidà", navigate: "Navigaziun", problemQ: "Problem?", todaysStops: "Fermadas dad oz",
-    addBin: "＋ Agiuntar in chanister", stops: "fermadas", left: "anc {d}",
-    fixedSchedule: "plan fix", addedByCrew: "agiuntà da la gruppa",
-    stateFault: "⚠ Sensor defect", stateSensor: "✓ Sensor", stateEmptied: "✓ Svidà", stateNext: "Proxima",
-    notReachable: "Betg cuntanschibel", unsafe: "Malsegir", binDamaged: "Chanister donnegià",
-    noValid: "Naginas datas valaivlas · plan fix", predicted: "Prognosa {p}%",
-    skipQ: "Problem? Sursiglir cun in tip:", privacy: "Annunzias pertutgan il chanister, betg tai.",
-    back: "Enavos", addSub: "In chanister plain? El daventa tia proxima fermada.",
-    add: "＋ Agiuntar", noNearby: "Nagins chanisters en la vischinanza.", cancel: "Interrumper", sensorPct: "sensor {p}%",
-    tSensor: "{name} ✓ registrà dal sensor", tFault: "{name} ⚠ nagina sbassada · sensor annunzià",
-    tTap: "{name} ✓ svidà · tippà (nagin sensor)", tSkipped: "{name} sursiglì · {reason}",
-    tEmptied: "{name} ✓ svidà", tAdded: "{name} agiuntà sco proxima fermada", undo: "Revocar",
-    rSensor: "svidads · registrads dal sensor", rTap: "svidads · tippads (plan fix)",
-    rFault: "sensor defect · annunzià al mantegniment", rSkipped: "sursiglids · {reason}", rAdded: "agiuntads da la gruppa",
-    wellDone: "Bun lavur, {crew}!", allDone: "Tut ils {n} chanisters svidads u annunziads.",
-    restart: "Reaviar la demo", reportEmpty: "Anc nagut. Cumenzar a rimnar.",
-    mReport: "Rapport dad oz", mProblems: "Problems dad oz", mLegend: "Legenda", mLogout: "S'annunziar giu",
-    noProblems: "Nagins problems annunziads.",
-    lgDone: "Svidà", lgNext: "Proxima fermada", lgFault: "Sensor defect · mantegniment",
-    lgSkipped: "Sursiglì · problem annunzià", lgTodo: "Anc da far",
-    lgSimulated: "Datas da demo, betg sensors reals", lgFixed: "Nagin sensor valaivel: enavos al plan fix",
-    full: "plain ~{t}", Saturday: "sonda", "shopping Saturday": "sonda da cumpras",
-    "sensor fault": "sensor defect", "fixed schedule": "plan fix", "added by crew": "agiuntà da la gruppa",
   },
 };

@@ -230,8 +230,8 @@ h1 { margin: 2px 0 0; font-size: 26px; line-height: 1.15; }
 .team--on::after { content: "✓"; float: right; color: var(--accent); }
 .login .btn--start { margin-top: 16px; }
 
-/* Language switch: five equal buttons */
-.lang-list { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+/* Language switch: one equal button per language */
+.lang-list { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
 .lang {
   min-height: 52px; border: 2px solid var(--line); border-radius: var(--radius-btn);
   background: var(--surface); color: var(--ink); font-size: 17px; font-weight: 800;

@@ -49,7 +49,7 @@
   }
 
   const problemLabel = (id) => t(PROBLEMS.find((p) => p.id === id).key);
-  const locale = () => (I18N.languages.find((l) => l.id === session.lang) || I18N.languages[4]).locale;
+  const locale = () => (I18N.languages.find((l) => l.id === session.lang) || I18N.languages.find((l) => l.id === "en")).locale;
 
   function langButtons() {
     return I18N.languages.map((l) =>
