@@ -184,6 +184,11 @@ def _validate_graph_edges(graph: Any) -> None:
 def _parse_tagged_speed(value: object) -> float:
     if isinstance(value, bool):
         raise GraphError("tagged edge speed must be a positive number")
+    if isinstance(value, (list, tuple)):
+        if not value:
+            raise GraphError("tagged edge speed list must not be empty")
+        # Multiple lane or directional values are handled conservatively.
+        return min(_parse_tagged_speed(item) for item in value)
     if isinstance(value, (int, float)):
         speed = float(value)
     elif isinstance(value, str):

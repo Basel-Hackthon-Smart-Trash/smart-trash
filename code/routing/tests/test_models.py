@@ -36,3 +36,8 @@ def test_location_has_explicit_coordinate_fields():
 def test_planning_config_rejects_reversed_thresholds():
     with pytest.raises(ValueError, match="thresholds"):
         PlanningConfig("start", "end", 10, "kg", 0.8, 0.5, 3600)
+
+
+def test_planning_config_requires_one_round_trip_depot():
+    with pytest.raises(ValueError, match="same depot"):
+        PlanningConfig("start", "different-end", 10, "kg", 0.5, 0.8, 3600)

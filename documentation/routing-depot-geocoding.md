@@ -14,9 +14,12 @@ uses structured address parameters, `countrycodes=ch`, address details, a
 descriptive User-Agent, and one-request-per-second pacing. It never performs a
 request during import, planning, or record loading.
 
-No live lookup has been executed and no coordinates have been accepted in this
-repository. The address is not evidence of a vehicle entrance or unloading
-permission; persisted records always retain `vehicle_access_confirmed: false`.
+The local demo lookup returned one exact candidate and accepted it locally as
+OSM node `node/3450290285` at latitude `47.5347039`, longitude `7.6062573`.
+The accepted record is stored in the ignored local cache path
+`.cache/stadtreinigung-basel.json`; it is not committed as an operational
+depot record. The address is not evidence of a vehicle entrance or unloading
+permission; the record retains `vehicle_access_confirmed: false`.
 
 ## Commands
 

@@ -119,6 +119,19 @@ def test_tagged_speed_wins_over_fallback():
     assert graph.edges[1, 2, 0]["speed_kph"] == 30.0
 
 
+def test_multi_value_tagged_speed_uses_conservative_lowest_value():
+    graph = nx.MultiDiGraph()
+    graph.graph["crs"] = "EPSG:4326"
+    graph.add_node(1, x=7.58, y=47.55)
+    graph.add_node(2, x=7.59, y=47.56)
+    graph.add_edge(1, 2, length=100.0, maxspeed=["80", "100"])
+    settings = GraphSettings(speed_fallback_kph=40.0, speed_fallback_scope="base_area_only")
+
+    add_edge_travel_times(graph, settings, fallback_area=area())
+
+    assert graph.edges[1, 2, 0]["speed_kph"] == 80.0
+
+
 def test_import_and_default_graph_functions_do_not_acquire():
     import osmnx as ox
 

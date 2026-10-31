@@ -133,10 +133,11 @@ class DemandPolicy(StrEnum):
 
 @dataclass(frozen=True, slots=True)
 class PlanningConfig:
-    """Configuration required to validate a future single-truck plan.
+    """Configuration required to validate a future single-truck round trip.
 
-    Thresholds are represented here but deliberately not applied. Boundary
-    behavior belongs to the classification stage.
+    The configured depot is both the route start and end. Thresholds are
+    represented here but their classification boundary behavior belongs to the
+    classification stage.
     """
 
     start_node_id: str
@@ -163,6 +164,8 @@ class PlanningConfig:
         red = _require_finite_number(self.red_threshold, "red_threshold")
         if not 0 <= yellow < red <= 1:
             raise ValueError("thresholds must satisfy 0 <= yellow < red <= 1")
+        if self.start_node_id != self.end_node_id:
+            raise ValueError("start_node_id and end_node_id must identify the same depot")
         for value, name in (
             (self.route_duration_limit_seconds, "route_duration_limit_seconds"),
             (self.observation_max_age_seconds, "observation_max_age_seconds"),
