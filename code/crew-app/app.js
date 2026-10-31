@@ -899,6 +899,10 @@
   window.addEventListener("offline", () => { if (!$("sheet").hidden && $("sheet").querySelector(".sync")) openMenu(); });
   $("add-bin-btn").addEventListener("click", openSupervisor);
   $("menu-btn").addEventListener("click", openMenu);
+  // Logo = back to the start page (demo / live / dashboard); during a tour, ask first
+  $("brand-link").addEventListener("click", (e) => {
+    if (started && nextIndex() !== -1 && !window.confirm(t("leaveTour"))) e.preventDefault();
+  });
   window.addEventListener("resize", () => { if (map && sizeMap()) map.invalidateSize(); });
   // Phone back in the pocket: stop reading the location
   document.addEventListener("visibilitychange", () => (document.hidden ? stopGeo() : startGeo()));
