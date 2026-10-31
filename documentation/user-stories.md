@@ -34,7 +34,7 @@ We keep the project lean: all user stories are for the crew member. Each one is 
 - A normal stop needs no tap: the fill drop marks it as emptied
 - Bins without valid sensor data (fixed schedule) need one tap: "Emptied"
 - Problems only, one tap: not reachable / unsafe / bin damaged
-- Large buttons usable with gloves; undo right after tapping
+- Large buttons usable with gloves; any answer can be corrected later in today's report
 - A sensor that shows no drop after a visit triggers an alert: the phone buzzes and asks "Defect?" with Yes / No / Help (call the depot). "Yes" opens a short list of common defects (sensor broken, bin damaged, other) with an optional note; without an answer it confirms itself after a few seconds, like a navigation alert. The answer is ground truth for fault detection
 - Reports are stored per bin, not per worker: no time tracking, no ranking of workers
 
@@ -55,7 +55,7 @@ We keep the project lean: all user stories are for the crew member. Each one is 
 - After start: no taps needed; fill-drop events check off the stops
 - "Stop" pauses the tour at any time: Resume (big), Report a problem (same defect list), Call depot, or End tour now (small link); remaining stops show as "not done" in the report
 - Opening the app within about 40 m of a suspect bin brings up the same Defect alert; the location is used only while the app is open, stays on the phone, and is never sent or stored
-- Every answer can be undone: an Undo after each defect report and after ending the tour early
+- Every answer can be corrected in today's report: each bin is listed with its place and a pencil, also after Done
 - End of tour: "Well done" and a report: emptied by sensor, emptied by tap, sensor faults, skipped with reason, added
 - The report is about bins and the tour, never about the worker: no times, no speed, no ranking
 

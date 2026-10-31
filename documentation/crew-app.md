@@ -28,8 +28,8 @@ The map tiles and Leaflet load from the internet. Everything else works offline.
 | 3 | Claraplatz | No fill drop after the visit | Alert "Defect?" Yes / No / Help; Yes opens common defects + optional note; confirms itself after 6 s |
 | 4 | Barfüsserplatz | Crew reports a problem | skipped · Bin damaged |
 
-4. Optional: tap **■ Stop** in the status bar to pause. The pause sheet offers Resume, Report a problem, Call depot and End tour now. Every answer has an Undo.
-5. At the end, the **Well done** screen shows the tour report.
+4. Optional: tap **■ Stop** in the bottom bar to pause. The pause sheet offers Resume, Report a problem, Call depot and End tour now.
+5. At the end, the **Well done** screen shows the tour report. **Edit report** lists every bin; tap one (pencil) to correct its status. The report stays in ☰ → Today's report after Done.
 6. Open **☰** to show the report, the problems, the legend, the privacy page, the language switch and the sync status.
 
 The supervisor code for **＋ Add a bin** is `1234`. It is a demo value, the app shows it as a hint, and it is not a secret.

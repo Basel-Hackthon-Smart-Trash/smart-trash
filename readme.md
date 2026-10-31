@@ -61,7 +61,7 @@ flowchart LR
 | The app asks only on a suspected fault | Turns a guess into ground truth that trains the fault detector, and answers "how do you know the sensor is broken?" |
 | One defect list everywhere | The same three choices in the alert and after Stop: learned once |
 | Yes / No / Help, auto-confirm after 6 s | Like a navigation alert: never blocks the crew when nobody answers |
-| Undo after every report | Mistakes with gloves happen; nothing is final after one tap |
+| Correct in the report, not in pop-ups | Mistakes with gloves happen; every bin can be corrected in today's report (pencil), also after Done, without pop-ups covering the screen |
 | Team sign-in, reports per bin | No tracking, no times per person, no ranking: the crew must not feel monitored |
 | Location only when the app is open | Opening the app next to a suspect bin brings up the Defect alert; the position stays on the phone, is never sent or stored, and needs no new hardware |
 | Bins without valid data show "fixed schedule" | The fallback is visible, never hidden |
@@ -81,7 +81,7 @@ Details: [documentation/crew-app.md](documentation/crew-app.md)
 
 | | |
 |---|---|
-| **Built** | Crew app: tour, live sensor events, defect alert, Stop / pause, undo, report, menu, team sign-in, DE / FR / IT / EN |
+| **Built** | Crew app: tour, live sensor events, defect alert, Stop / pause, editable report, menu, team sign-in, DE / FR / IT / EN |
 | **Next** | Connect the backend ([architecture PoC](documentation/Proof_of_Concept_for_the_system_architecture.md)); city administration view; maintenance view |
 | **Later** | Real sensors on real bins; forecast model on real data; route optimisation with several vehicles |
 
