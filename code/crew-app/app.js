@@ -68,7 +68,7 @@
   function loadSession() {
     try {
       const s = JSON.parse(localStorage.getItem(SESSION_KEY) || "{}");
-      return { team: s.team || null, lang: s.lang || "en" };
+      return { team: s.team || null, lang: "en" }; // every launch starts in English
     } catch (e) { return { team: null, lang: "en" }; }
   }
 
