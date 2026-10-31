@@ -28,9 +28,9 @@ Team: Rai (UI/UX), Andy (Data Science), Abbas (Development, lead), Achim (Busine
 - Three views: crew (mobile), city administration (desktop), maintenance (desktop). DE + EN.
 - Real open data for Basel lives in `assets/geojson/` (`100070`: litter reports, `100288`: street cleanliness index). It is not bin fill-level data; fill levels stay `SIMULATED`.
 
-## Design system
+## Brand and design
 
-- Use the [Swiss Federal Design System](https://github.com/swiss/designsystem) (MIT, [Storybook](https://swiss.github.io/designsystem/)) with the green `body--freebrand` skin and Noto Sans. Keep its MIT copyright notice.
-- **Never use Swiss Government brand elements** (federal logo, coat of arms, "Schweizerische Eidgenossenschaft" header, favicon). They are excluded from the license, and the app must not look like an official government app. The brand is "Smart Bins".
-- It has no map or chart components: use Leaflet and a chart library styled with its color tokens.
-- Crew view needs larger touch targets than the defaults.
+- Smart Bins is independent software with **its own brand identity** (Maria is designing it). Until it lands, use neutral placeholder design tokens defined as CSS variables in one place, so the brand can be swapped in.
+- The Swiss Federal Design System was research only: do not use its CSS, components or skins, and never use Swiss Government brand elements (logo, coat of arms, favicon).
+- Maps: Leaflet. Charts: one chart library styled with our tokens.
+- Crew view needs large touch targets.
