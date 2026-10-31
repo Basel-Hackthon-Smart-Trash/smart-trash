@@ -1,6 +1,6 @@
 # Smart Trash: Empty When Full
 
-BaselHack project. Fill-level sensors + software that **predicts** when public bins are full, **detects** faulty sensors, and **optimizes** which bins to empty and the route. Pilot city: Lucerne (~960 bins). Tasks and roles: [documentation/tasks.md](documentation/tasks.md).
+BaselHack project. Fill-level sensors + software that **predicts** when public bins are full, **detects** faulty sensors, and **optimizes** which bins to empty and the route. Pilot city: Basel (demo data: Basel open data + OpenStreetMap bins). Depot: Stadtreinigung Werkhof, Brüssel-Strasse 22. Tasks and roles: [documentation/tasks.md](documentation/tasks.md).
 
 Team: Rai (UI/UX), Andy (Data Science), Abbas (Development, lead), Dennis (Backend, connects everything), Maria (Brand identity). Talk to each person in the language they write in; code, docs and commits are in English.
 

@@ -1,0 +1,66 @@
+/* ---- Design tokens: replace these with the UI/UX team's colours and fonts ---- */
+:root {
+  --font: system-ui, -apple-system, "Segoe UI", sans-serif;
+  --bg: #ffffff;
+  --text: #1d2a24;
+  --muted: #5f6f67;
+  --border: #d9e0dc;
+
+  --red: #d64541;
+  --orange: #f0a030;
+  --green: #3a9d5d;
+  --fault: #7a5cc4;
+  --depot: #1d2a24;
+}
+
+* { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; }
+
+body {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  font-family: var(--font);
+  color: var(--text);
+  background: var(--bg);
+}
+
+.sidebar {
+  padding: 20px;
+  border-right: 1px solid var(--border);
+  overflow-y: auto;
+}
+.sidebar h1 { font-size: 1.5rem; margin: 0 0 4px; }
+.sidebar h2 { font-size: 1rem; margin: 24px 0 8px; }
+
+.data-badge { color: var(--muted); font-size: 0.875rem; margin: 0; }
+.data-badge.error { color: var(--red); }
+
+.summary, .legend { list-style: none; padding: 0; margin: 0; }
+.summary li { display: flex; justify-content: space-between; padding: 4px 0; }
+.summary strong { font-variant-numeric: tabular-nums; }
+.legend li { display: flex; align-items: center; gap: 8px; padding: 3px 0; font-size: 0.9rem; }
+
+.dot { width: 14px; height: 14px; border-radius: 50%; display: inline-block; flex: none; }
+.dot.red { background: var(--red); }
+.dot.orange { background: var(--orange); }
+.dot.green { background: var(--green); }
+.dot.fault { background: var(--fault); }
+.dot.depot { background: var(--depot); border-radius: 3px; }
+
+#zone-filter label { display: flex; align-items: center; gap: 8px; padding: 3px 0; cursor: pointer; }
+.zone-swatch { width: 24px; height: 4px; border-radius: 2px; }
+
+.layer-toggle { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+
+#map { height: 100%; }
+
+.popup h3 { margin: 0 0 6px; font-size: 1rem; }
+.popup p { margin: 2px 0; }
+.popup .reason { margin-top: 6px; color: var(--muted); }
+
+/* Mobile: map on top, sidebar below */
+@media (max-width: 760px) {
+  body { grid-template-columns: 1fr; grid-template-rows: 60vh auto; }
+  #map { grid-row: 1; }
+  .sidebar { grid-row: 2; border-right: none; border-top: 1px solid var(--border); }
+}

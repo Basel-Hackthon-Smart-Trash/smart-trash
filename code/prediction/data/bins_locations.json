@@ -1,0 +1,3100 @@
+{
+ "source": "OpenStreetMap amenity=waste_basket (ODbL), filtered to public outdoor bins",
+ "depot": {
+  "lat": 47.536,
+  "lon": 7.606,
+  "name": "Werkhof Stadtreinigung, Brüssel-Strasse 22 (approx. position)"
+ },
+ "bins": [
+  {
+   "id": "BS-0001",
+   "osm_id": "node/3832774767",
+   "lat": 47.545716,
+   "lon": 7.557373,
+   "zone": 1,
+   "busyness": 0.5,
+   "hotspot_reports_250m": 25,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0002",
+   "osm_id": "node/8479049184",
+   "lat": 47.548369,
+   "lon": 7.558973,
+   "zone": 1,
+   "busyness": 0.46,
+   "hotspot_reports_250m": 17,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0003",
+   "osm_id": "node/12361453001",
+   "lat": 47.562248,
+   "lon": 7.559009,
+   "zone": 1,
+   "busyness": 0.61,
+   "hotspot_reports_250m": 77,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0004",
+   "osm_id": "node/12361445601",
+   "lat": 47.562806,
+   "lon": 7.559845,
+   "zone": 1,
+   "busyness": 0.66,
+   "hotspot_reports_250m": 122,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0005",
+   "osm_id": "node/5658684574",
+   "lat": 47.548538,
+   "lon": 7.560035,
+   "zone": 1,
+   "busyness": 0.56,
+   "hotspot_reports_250m": 46,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0006",
+   "osm_id": "node/9643693061",
+   "lat": 47.568479,
+   "lon": 7.561243,
+   "zone": 1,
+   "busyness": 0.76,
+   "hotspot_reports_250m": 296,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0007",
+   "osm_id": "node/5658684571",
+   "lat": 47.554351,
+   "lon": 7.562746,
+   "zone": 1,
+   "busyness": 0.57,
+   "hotspot_reports_250m": 50,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0008",
+   "osm_id": "node/5658684563",
+   "lat": 47.556339,
+   "lon": 7.56416,
+   "zone": 1,
+   "busyness": 0.73,
+   "hotspot_reports_250m": 239,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0009",
+   "osm_id": "node/3820481739",
+   "lat": 47.561136,
+   "lon": 7.564216,
+   "zone": 1,
+   "busyness": 0.74,
+   "hotspot_reports_250m": 248,
+   "waste": "cigarettes;dog_excrement;trash"
+  },
+  {
+   "id": "BS-0010",
+   "osm_id": "node/3820481737",
+   "lat": 47.561109,
+   "lon": 7.564534,
+   "zone": 1,
+   "busyness": 0.74,
+   "hotspot_reports_250m": 248,
+   "waste": "cigarettes;trash"
+  },
+  {
+   "id": "BS-0011",
+   "osm_id": "node/3816695428",
+   "lat": 47.552225,
+   "lon": 7.565294,
+   "zone": 1,
+   "busyness": 0.66,
+   "hotspot_reports_250m": 115,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0012",
+   "osm_id": "node/14131338199",
+   "lat": 47.566101,
+   "lon": 7.565504,
+   "zone": 1,
+   "busyness": 0.65,
+   "hotspot_reports_250m": 106,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0013",
+   "osm_id": "node/14131355403",
+   "lat": 47.565654,
+   "lon": 7.566066,
+   "zone": 1,
+   "busyness": 0.63,
+   "hotspot_reports_250m": 86,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0014",
+   "osm_id": "node/3830395985",
+   "lat": 47.552685,
+   "lon": 7.568113,
+   "zone": 1,
+   "busyness": 0.71,
+   "hotspot_reports_250m": 199,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0015",
+   "osm_id": "node/13665605184",
+   "lat": 47.564442,
+   "lon": 7.56901,
+   "zone": 1,
+   "busyness": 0.58,
+   "hotspot_reports_250m": 57,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0016",
+   "osm_id": "node/12474238164",
+   "lat": 47.565824,
+   "lon": 7.569025,
+   "zone": 1,
+   "busyness": 0.59,
+   "hotspot_reports_250m": 62,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0017",
+   "osm_id": "node/12474238168",
+   "lat": 47.565358,
+   "lon": 7.569341,
+   "zone": 1,
+   "busyness": 0.56,
+   "hotspot_reports_250m": 47,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0018",
+   "osm_id": "node/12474238179",
+   "lat": 47.564454,
+   "lon": 7.56938,
+   "zone": 1,
+   "busyness": 0.56,
+   "hotspot_reports_250m": 47,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0019",
+   "osm_id": "node/3813669953",
+   "lat": 47.548855,
+   "lon": 7.569433,
+   "zone": 1,
+   "busyness": 0.15,
+   "hotspot_reports_250m": 0,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0020",
+   "osm_id": "node/12474238154",
+   "lat": 47.56631,
+   "lon": 7.569695,
+   "zone": 1,
+   "busyness": 0.62,
+   "hotspot_reports_250m": 82,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0021",
+   "osm_id": "node/12474238170",
+   "lat": 47.565118,
+   "lon": 7.569804,
+   "zone": 1,
+   "busyness": 0.6,
+   "hotspot_reports_250m": 67,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0022",
+   "osm_id": "node/12474238162",
+   "lat": 47.565981,
+   "lon": 7.57023,
+   "zone": 1,
+   "busyness": 0.65,
+   "hotspot_reports_250m": 110,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0023",
+   "osm_id": "node/12474238183",
+   "lat": 47.564758,
+   "lon": 7.570614,
+   "zone": 1,
+   "busyness": 0.67,
+   "hotspot_reports_250m": 133,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0024",
+   "osm_id": "node/7596191751",
+   "lat": 47.557334,
+   "lon": 7.570633,
+   "zone": 1,
+   "busyness": 0.79,
+   "hotspot_reports_250m": 391,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0025",
+   "osm_id": "node/12474238148",
+   "lat": 47.566931,
+   "lon": 7.570653,
+   "zone": 1,
+   "busyness": 0.65,
+   "hotspot_reports_250m": 104,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0026",
+   "osm_id": "node/10184187434",
+   "lat": 47.552899,
+   "lon": 7.571334,
+   "zone": 1,
+   "busyness": 0.71,
+   "hotspot_reports_250m": 188,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0027",
+   "osm_id": "node/12474238187",
+   "lat": 47.565214,
+   "lon": 7.571424,
+   "zone": 1,
+   "busyness": 0.7,
+   "hotspot_reports_250m": 172,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0028",
+   "osm_id": "node/12474238142",
+   "lat": 47.566427,
+   "lon": 7.572025,
+   "zone": 1,
+   "busyness": 0.78,
+   "hotspot_reports_250m": 373,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0029",
+   "osm_id": "node/12474247904",
+   "lat": 47.565435,
+   "lon": 7.572492,
+   "zone": 1,
+   "busyness": 0.75,
+   "hotspot_reports_250m": 268,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0030",
+   "osm_id": "node/12474247907",
+   "lat": 47.565068,
+   "lon": 7.572572,
+   "zone": 1,
+   "busyness": 0.75,
+   "hotspot_reports_250m": 286,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0031",
+   "osm_id": "node/7598139858",
+   "lat": 47.557573,
+   "lon": 7.572965,
+   "zone": 1,
+   "busyness": 0.79,
+   "hotspot_reports_250m": 420,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0032",
+   "osm_id": "node/6767475379",
+   "lat": 47.551188,
+   "lon": 7.57444,
+   "zone": 1,
+   "busyness": 0.45,
+   "hotspot_reports_250m": 15,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0033",
+   "osm_id": "node/7836998393",
+   "lat": 47.560795,
+   "lon": 7.575681,
+   "zone": 1,
+   "busyness": 0.78,
+   "hotspot_reports_250m": 353,
+   "waste": "litter"
+  },
+  {
+   "id": "BS-0034",
+   "osm_id": "node/6802268728",
+   "lat": 47.563093,
+   "lon": 7.576224,
+   "zone": 1,
+   "busyness": 0.77,
+   "hotspot_reports_250m": 327,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0035",
+   "osm_id": "node/7840775785",
+   "lat": 47.56291,
+   "lon": 7.57646,
+   "zone": 1,
+   "busyness": 0.76,
+   "hotspot_reports_250m": 293,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0036",
+   "osm_id": "node/7840757187",
+   "lat": 47.562013,
+   "lon": 7.577556,
+   "zone": 1,
+   "busyness": 0.74,
+   "hotspot_reports_250m": 245,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0037",
+   "osm_id": "node/3801889391",
+   "lat": 47.546273,
+   "lon": 7.577286,
+   "zone": 2,
+   "busyness": 0.63,
+   "hotspot_reports_250m": 89,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0038",
+   "osm_id": "node/11483061499",
+   "lat": 47.546792,
+   "lon": 7.577366,
+   "zone": 2,
+   "busyness": 0.54,
+   "hotspot_reports_250m": 37,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0039",
+   "osm_id": "node/11483061498",
+   "lat": 47.546884,
+   "lon": 7.577456,
+   "zone": 2,
+   "busyness": 0.54,
+   "hotspot_reports_250m": 37,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0040",
+   "osm_id": "node/11377924536",
+   "lat": 47.544528,
+   "lon": 7.577489,
+   "zone": 2,
+   "busyness": 0.66,
+   "hotspot_reports_250m": 119,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0041",
+   "osm_id": "node/11483061493",
+   "lat": 47.546889,
+   "lon": 7.577573,
+   "zone": 2,
+   "busyness": 0.54,
+   "hotspot_reports_250m": 37,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0042",
+   "osm_id": "node/11377924519",
+   "lat": 47.544811,
+   "lon": 7.577658,
+   "zone": 2,
+   "busyness": 0.66,
+   "hotspot_reports_250m": 119,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0043",
+   "osm_id": "node/3801889388",
+   "lat": 47.546016,
+   "lon": 7.577678,
+   "zone": 2,
+   "busyness": 0.61,
+   "hotspot_reports_250m": 73,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0044",
+   "osm_id": "node/3801889386",
+   "lat": 47.545595,
+   "lon": 7.57769,
+   "zone": 2,
+   "busyness": 0.6,
+   "hotspot_reports_250m": 68,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0045",
+   "osm_id": "node/11483061500",
+   "lat": 47.547208,
+   "lon": 7.577723,
+   "zone": 2,
+   "busyness": 0.54,
+   "hotspot_reports_250m": 37,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0046",
+   "osm_id": "node/3801889390",
+   "lat": 47.546081,
+   "lon": 7.577764,
+   "zone": 2,
+   "busyness": 0.65,
+   "hotspot_reports_250m": 105,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0047",
+   "osm_id": "node/3801889385",
+   "lat": 47.545442,
+   "lon": 7.577775,
+   "zone": 2,
+   "busyness": 0.6,
+   "hotspot_reports_250m": 68,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0048",
+   "osm_id": "node/3801889387",
+   "lat": 47.545764,
+   "lon": 7.577875,
+   "zone": 2,
+   "busyness": 0.6,
+   "hotspot_reports_250m": 68,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0049",
+   "osm_id": "node/11377924527",
+   "lat": 47.544903,
+   "lon": 7.577884,
+   "zone": 2,
+   "busyness": 0.45,
+   "hotspot_reports_250m": 16,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0050",
+   "osm_id": "node/3801889394",
+   "lat": 47.546316,
+   "lon": 7.578067,
+   "zone": 2,
+   "busyness": 0.52,
+   "hotspot_reports_250m": 32,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0051",
+   "osm_id": "node/2417159134",
+   "lat": 47.547509,
+   "lon": 7.578201,
+   "zone": 2,
+   "busyness": 0.59,
+   "hotspot_reports_250m": 63,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0052",
+   "osm_id": "node/11377924524",
+   "lat": 47.546825,
+   "lon": 7.578443,
+   "zone": 2,
+   "busyness": 0.52,
+   "hotspot_reports_250m": 32,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0053",
+   "osm_id": "node/3801889396",
+   "lat": 47.54707,
+   "lon": 7.579109,
+   "zone": 2,
+   "busyness": 0.52,
+   "hotspot_reports_250m": 32,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0054",
+   "osm_id": "node/11377924537",
+   "lat": 47.547214,
+   "lon": 7.579528,
+   "zone": 2,
+   "busyness": 0.52,
+   "hotspot_reports_250m": 32,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0055",
+   "osm_id": "node/11483061506",
+   "lat": 47.548224,
+   "lon": 7.579584,
+   "zone": 2,
+   "busyness": 0.63,
+   "hotspot_reports_250m": 90,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0056",
+   "osm_id": "node/11377924542",
+   "lat": 47.548717,
+   "lon": 7.58112,
+   "zone": 2,
+   "busyness": 0.66,
+   "hotspot_reports_250m": 116,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0057",
+   "osm_id": "node/11377924516",
+   "lat": 47.548776,
+   "lon": 7.581257,
+   "zone": 2,
+   "busyness": 0.66,
+   "hotspot_reports_250m": 116,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0058",
+   "osm_id": "node/11377924523",
+   "lat": 47.548879,
+   "lon": 7.581466,
+   "zone": 2,
+   "busyness": 0.66,
+   "hotspot_reports_250m": 116,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0059",
+   "osm_id": "node/11377924533",
+   "lat": 47.549153,
+   "lon": 7.581698,
+   "zone": 2,
+   "busyness": 0.68,
+   "hotspot_reports_250m": 141,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0060",
+   "osm_id": "node/6411847538",
+   "lat": 47.550346,
+   "lon": 7.582578,
+   "zone": 2,
+   "busyness": 0.68,
+   "hotspot_reports_250m": 150,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0061",
+   "osm_id": "node/6411847536",
+   "lat": 47.550315,
+   "lon": 7.58269,
+   "zone": 2,
+   "busyness": 0.68,
+   "hotspot_reports_250m": 150,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0062",
+   "osm_id": "node/14099395064",
+   "lat": 47.539318,
+   "lon": 7.585918,
+   "zone": 2,
+   "busyness": 0.15,
+   "hotspot_reports_250m": 0,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0063",
+   "osm_id": "node/12061286556",
+   "lat": 47.52931,
+   "lon": 7.585972,
+   "zone": 2,
+   "busyness": 0.15,
+   "hotspot_reports_250m": 0,
+   "waste": "trash;dog_excrement;cigarettes"
+  },
+  {
+   "id": "BS-0064",
+   "osm_id": "node/10735220727",
+   "lat": 47.546114,
+   "lon": 7.587668,
+   "zone": 2,
+   "busyness": 0.69,
+   "hotspot_reports_250m": 154,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0065",
+   "osm_id": "node/10735220726",
+   "lat": 47.546075,
+   "lon": 7.587848,
+   "zone": 2,
+   "busyness": 0.69,
+   "hotspot_reports_250m": 154,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0066",
+   "osm_id": "node/14099420432",
+   "lat": 47.543554,
+   "lon": 7.587928,
+   "zone": 2,
+   "busyness": 0.81,
+   "hotspot_reports_250m": 498,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0067",
+   "osm_id": "node/14099420431",
+   "lat": 47.543717,
+   "lon": 7.588067,
+   "zone": 2,
+   "busyness": 0.82,
+   "hotspot_reports_250m": 540,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0068",
+   "osm_id": "node/14099375124",
+   "lat": 47.541702,
+   "lon": 7.588391,
+   "zone": 2,
+   "busyness": 0.8,
+   "hotspot_reports_250m": 459,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0069",
+   "osm_id": "node/14099638020",
+   "lat": 47.545676,
+   "lon": 7.588458,
+   "zone": 2,
+   "busyness": 0.67,
+   "hotspot_reports_250m": 125,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0070",
+   "osm_id": "node/14099433897",
+   "lat": 47.546098,
+   "lon": 7.588682,
+   "zone": 2,
+   "busyness": 0.61,
+   "hotspot_reports_250m": 75,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0071",
+   "osm_id": "node/14099373439",
+   "lat": 47.543503,
+   "lon": 7.588789,
+   "zone": 2,
+   "busyness": 0.83,
+   "hotspot_reports_250m": 580,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0072",
+   "osm_id": "node/9595170264",
+   "lat": 47.548115,
+   "lon": 7.589313,
+   "zone": 2,
+   "busyness": 0.63,
+   "hotspot_reports_250m": 87,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0073",
+   "osm_id": "node/6497829934",
+   "lat": 47.522315,
+   "lon": 7.589452,
+   "zone": 2,
+   "busyness": 0.15,
+   "hotspot_reports_250m": 0,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0074",
+   "osm_id": "node/12061286557",
+   "lat": 47.522179,
+   "lon": 7.589564,
+   "zone": 2,
+   "busyness": 0.15,
+   "hotspot_reports_250m": 0,
+   "waste": "trash;dog_excrement"
+  },
+  {
+   "id": "BS-0075",
+   "osm_id": "node/6497826047",
+   "lat": 47.52426,
+   "lon": 7.589576,
+   "zone": 2,
+   "busyness": 0.15,
+   "hotspot_reports_250m": 0,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0076",
+   "osm_id": "node/14108121538",
+   "lat": 47.537095,
+   "lon": 7.589961,
+   "zone": 2,
+   "busyness": 0.15,
+   "hotspot_reports_250m": 0,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0077",
+   "osm_id": "node/5638345097",
+   "lat": 47.534697,
+   "lon": 7.590114,
+   "zone": 2,
+   "busyness": 0.15,
+   "hotspot_reports_250m": 0,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0078",
+   "osm_id": "node/14324754828",
+   "lat": 47.546864,
+   "lon": 7.590296,
+   "zone": 2,
+   "busyness": 0.47,
+   "hotspot_reports_250m": 20,
+   "waste": "paper;recycling;trash"
+  },
+  {
+   "id": "BS-0079",
+   "osm_id": "node/14099375125",
+   "lat": 47.540985,
+   "lon": 7.590409,
+   "zone": 2,
+   "busyness": 0.81,
+   "hotspot_reports_250m": 511,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0080",
+   "osm_id": "node/11295778569",
+   "lat": 47.549907,
+   "lon": 7.590446,
+   "zone": 2,
+   "busyness": 0.69,
+   "hotspot_reports_250m": 156,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0081",
+   "osm_id": "node/11295768952",
+   "lat": 47.550122,
+   "lon": 7.590482,
+   "zone": 2,
+   "busyness": 0.66,
+   "hotspot_reports_250m": 119,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0082",
+   "osm_id": "node/14324754831",
+   "lat": 47.546791,
+   "lon": 7.590517,
+   "zone": 2,
+   "busyness": 0.47,
+   "hotspot_reports_250m": 20,
+   "waste": "paper;recycling;trash"
+  },
+  {
+   "id": "BS-0083",
+   "osm_id": "node/3809635743",
+   "lat": 47.532451,
+   "lon": 7.590612,
+   "zone": 2,
+   "busyness": 0.15,
+   "hotspot_reports_250m": 0,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0084",
+   "osm_id": "node/13598340062",
+   "lat": 47.549509,
+   "lon": 7.590759,
+   "zone": 2,
+   "busyness": 0.66,
+   "hotspot_reports_250m": 119,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0085",
+   "osm_id": "node/14070926755",
+   "lat": 47.544301,
+   "lon": 7.590789,
+   "zone": 2,
+   "busyness": 0.81,
+   "hotspot_reports_250m": 468,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0086",
+   "osm_id": "node/14075169892",
+   "lat": 47.544161,
+   "lon": 7.590881,
+   "zone": 2,
+   "busyness": 0.81,
+   "hotspot_reports_250m": 468,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0087",
+   "osm_id": "node/3151470794",
+   "lat": 47.549264,
+   "lon": 7.591083,
+   "zone": 2,
+   "busyness": 0.66,
+   "hotspot_reports_250m": 119,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0088",
+   "osm_id": "node/14324754830",
+   "lat": 47.546539,
+   "lon": 7.591261,
+   "zone": 2,
+   "busyness": 0.47,
+   "hotspot_reports_250m": 20,
+   "waste": "paper;plastic;trash;recycling"
+  },
+  {
+   "id": "BS-0089",
+   "osm_id": "node/3826532694",
+   "lat": 47.54207,
+   "lon": 7.592792,
+   "zone": 2,
+   "busyness": 0.83,
+   "hotspot_reports_250m": 570,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0090",
+   "osm_id": "node/3815109830",
+   "lat": 47.532496,
+   "lon": 7.59354,
+   "zone": 2,
+   "busyness": 0.15,
+   "hotspot_reports_250m": 0,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0091",
+   "osm_id": "node/14072080245",
+   "lat": 47.543052,
+   "lon": 7.593699,
+   "zone": 2,
+   "busyness": 0.83,
+   "hotspot_reports_250m": 601,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0092",
+   "osm_id": "node/8888314771",
+   "lat": 47.523466,
+   "lon": 7.594195,
+   "zone": 2,
+   "busyness": 0.15,
+   "hotspot_reports_250m": 0,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0093",
+   "osm_id": "node/14070970938",
+   "lat": 47.543057,
+   "lon": 7.594503,
+   "zone": 2,
+   "busyness": 0.82,
+   "hotspot_reports_250m": 559,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0094",
+   "osm_id": "node/11010627518",
+   "lat": 47.541315,
+   "lon": 7.594538,
+   "zone": 2,
+   "busyness": 0.8,
+   "hotspot_reports_250m": 442,
+   "waste": "trash;cigarettes"
+  },
+  {
+   "id": "BS-0095",
+   "osm_id": "node/14112190297",
+   "lat": 47.541164,
+   "lon": 7.600382,
+   "zone": 2,
+   "busyness": 0.82,
+   "hotspot_reports_250m": 514,
+   "waste": "dog_excrement;trash"
+  },
+  {
+   "id": "BS-0096",
+   "osm_id": "node/2817642919",
+   "lat": 47.539608,
+   "lon": 7.607721,
+   "zone": 2,
+   "busyness": 0.15,
+   "hotspot_reports_250m": 0,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0097",
+   "osm_id": "node/2817642918",
+   "lat": 47.539459,
+   "lon": 7.607828,
+   "zone": 2,
+   "busyness": 0.15,
+   "hotspot_reports_250m": 0,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0098",
+   "osm_id": "node/2817642920",
+   "lat": 47.539534,
+   "lon": 7.608062,
+   "zone": 2,
+   "busyness": 0.15,
+   "hotspot_reports_250m": 0,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0099",
+   "osm_id": "node/7086421597",
+   "lat": 47.553326,
+   "lon": 7.577299,
+   "zone": 3,
+   "busyness": 0.72,
+   "hotspot_reports_250m": 209,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0100",
+   "osm_id": "node/5700775720",
+   "lat": 47.55466,
+   "lon": 7.579184,
+   "zone": 3,
+   "busyness": 0.71,
+   "hotspot_reports_250m": 199,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0101",
+   "osm_id": "node/5700775713",
+   "lat": 47.554444,
+   "lon": 7.579349,
+   "zone": 3,
+   "busyness": 0.71,
+   "hotspot_reports_250m": 199,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0102",
+   "osm_id": "node/6372374387",
+   "lat": 47.554607,
+   "lon": 7.579705,
+   "zone": 3,
+   "busyness": 0.73,
+   "hotspot_reports_250m": 236,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0103",
+   "osm_id": "node/5700775716",
+   "lat": 47.554942,
+   "lon": 7.579734,
+   "zone": 3,
+   "busyness": 0.74,
+   "hotspot_reports_250m": 248,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0104",
+   "osm_id": "node/14203469050",
+   "lat": 47.564652,
+   "lon": 7.58058,
+   "zone": 3,
+   "busyness": 0.78,
+   "hotspot_reports_250m": 358,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0105",
+   "osm_id": "node/7817392578",
+   "lat": 47.561042,
+   "lon": 7.580768,
+   "zone": 3,
+   "busyness": 0.69,
+   "hotspot_reports_250m": 155,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0106",
+   "osm_id": "node/6372419797",
+   "lat": 47.55796,
+   "lon": 7.580816,
+   "zone": 3,
+   "busyness": 0.68,
+   "hotspot_reports_250m": 142,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0107",
+   "osm_id": "node/5700775719",
+   "lat": 47.556078,
+   "lon": 7.580936,
+   "zone": 3,
+   "busyness": 0.72,
+   "hotspot_reports_250m": 201,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0108",
+   "osm_id": "node/7817392580",
+   "lat": 47.560726,
+   "lon": 7.581015,
+   "zone": 3,
+   "busyness": 0.69,
+   "hotspot_reports_250m": 155,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0109",
+   "osm_id": "node/14203658344",
+   "lat": 47.563906,
+   "lon": 7.581128,
+   "zone": 3,
+   "busyness": 0.77,
+   "hotspot_reports_250m": 325,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0110",
+   "osm_id": "node/14203469036",
+   "lat": 47.564011,
+   "lon": 7.581217,
+   "zone": 3,
+   "busyness": 0.77,
+   "hotspot_reports_250m": 325,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0111",
+   "osm_id": "node/6372461441",
+   "lat": 47.557954,
+   "lon": 7.58122,
+   "zone": 3,
+   "busyness": 0.68,
+   "hotspot_reports_250m": 142,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0112",
+   "osm_id": "node/10275273368",
+   "lat": 47.558893,
+   "lon": 7.581272,
+   "zone": 3,
+   "busyness": 0.62,
+   "hotspot_reports_250m": 79,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0113",
+   "osm_id": "node/6372461432",
+   "lat": 47.558217,
+   "lon": 7.581274,
+   "zone": 3,
+   "busyness": 0.68,
+   "hotspot_reports_250m": 142,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0114",
+   "osm_id": "node/6372461433",
+   "lat": 47.558079,
+   "lon": 7.58129,
+   "zone": 3,
+   "busyness": 0.68,
+   "hotspot_reports_250m": 142,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0115",
+   "osm_id": "node/7817392582",
+   "lat": 47.560813,
+   "lon": 7.581311,
+   "zone": 3,
+   "busyness": 0.69,
+   "hotspot_reports_250m": 155,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0116",
+   "osm_id": "node/7817392581",
+   "lat": 47.560724,
+   "lon": 7.581326,
+   "zone": 3,
+   "busyness": 0.69,
+   "hotspot_reports_250m": 155,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0117",
+   "osm_id": "node/5700775715",
+   "lat": 47.556124,
+   "lon": 7.581338,
+   "zone": 3,
+   "busyness": 0.72,
+   "hotspot_reports_250m": 201,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0118",
+   "osm_id": "node/3443367258",
+   "lat": 47.55862,
+   "lon": 7.581339,
+   "zone": 3,
+   "busyness": 0.66,
+   "hotspot_reports_250m": 116,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0119",
+   "osm_id": "node/3443367257",
+   "lat": 47.558908,
+   "lon": 7.581583,
+   "zone": 3,
+   "busyness": 0.62,
+   "hotspot_reports_250m": 79,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0120",
+   "osm_id": "node/10693423734",
+   "lat": 47.559891,
+   "lon": 7.581751,
+   "zone": 3,
+   "busyness": 0.6,
+   "hotspot_reports_250m": 65,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0121",
+   "osm_id": "node/8722859372",
+   "lat": 47.565512,
+   "lon": 7.58201,
+   "zone": 3,
+   "busyness": 0.73,
+   "hotspot_reports_250m": 235,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0122",
+   "osm_id": "node/10275273401",
+   "lat": 47.559403,
+   "lon": 7.582415,
+   "zone": 3,
+   "busyness": 0.55,
+   "hotspot_reports_250m": 43,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0123",
+   "osm_id": "node/6800087761",
+   "lat": 47.562057,
+   "lon": 7.585506,
+   "zone": 3,
+   "busyness": 0.15,
+   "hotspot_reports_250m": 0,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0124",
+   "osm_id": "node/6800087759",
+   "lat": 47.561916,
+   "lon": 7.585649,
+   "zone": 3,
+   "busyness": 0.15,
+   "hotspot_reports_250m": 0,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0125",
+   "osm_id": "node/6800087753",
+   "lat": 47.561787,
+   "lon": 7.585851,
+   "zone": 3,
+   "busyness": 0.15,
+   "hotspot_reports_250m": 0,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0126",
+   "osm_id": "node/7438234087",
+   "lat": 47.559226,
+   "lon": 7.58622,
+   "zone": 3,
+   "busyness": 0.64,
+   "hotspot_reports_250m": 103,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0127",
+   "osm_id": "node/7438234091",
+   "lat": 47.559362,
+   "lon": 7.586272,
+   "zone": 3,
+   "busyness": 0.64,
+   "hotspot_reports_250m": 103,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0128",
+   "osm_id": "node/11423335397",
+   "lat": 47.556194,
+   "lon": 7.586279,
+   "zone": 3,
+   "busyness": 0.74,
+   "hotspot_reports_250m": 248,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0129",
+   "osm_id": "node/10072039386",
+   "lat": 47.551938,
+   "lon": 7.586656,
+   "zone": 3,
+   "busyness": 0.77,
+   "hotspot_reports_250m": 334,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0130",
+   "osm_id": "node/11771370429",
+   "lat": 47.558329,
+   "lon": 7.587534,
+   "zone": 3,
+   "busyness": 0.69,
+   "hotspot_reports_250m": 156,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0131",
+   "osm_id": "node/7525358093",
+   "lat": 47.556706,
+   "lon": 7.587534,
+   "zone": 3,
+   "busyness": 0.74,
+   "hotspot_reports_250m": 248,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0132",
+   "osm_id": "node/13068149558",
+   "lat": 47.567808,
+   "lon": 7.587654,
+   "zone": 3,
+   "busyness": 0.88,
+   "hotspot_reports_250m": 912,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0133",
+   "osm_id": "node/6372546374",
+   "lat": 47.555401,
+   "lon": 7.588043,
+   "zone": 3,
+   "busyness": 0.74,
+   "hotspot_reports_250m": 245,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0134",
+   "osm_id": "node/6139984112",
+   "lat": 47.555239,
+   "lon": 7.588061,
+   "zone": 3,
+   "busyness": 0.74,
+   "hotspot_reports_250m": 245,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0135",
+   "osm_id": "node/6770357466",
+   "lat": 47.560051,
+   "lon": 7.588072,
+   "zone": 3,
+   "busyness": 0.6,
+   "hotspot_reports_250m": 70,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0136",
+   "osm_id": "node/6779697939",
+   "lat": 47.554004,
+   "lon": 7.588919,
+   "zone": 3,
+   "busyness": 0.76,
+   "hotspot_reports_250m": 317,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0137",
+   "osm_id": "node/10072039385",
+   "lat": 47.559046,
+   "lon": 7.589121,
+   "zone": 3,
+   "busyness": 0.55,
+   "hotspot_reports_250m": 43,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0138",
+   "osm_id": "node/10094655014",
+   "lat": 47.570282,
+   "lon": 7.589847,
+   "zone": 3,
+   "busyness": 0.9,
+   "hotspot_reports_250m": 1089,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0139",
+   "osm_id": "node/14072519693",
+   "lat": 47.556186,
+   "lon": 7.590136,
+   "zone": 3,
+   "busyness": 0.67,
+   "hotspot_reports_250m": 133,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0140",
+   "osm_id": "node/9212241135",
+   "lat": 47.55324,
+   "lon": 7.59054,
+   "zone": 3,
+   "busyness": 0.72,
+   "hotspot_reports_250m": 210,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0141",
+   "osm_id": "node/10968751408",
+   "lat": 47.563325,
+   "lon": 7.590581,
+   "zone": 3,
+   "busyness": 0.89,
+   "hotspot_reports_250m": 1076,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0142",
+   "osm_id": "node/13817666838",
+   "lat": 47.555346,
+   "lon": 7.590669,
+   "zone": 3,
+   "busyness": 0.66,
+   "hotspot_reports_250m": 122,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0143",
+   "osm_id": "node/3830314992",
+   "lat": 47.566688,
+   "lon": 7.59077,
+   "zone": 3,
+   "busyness": 0.94,
+   "hotspot_reports_250m": 1663,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0144",
+   "osm_id": "node/13630033027",
+   "lat": 47.560551,
+   "lon": 7.59081,
+   "zone": 3,
+   "busyness": 0.82,
+   "hotspot_reports_250m": 558,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0145",
+   "osm_id": "node/12337646553",
+   "lat": 47.555262,
+   "lon": 7.590887,
+   "zone": 3,
+   "busyness": 0.66,
+   "hotspot_reports_250m": 122,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0146",
+   "osm_id": "node/10968751107",
+   "lat": 47.563502,
+   "lon": 7.590946,
+   "zone": 3,
+   "busyness": 0.92,
+   "hotspot_reports_250m": 1350,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0147",
+   "osm_id": "node/12337646540",
+   "lat": 47.555,
+   "lon": 7.591065,
+   "zone": 3,
+   "busyness": 0.66,
+   "hotspot_reports_250m": 122,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0148",
+   "osm_id": "node/13119032310",
+   "lat": 47.556862,
+   "lon": 7.591372,
+   "zone": 3,
+   "busyness": 0.61,
+   "hotspot_reports_250m": 71,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0149",
+   "osm_id": "node/12337646539",
+   "lat": 47.554823,
+   "lon": 7.591377,
+   "zone": 3,
+   "busyness": 0.63,
+   "hotspot_reports_250m": 91,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0150",
+   "osm_id": "node/10968751106",
+   "lat": 47.563676,
+   "lon": 7.591404,
+   "zone": 3,
+   "busyness": 0.92,
+   "hotspot_reports_250m": 1350,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0151",
+   "osm_id": "node/6780093402",
+   "lat": 47.563778,
+   "lon": 7.591461,
+   "zone": 3,
+   "busyness": 0.92,
+   "hotspot_reports_250m": 1350,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0152",
+   "osm_id": "node/12337646541",
+   "lat": 47.554582,
+   "lon": 7.591477,
+   "zone": 3,
+   "busyness": 0.65,
+   "hotspot_reports_250m": 112,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0153",
+   "osm_id": "node/10968751407",
+   "lat": 47.563209,
+   "lon": 7.591487,
+   "zone": 3,
+   "busyness": 0.91,
+   "hotspot_reports_250m": 1254,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0154",
+   "osm_id": "node/3830314971",
+   "lat": 47.566312,
+   "lon": 7.5918,
+   "zone": 3,
+   "busyness": 0.94,
+   "hotspot_reports_250m": 1713,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0155",
+   "osm_id": "node/3830314973",
+   "lat": 47.566329,
+   "lon": 7.591891,
+   "zone": 3,
+   "busyness": 0.94,
+   "hotspot_reports_250m": 1713,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0156",
+   "osm_id": "node/13119029616",
+   "lat": 47.556712,
+   "lon": 7.592168,
+   "zone": 3,
+   "busyness": 0.52,
+   "hotspot_reports_250m": 31,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0157",
+   "osm_id": "node/14142365607",
+   "lat": 47.556078,
+   "lon": 7.592312,
+   "zone": 3,
+   "busyness": 0.61,
+   "hotspot_reports_250m": 71,
+   "waste": "cigarettes;trash"
+  },
+  {
+   "id": "BS-0158",
+   "osm_id": "node/13629662627",
+   "lat": 47.56142,
+   "lon": 7.592509,
+   "zone": 3,
+   "busyness": 0.86,
+   "hotspot_reports_250m": 816,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0159",
+   "osm_id": "node/12964458237",
+   "lat": 47.556825,
+   "lon": 7.59261,
+   "zone": 3,
+   "busyness": 0.15,
+   "hotspot_reports_250m": 0,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0160",
+   "osm_id": "node/14072515339",
+   "lat": 47.556832,
+   "lon": 7.592791,
+   "zone": 3,
+   "busyness": 0.57,
+   "hotspot_reports_250m": 51,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0161",
+   "osm_id": "node/13119034057",
+   "lat": 47.556732,
+   "lon": 7.592903,
+   "zone": 3,
+   "busyness": 0.57,
+   "hotspot_reports_250m": 51,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0162",
+   "osm_id": "node/9348148194",
+   "lat": 47.566864,
+   "lon": 7.593385,
+   "zone": 3,
+   "busyness": 0.96,
+   "hotspot_reports_250m": 2016,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0163",
+   "osm_id": "node/9212417571",
+   "lat": 47.563578,
+   "lon": 7.593877,
+   "zone": 3,
+   "busyness": 0.94,
+   "hotspot_reports_250m": 1694,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0164",
+   "osm_id": "node/12695402514",
+   "lat": 47.563047,
+   "lon": 7.594169,
+   "zone": 3,
+   "busyness": 0.92,
+   "hotspot_reports_250m": 1350,
+   "waste": "drugs"
+  },
+  {
+   "id": "BS-0165",
+   "osm_id": "node/14248283369",
+   "lat": 47.553054,
+   "lon": 7.594832,
+   "zone": 3,
+   "busyness": 0.15,
+   "hotspot_reports_250m": 0,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0166",
+   "osm_id": "node/9670246820",
+   "lat": 47.551603,
+   "lon": 7.595732,
+   "zone": 3,
+   "busyness": 0.15,
+   "hotspot_reports_250m": 0,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0167",
+   "osm_id": "node/11571516295",
+   "lat": 47.557443,
+   "lon": 7.597306,
+   "zone": 3,
+   "busyness": 0.73,
+   "hotspot_reports_250m": 230,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0168",
+   "osm_id": "node/11571516300",
+   "lat": 47.557322,
+   "lon": 7.597347,
+   "zone": 3,
+   "busyness": 0.73,
+   "hotspot_reports_250m": 230,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0169",
+   "osm_id": "node/11571516302",
+   "lat": 47.557678,
+   "lon": 7.597592,
+   "zone": 3,
+   "busyness": 0.78,
+   "hotspot_reports_250m": 374,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0170",
+   "osm_id": "node/10072039384",
+   "lat": 47.557965,
+   "lon": 7.597786,
+   "zone": 3,
+   "busyness": 0.78,
+   "hotspot_reports_250m": 374,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0171",
+   "osm_id": "node/14070885210",
+   "lat": 47.555078,
+   "lon": 7.59859,
+   "zone": 3,
+   "busyness": 0.47,
+   "hotspot_reports_250m": 19,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0172",
+   "osm_id": "node/11778265475",
+   "lat": 47.554738,
+   "lon": 7.598644,
+   "zone": 3,
+   "busyness": 0.47,
+   "hotspot_reports_250m": 19,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0173",
+   "osm_id": "node/7844482504",
+   "lat": 47.575796,
+   "lon": 7.583063,
+   "zone": 4,
+   "busyness": 0.15,
+   "hotspot_reports_250m": 0,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0174",
+   "osm_id": "node/7844482497",
+   "lat": 47.574961,
+   "lon": 7.583188,
+   "zone": 4,
+   "busyness": 0.15,
+   "hotspot_reports_250m": 0,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0175",
+   "osm_id": "node/3832195007",
+   "lat": 47.57694,
+   "lon": 7.589331,
+   "zone": 4,
+   "busyness": 0.99,
+   "hotspot_reports_250m": 2734,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0176",
+   "osm_id": "node/11893487873",
+   "lat": 47.581886,
+   "lon": 7.589875,
+   "zone": 4,
+   "busyness": 0.86,
+   "hotspot_reports_250m": 817,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0177",
+   "osm_id": "node/6780087334",
+   "lat": 47.573655,
+   "lon": 7.590068,
+   "zone": 4,
+   "busyness": 0.71,
+   "hotspot_reports_250m": 195,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0178",
+   "osm_id": "node/10745140383",
+   "lat": 47.571763,
+   "lon": 7.592202,
+   "zone": 4,
+   "busyness": 0.83,
+   "hotspot_reports_250m": 578,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0179",
+   "osm_id": "node/3828452260",
+   "lat": 47.581247,
+   "lon": 7.592273,
+   "zone": 4,
+   "busyness": 0.94,
+   "hotspot_reports_250m": 1604,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0180",
+   "osm_id": "node/3828452257",
+   "lat": 47.581196,
+   "lon": 7.59237,
+   "zone": 4,
+   "busyness": 0.91,
+   "hotspot_reports_250m": 1264,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0181",
+   "osm_id": "node/13942729901",
+   "lat": 47.573465,
+   "lon": 7.592778,
+   "zone": 4,
+   "busyness": 0.76,
+   "hotspot_reports_250m": 292,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0182",
+   "osm_id": "node/11893457794",
+   "lat": 47.580402,
+   "lon": 7.593294,
+   "zone": 4,
+   "busyness": 0.87,
+   "hotspot_reports_250m": 847,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0183",
+   "osm_id": "node/14296314091",
+   "lat": 47.568658,
+   "lon": 7.594828,
+   "zone": 4,
+   "busyness": 1.0,
+   "hotspot_reports_250m": 2911,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0184",
+   "osm_id": "node/3830639641",
+   "lat": 47.579716,
+   "lon": 7.594874,
+   "zone": 4,
+   "busyness": 0.7,
+   "hotspot_reports_250m": 180,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0185",
+   "osm_id": "node/13942729902",
+   "lat": 47.573651,
+   "lon": 7.594944,
+   "zone": 4,
+   "busyness": 0.79,
+   "hotspot_reports_250m": 417,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0186",
+   "osm_id": "node/3830639634",
+   "lat": 47.579251,
+   "lon": 7.594964,
+   "zone": 4,
+   "busyness": 0.73,
+   "hotspot_reports_250m": 235,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0187",
+   "osm_id": "node/7384251996",
+   "lat": 47.574406,
+   "lon": 7.598053,
+   "zone": 4,
+   "busyness": 0.67,
+   "hotspot_reports_250m": 131,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0188",
+   "osm_id": "node/6854092818",
+   "lat": 47.56557,
+   "lon": 7.59984,
+   "zone": 4,
+   "busyness": 0.94,
+   "hotspot_reports_250m": 1643,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0189",
+   "osm_id": "node/3826865813",
+   "lat": 47.568043,
+   "lon": 7.600206,
+   "zone": 4,
+   "busyness": 0.97,
+   "hotspot_reports_250m": 2127,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0190",
+   "osm_id": "node/1758657968",
+   "lat": 47.572512,
+   "lon": 7.60105,
+   "zone": 4,
+   "busyness": 0.71,
+   "hotspot_reports_250m": 182,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0191",
+   "osm_id": "node/3830264082",
+   "lat": 47.569234,
+   "lon": 7.602722,
+   "zone": 4,
+   "busyness": 0.9,
+   "hotspot_reports_250m": 1183,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0192",
+   "osm_id": "node/6861490912",
+   "lat": 47.57516,
+   "lon": 7.602959,
+   "zone": 4,
+   "busyness": 0.15,
+   "hotspot_reports_250m": 0,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0193",
+   "osm_id": "node/3830264075",
+   "lat": 47.569179,
+   "lon": 7.602982,
+   "zone": 4,
+   "busyness": 0.9,
+   "hotspot_reports_250m": 1183,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0194",
+   "osm_id": "node/13638036586",
+   "lat": 47.56974,
+   "lon": 7.60401,
+   "zone": 4,
+   "busyness": 0.82,
+   "hotspot_reports_250m": 550,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0195",
+   "osm_id": "node/10860299565",
+   "lat": 47.565475,
+   "lon": 7.604845,
+   "zone": 4,
+   "busyness": 0.86,
+   "hotspot_reports_250m": 752,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0196",
+   "osm_id": "node/7727035124",
+   "lat": 47.573042,
+   "lon": 7.6051,
+   "zone": 4,
+   "busyness": 0.15,
+   "hotspot_reports_250m": 0,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0197",
+   "osm_id": "node/11771268835",
+   "lat": 47.566082,
+   "lon": 7.606108,
+   "zone": 4,
+   "busyness": 0.84,
+   "hotspot_reports_250m": 638,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0198",
+   "osm_id": "node/9885420592",
+   "lat": 47.573834,
+   "lon": 7.606119,
+   "zone": 4,
+   "busyness": 0.15,
+   "hotspot_reports_250m": 0,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0199",
+   "osm_id": "node/6861490955",
+   "lat": 47.574968,
+   "lon": 7.60654,
+   "zone": 4,
+   "busyness": 0.15,
+   "hotspot_reports_250m": 0,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0200",
+   "osm_id": "node/13127604614",
+   "lat": 47.568171,
+   "lon": 7.607024,
+   "zone": 4,
+   "busyness": 0.79,
+   "hotspot_reports_250m": 402,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0201",
+   "osm_id": "node/13127604671",
+   "lat": 47.568255,
+   "lon": 7.607065,
+   "zone": 4,
+   "busyness": 0.79,
+   "hotspot_reports_250m": 402,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0202",
+   "osm_id": "node/8736546738",
+   "lat": 47.566378,
+   "lon": 7.607372,
+   "zone": 4,
+   "busyness": 0.73,
+   "hotspot_reports_250m": 239,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0203",
+   "osm_id": "node/8736519549",
+   "lat": 47.566435,
+   "lon": 7.607528,
+   "zone": 4,
+   "busyness": 0.75,
+   "hotspot_reports_250m": 281,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0204",
+   "osm_id": "node/9872626803",
+   "lat": 47.573873,
+   "lon": 7.607577,
+   "zone": 4,
+   "busyness": 0.15,
+   "hotspot_reports_250m": 0,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0205",
+   "osm_id": "node/8026451609",
+   "lat": 47.566333,
+   "lon": 7.607742,
+   "zone": 4,
+   "busyness": 0.75,
+   "hotspot_reports_250m": 281,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0206",
+   "osm_id": "node/9885443492",
+   "lat": 47.57404,
+   "lon": 7.607803,
+   "zone": 4,
+   "busyness": 0.15,
+   "hotspot_reports_250m": 0,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0207",
+   "osm_id": "node/9604460709",
+   "lat": 47.573518,
+   "lon": 7.608372,
+   "zone": 4,
+   "busyness": 0.53,
+   "hotspot_reports_250m": 33,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0208",
+   "osm_id": "node/9850113654",
+   "lat": 47.574057,
+   "lon": 7.608582,
+   "zone": 4,
+   "busyness": 0.15,
+   "hotspot_reports_250m": 0,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0209",
+   "osm_id": "node/9604461780",
+   "lat": 47.573399,
+   "lon": 7.608936,
+   "zone": 4,
+   "busyness": 0.53,
+   "hotspot_reports_250m": 33,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0210",
+   "osm_id": "node/5650144750",
+   "lat": 47.575815,
+   "lon": 7.609686,
+   "zone": 4,
+   "busyness": 0.15,
+   "hotspot_reports_250m": 0,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0211",
+   "osm_id": "node/6861490953",
+   "lat": 47.575307,
+   "lon": 7.609762,
+   "zone": 4,
+   "busyness": 0.15,
+   "hotspot_reports_250m": 0,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0212",
+   "osm_id": "node/9604393094",
+   "lat": 47.573681,
+   "lon": 7.609994,
+   "zone": 4,
+   "busyness": 0.53,
+   "hotspot_reports_250m": 33,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0213",
+   "osm_id": "node/9604445552",
+   "lat": 47.574079,
+   "lon": 7.610078,
+   "zone": 4,
+   "busyness": 0.53,
+   "hotspot_reports_250m": 33,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0214",
+   "osm_id": "node/9604460099",
+   "lat": 47.574281,
+   "lon": 7.610694,
+   "zone": 4,
+   "busyness": 0.15,
+   "hotspot_reports_250m": 0,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0215",
+   "osm_id": "node/11054840451",
+   "lat": 47.567583,
+   "lon": 7.611624,
+   "zone": 4,
+   "busyness": 0.62,
+   "hotspot_reports_250m": 81,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0216",
+   "osm_id": "node/13026909402",
+   "lat": 47.573697,
+   "lon": 7.612191,
+   "zone": 4,
+   "busyness": 0.59,
+   "hotspot_reports_250m": 59,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0217",
+   "osm_id": "node/6861490922",
+   "lat": 47.57609,
+   "lon": 7.61271,
+   "zone": 4,
+   "busyness": 0.15,
+   "hotspot_reports_250m": 0,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0218",
+   "osm_id": "node/9604427783",
+   "lat": 47.575173,
+   "lon": 7.612745,
+   "zone": 4,
+   "busyness": 0.15,
+   "hotspot_reports_250m": 0,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0219",
+   "osm_id": "node/9604440637",
+   "lat": 47.572074,
+   "lon": 7.613691,
+   "zone": 4,
+   "busyness": 0.5,
+   "hotspot_reports_250m": 26,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0220",
+   "osm_id": "node/14287493574",
+   "lat": 47.575518,
+   "lon": 7.615891,
+   "zone": 4,
+   "busyness": 0.15,
+   "hotspot_reports_250m": 0,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0221",
+   "osm_id": "node/14287493579",
+   "lat": 47.575589,
+   "lon": 7.616213,
+   "zone": 4,
+   "busyness": 0.15,
+   "hotspot_reports_250m": 0,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0222",
+   "osm_id": "node/13059351777",
+   "lat": 47.572208,
+   "lon": 7.616982,
+   "zone": 4,
+   "busyness": 0.15,
+   "hotspot_reports_250m": 0,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0223",
+   "osm_id": "node/9604436171",
+   "lat": 47.570591,
+   "lon": 7.617032,
+   "zone": 4,
+   "busyness": 0.15,
+   "hotspot_reports_250m": 0,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0224",
+   "osm_id": "node/7777759290",
+   "lat": 47.569112,
+   "lon": 7.61799,
+   "zone": 4,
+   "busyness": 0.15,
+   "hotspot_reports_250m": 0,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0225",
+   "osm_id": "node/6861490925",
+   "lat": 47.576702,
+   "lon": 7.618674,
+   "zone": 4,
+   "busyness": 0.15,
+   "hotspot_reports_250m": 0,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0226",
+   "osm_id": "node/6861490943",
+   "lat": 47.5762,
+   "lon": 7.61883,
+   "zone": 4,
+   "busyness": 0.15,
+   "hotspot_reports_250m": 0,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0227",
+   "osm_id": "node/7777748319",
+   "lat": 47.571948,
+   "lon": 7.619307,
+   "zone": 4,
+   "busyness": 0.15,
+   "hotspot_reports_250m": 0,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0228",
+   "osm_id": "node/13057722114",
+   "lat": 47.574405,
+   "lon": 7.619691,
+   "zone": 4,
+   "busyness": 0.15,
+   "hotspot_reports_250m": 0,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0229",
+   "osm_id": "node/8715115717",
+   "lat": 47.573525,
+   "lon": 7.620408,
+   "zone": 4,
+   "busyness": 0.15,
+   "hotspot_reports_250m": 0,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0230",
+   "osm_id": "node/8715094348",
+   "lat": 47.573554,
+   "lon": 7.620677,
+   "zone": 4,
+   "busyness": 0.15,
+   "hotspot_reports_250m": 0,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0231",
+   "osm_id": "node/13059286803",
+   "lat": 47.574496,
+   "lon": 7.621897,
+   "zone": 4,
+   "busyness": 0.15,
+   "hotspot_reports_250m": 0,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0232",
+   "osm_id": "node/6861490929",
+   "lat": 47.578736,
+   "lon": 7.62382,
+   "zone": 4,
+   "busyness": 0.15,
+   "hotspot_reports_250m": 0,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0233",
+   "osm_id": "node/6861490938",
+   "lat": 47.577995,
+   "lon": 7.623868,
+   "zone": 4,
+   "busyness": 0.15,
+   "hotspot_reports_250m": 0,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0234",
+   "osm_id": "node/6861490936",
+   "lat": 47.578512,
+   "lon": 7.624639,
+   "zone": 4,
+   "busyness": 0.15,
+   "hotspot_reports_250m": 0,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0235",
+   "osm_id": "node/8750604242",
+   "lat": 47.576989,
+   "lon": 7.626013,
+   "zone": 4,
+   "busyness": 0.15,
+   "hotspot_reports_250m": 0,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0236",
+   "osm_id": "node/9730029599",
+   "lat": 47.552732,
+   "lon": 7.601843,
+   "zone": 5,
+   "busyness": 0.46,
+   "hotspot_reports_250m": 17,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0237",
+   "osm_id": "node/9730042858",
+   "lat": 47.55283,
+   "lon": 7.60238,
+   "zone": 5,
+   "busyness": 0.46,
+   "hotspot_reports_250m": 17,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0238",
+   "osm_id": "node/13355905373",
+   "lat": 47.558671,
+   "lon": 7.602419,
+   "zone": 5,
+   "busyness": 0.72,
+   "hotspot_reports_250m": 200,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0239",
+   "osm_id": "node/8305796171",
+   "lat": 47.564441,
+   "lon": 7.602678,
+   "zone": 5,
+   "busyness": 0.85,
+   "hotspot_reports_250m": 679,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0240",
+   "osm_id": "node/7936995470",
+   "lat": 47.56437,
+   "lon": 7.602755,
+   "zone": 5,
+   "busyness": 0.85,
+   "hotspot_reports_250m": 679,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0241",
+   "osm_id": "node/7838316315",
+   "lat": 47.557093,
+   "lon": 7.603094,
+   "zone": 5,
+   "busyness": 0.62,
+   "hotspot_reports_250m": 85,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0242",
+   "osm_id": "node/8305796172",
+   "lat": 47.564244,
+   "lon": 7.603532,
+   "zone": 5,
+   "busyness": 0.85,
+   "hotspot_reports_250m": 721,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0243",
+   "osm_id": "node/13057756641",
+   "lat": 47.562675,
+   "lon": 7.604056,
+   "zone": 5,
+   "busyness": 0.7,
+   "hotspot_reports_250m": 166,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0244",
+   "osm_id": "node/7838316314",
+   "lat": 47.557234,
+   "lon": 7.60451,
+   "zone": 5,
+   "busyness": 0.6,
+   "hotspot_reports_250m": 66,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0245",
+   "osm_id": "node/3809711271",
+   "lat": 47.55273,
+   "lon": 7.604674,
+   "zone": 5,
+   "busyness": 0.46,
+   "hotspot_reports_250m": 17,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0246",
+   "osm_id": "node/9700079708",
+   "lat": 47.555214,
+   "lon": 7.60491,
+   "zone": 5,
+   "busyness": 0.53,
+   "hotspot_reports_250m": 36,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0247",
+   "osm_id": "node/11778265472",
+   "lat": 47.555278,
+   "lon": 7.605769,
+   "zone": 5,
+   "busyness": 0.52,
+   "hotspot_reports_250m": 32,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0248",
+   "osm_id": "node/3830588541",
+   "lat": 47.549526,
+   "lon": 7.606595,
+   "zone": 5,
+   "busyness": 0.51,
+   "hotspot_reports_250m": 27,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0249",
+   "osm_id": "node/11818373758",
+   "lat": 47.56326,
+   "lon": 7.607373,
+   "zone": 5,
+   "busyness": 0.7,
+   "hotspot_reports_250m": 174,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0250",
+   "osm_id": "node/11778265476",
+   "lat": 47.557829,
+   "lon": 7.607528,
+   "zone": 5,
+   "busyness": 0.15,
+   "hotspot_reports_250m": 0,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0251",
+   "osm_id": "node/11778265471",
+   "lat": 47.55554,
+   "lon": 7.607902,
+   "zone": 5,
+   "busyness": 0.55,
+   "hotspot_reports_250m": 41,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0252",
+   "osm_id": "node/13853736701",
+   "lat": 47.564273,
+   "lon": 7.608533,
+   "zone": 5,
+   "busyness": 0.68,
+   "hotspot_reports_250m": 149,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0253",
+   "osm_id": "node/11778265470",
+   "lat": 47.555761,
+   "lon": 7.608841,
+   "zone": 5,
+   "busyness": 0.59,
+   "hotspot_reports_250m": 62,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0254",
+   "osm_id": "node/6780219490",
+   "lat": 47.559119,
+   "lon": 7.609193,
+   "zone": 5,
+   "busyness": 0.52,
+   "hotspot_reports_250m": 32,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0255",
+   "osm_id": "node/6764842376",
+   "lat": 47.56172,
+   "lon": 7.609325,
+   "zone": 5,
+   "busyness": 0.15,
+   "hotspot_reports_250m": 0,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0256",
+   "osm_id": "node/11778244357",
+   "lat": 47.558218,
+   "lon": 7.609424,
+   "zone": 5,
+   "busyness": 0.52,
+   "hotspot_reports_250m": 32,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0257",
+   "osm_id": "node/6764845995",
+   "lat": 47.560948,
+   "lon": 7.60956,
+   "zone": 5,
+   "busyness": 0.15,
+   "hotspot_reports_250m": 0,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0258",
+   "osm_id": "node/6764845989",
+   "lat": 47.561194,
+   "lon": 7.609599,
+   "zone": 5,
+   "busyness": 0.15,
+   "hotspot_reports_250m": 0,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0259",
+   "osm_id": "node/6764846003",
+   "lat": 47.56084,
+   "lon": 7.609632,
+   "zone": 5,
+   "busyness": 0.15,
+   "hotspot_reports_250m": 0,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0260",
+   "osm_id": "node/3833797278",
+   "lat": 47.554188,
+   "lon": 7.609955,
+   "zone": 5,
+   "busyness": 0.69,
+   "hotspot_reports_250m": 156,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0261",
+   "osm_id": "node/7848117801",
+   "lat": 47.558314,
+   "lon": 7.610013,
+   "zone": 5,
+   "busyness": 0.52,
+   "hotspot_reports_250m": 32,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0262",
+   "osm_id": "node/11741480979",
+   "lat": 47.562275,
+   "lon": 7.61003,
+   "zone": 5,
+   "busyness": 0.15,
+   "hotspot_reports_250m": 0,
+   "waste": "trash;cigarettes"
+  },
+  {
+   "id": "BS-0263",
+   "osm_id": "node/6764846021",
+   "lat": 47.559568,
+   "lon": 7.610111,
+   "zone": 5,
+   "busyness": 0.52,
+   "hotspot_reports_250m": 32,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0264",
+   "osm_id": "node/6764478571",
+   "lat": 47.563345,
+   "lon": 7.610275,
+   "zone": 5,
+   "busyness": 0.15,
+   "hotspot_reports_250m": 0,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0265",
+   "osm_id": "node/6987887703",
+   "lat": 47.559645,
+   "lon": 7.610333,
+   "zone": 5,
+   "busyness": 0.52,
+   "hotspot_reports_250m": 32,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0266",
+   "osm_id": "node/6764861989",
+   "lat": 47.563369,
+   "lon": 7.610359,
+   "zone": 5,
+   "busyness": 0.15,
+   "hotspot_reports_250m": 0,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0267",
+   "osm_id": "node/13564326711",
+   "lat": 47.558826,
+   "lon": 7.610422,
+   "zone": 5,
+   "busyness": 0.52,
+   "hotspot_reports_250m": 32,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0268",
+   "osm_id": "node/13564308924",
+   "lat": 47.558929,
+   "lon": 7.61062,
+   "zone": 5,
+   "busyness": 0.52,
+   "hotspot_reports_250m": 32,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0269",
+   "osm_id": "node/11741480978",
+   "lat": 47.562095,
+   "lon": 7.610719,
+   "zone": 5,
+   "busyness": 0.15,
+   "hotspot_reports_250m": 0,
+   "waste": "trash;cigarettes"
+  },
+  {
+   "id": "BS-0270",
+   "osm_id": "node/6764730930",
+   "lat": 47.562654,
+   "lon": 7.61078,
+   "zone": 5,
+   "busyness": 0.15,
+   "hotspot_reports_250m": 0,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0271",
+   "osm_id": "node/13564309028",
+   "lat": 47.558464,
+   "lon": 7.610793,
+   "zone": 5,
+   "busyness": 0.52,
+   "hotspot_reports_250m": 32,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0272",
+   "osm_id": "node/13564964635",
+   "lat": 47.559351,
+   "lon": 7.611452,
+   "zone": 5,
+   "busyness": 0.58,
+   "hotspot_reports_250m": 56,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0273",
+   "osm_id": "node/13564309029",
+   "lat": 47.55862,
+   "lon": 7.611471,
+   "zone": 5,
+   "busyness": 0.58,
+   "hotspot_reports_250m": 56,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0274",
+   "osm_id": "node/13564341355",
+   "lat": 47.559149,
+   "lon": 7.612006,
+   "zone": 5,
+   "busyness": 0.58,
+   "hotspot_reports_250m": 56,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0275",
+   "osm_id": "node/10793518615",
+   "lat": 47.566702,
+   "lon": 7.613399,
+   "zone": 5,
+   "busyness": 0.15,
+   "hotspot_reports_250m": 0,
+   "waste": "trash;cigarettes"
+  },
+  {
+   "id": "BS-0276",
+   "osm_id": "node/9514713897",
+   "lat": 47.566603,
+   "lon": 7.613514,
+   "zone": 5,
+   "busyness": 0.15,
+   "hotspot_reports_250m": 0,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0277",
+   "osm_id": "node/11778244367",
+   "lat": 47.557005,
+   "lon": 7.614055,
+   "zone": 5,
+   "busyness": 0.64,
+   "hotspot_reports_250m": 97,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0278",
+   "osm_id": "node/11741474340",
+   "lat": 47.564236,
+   "lon": 7.615444,
+   "zone": 5,
+   "busyness": 0.53,
+   "hotspot_reports_250m": 35,
+   "waste": "trash;cigarettes"
+  },
+  {
+   "id": "BS-0279",
+   "osm_id": "node/11741285558",
+   "lat": 47.564546,
+   "lon": 7.61611,
+   "zone": 5,
+   "busyness": 0.45,
+   "hotspot_reports_250m": 16,
+   "waste": "trash;cigarettes"
+  },
+  {
+   "id": "BS-0280",
+   "osm_id": "node/11741318710",
+   "lat": 47.56444,
+   "lon": 7.616195,
+   "zone": 5,
+   "busyness": 0.53,
+   "hotspot_reports_250m": 35,
+   "waste": "trash;cigarettes"
+  },
+  {
+   "id": "BS-0281",
+   "osm_id": "node/11818373756",
+   "lat": 47.562405,
+   "lon": 7.616349,
+   "zone": 5,
+   "busyness": 0.53,
+   "hotspot_reports_250m": 35,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0282",
+   "osm_id": "node/7838317188",
+   "lat": 47.557679,
+   "lon": 7.616746,
+   "zone": 5,
+   "busyness": 0.15,
+   "hotspot_reports_250m": 0,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0283",
+   "osm_id": "node/11741474341",
+   "lat": 47.565219,
+   "lon": 7.617792,
+   "zone": 5,
+   "busyness": 0.15,
+   "hotspot_reports_250m": 0,
+   "waste": "trash;cigarettes"
+  },
+  {
+   "id": "BS-0284",
+   "osm_id": "node/11741474339",
+   "lat": 47.565154,
+   "lon": 7.617804,
+   "zone": 5,
+   "busyness": 0.15,
+   "hotspot_reports_250m": 0,
+   "waste": "trash;cigarettes"
+  },
+  {
+   "id": "BS-0285",
+   "osm_id": "node/7837468641",
+   "lat": 47.560265,
+   "lon": 7.618631,
+   "zone": 5,
+   "busyness": 0.15,
+   "hotspot_reports_250m": 0,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0286",
+   "osm_id": "node/3832285793",
+   "lat": 47.565795,
+   "lon": 7.618696,
+   "zone": 5,
+   "busyness": 0.15,
+   "hotspot_reports_250m": 0,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0287",
+   "osm_id": "node/8765903406",
+   "lat": 47.550382,
+   "lon": 7.618857,
+   "zone": 5,
+   "busyness": 0.68,
+   "hotspot_reports_250m": 147,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0288",
+   "osm_id": "node/3830666269",
+   "lat": 47.544485,
+   "lon": 7.618912,
+   "zone": 5,
+   "busyness": 0.67,
+   "hotspot_reports_250m": 131,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0289",
+   "osm_id": "node/3832285808",
+   "lat": 47.565879,
+   "lon": 7.619192,
+   "zone": 5,
+   "busyness": 0.15,
+   "hotspot_reports_250m": 0,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0290",
+   "osm_id": "node/13070768799",
+   "lat": 47.548709,
+   "lon": 7.619428,
+   "zone": 5,
+   "busyness": 0.62,
+   "hotspot_reports_250m": 82,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0291",
+   "osm_id": "node/11818373753",
+   "lat": 47.562833,
+   "lon": 7.619492,
+   "zone": 5,
+   "busyness": 0.47,
+   "hotspot_reports_250m": 19,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0292",
+   "osm_id": "node/7809572989",
+   "lat": 47.566317,
+   "lon": 7.619815,
+   "zone": 5,
+   "busyness": 0.15,
+   "hotspot_reports_250m": 0,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0293",
+   "osm_id": "node/11741455157",
+   "lat": 47.564603,
+   "lon": 7.620607,
+   "zone": 5,
+   "busyness": 0.15,
+   "hotspot_reports_250m": 0,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0294",
+   "osm_id": "node/3830665853",
+   "lat": 47.54418,
+   "lon": 7.620678,
+   "zone": 5,
+   "busyness": 0.67,
+   "hotspot_reports_250m": 131,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0295",
+   "osm_id": "node/11741455159",
+   "lat": 47.564444,
+   "lon": 7.620694,
+   "zone": 5,
+   "busyness": 0.15,
+   "hotspot_reports_250m": 0,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0296",
+   "osm_id": "node/3830273622",
+   "lat": 47.550566,
+   "lon": 7.620704,
+   "zone": 5,
+   "busyness": 0.59,
+   "hotspot_reports_250m": 64,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0297",
+   "osm_id": "node/7837468681",
+   "lat": 47.560991,
+   "lon": 7.620944,
+   "zone": 5,
+   "busyness": 0.15,
+   "hotspot_reports_250m": 0,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0298",
+   "osm_id": "node/11741455160",
+   "lat": 47.564203,
+   "lon": 7.620976,
+   "zone": 5,
+   "busyness": 0.15,
+   "hotspot_reports_250m": 0,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0299",
+   "osm_id": "node/8302850917",
+   "lat": 47.54764,
+   "lon": 7.62107,
+   "zone": 5,
+   "busyness": 0.62,
+   "hotspot_reports_250m": 82,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0300",
+   "osm_id": "node/8041275736",
+   "lat": 47.549269,
+   "lon": 7.621309,
+   "zone": 5,
+   "busyness": 0.62,
+   "hotspot_reports_250m": 78,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0301",
+   "osm_id": "node/3830273643",
+   "lat": 47.551463,
+   "lon": 7.621456,
+   "zone": 5,
+   "busyness": 0.63,
+   "hotspot_reports_250m": 90,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0302",
+   "osm_id": "node/11818373750",
+   "lat": 47.563818,
+   "lon": 7.621783,
+   "zone": 5,
+   "busyness": 0.52,
+   "hotspot_reports_250m": 30,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0303",
+   "osm_id": "node/4031360373",
+   "lat": 47.54775,
+   "lon": 7.622412,
+   "zone": 5,
+   "busyness": 0.62,
+   "hotspot_reports_250m": 82,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0304",
+   "osm_id": "node/3813570996",
+   "lat": 47.562479,
+   "lon": 7.6262,
+   "zone": 5,
+   "busyness": 0.6,
+   "hotspot_reports_250m": 69,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0305",
+   "osm_id": "node/9958931669",
+   "lat": 47.567535,
+   "lon": 7.62624,
+   "zone": 5,
+   "busyness": 0.15,
+   "hotspot_reports_250m": 0,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0306",
+   "osm_id": "node/9958909510",
+   "lat": 47.566792,
+   "lon": 7.626739,
+   "zone": 5,
+   "busyness": 0.15,
+   "hotspot_reports_250m": 0,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0307",
+   "osm_id": "node/9958931640",
+   "lat": 47.566644,
+   "lon": 7.626809,
+   "zone": 5,
+   "busyness": 0.45,
+   "hotspot_reports_250m": 15,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0308",
+   "osm_id": "node/9958931620",
+   "lat": 47.567005,
+   "lon": 7.626852,
+   "zone": 5,
+   "busyness": 0.15,
+   "hotspot_reports_250m": 0,
+   "waste": "trash"
+  },
+  {
+   "id": "BS-0309",
+   "osm_id": "node/9958931639",
+   "lat": 47.566594,
+   "lon": 7.627219,
+   "zone": 5,
+   "busyness": 0.45,
+   "hotspot_reports_250m": 15,
+   "waste": "trash"
+  }
+ ]
+}
