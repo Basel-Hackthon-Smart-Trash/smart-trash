@@ -204,6 +204,15 @@ h1 { margin: 2px 0 0; font-size: 26px; line-height: 1.15; }
 .alert { text-align: center; }
 .alert-icon { margin: 4px 0 0; font-size: 44px; line-height: 1; color: var(--fault); }
 .alert h2 { margin-top: 6px; font-size: 26px; }
+.alert-choices { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 14px; }
+.alert-choices .btn--help { grid-column: 1 / -1; text-decoration: none; }
+.btn--help { border-color: var(--line); color: var(--ink-soft); }
+.choice.choice--on { border-color: var(--fault); background: #ece9fb; color: var(--fault); }
+.note {
+  width: 100%; min-height: var(--tap); margin-top: 12px; padding: 0 16px;
+  border: 2px solid var(--line); border-radius: var(--radius-btn); font: 600 17px var(--font);
+}
+.btn:disabled { opacity: .45; }
 .countdown { height: 6px; margin-top: 16px; border-radius: 99px; background: var(--line); overflow: hidden; }
 .countdown i { display: block; height: 100%; background: var(--fault); animation: countdown linear forwards; }
 @keyframes countdown { from { width: 100%; } to { width: 0; } }

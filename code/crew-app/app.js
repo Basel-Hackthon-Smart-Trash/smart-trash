@@ -313,6 +313,7 @@
       [count((s) => s.result === "crew"), t("rTap")],
       [count((s) => s.result === "sensor-fault"), t("rFault")],
       [count((s) => s.result === "sensor-checked"), t("rChecked")],
+      [count((s) => s.result === "defect-other"), t("rOther")],
       ...PROBLEMS.map((p) => [count((s) => s.result === p.id), t("rSkipped", { reason: t(p.key) })]),
       [count((s) => s.source === "crew-added"), t("rAdded")],
     ].filter(([n]) => n > 0);
@@ -337,7 +338,7 @@
 
   function closeSheet() {
     // Dismissing the fault alert without an answer keeps the sensor flagged
-    if (faultAlert !== null) return answerFault(true);
+    if (faultAlert !== null) return answerFault("sensor");
     $("sheet").hidden = true;
     $("sheet-backdrop").hidden = true;
   }
@@ -407,7 +408,7 @@
         <h2>${t("mProblems")}</h2>
         <ul class="nearby">
           ${list.map((s) => `<li class="problem-row"><span class="stop-name">${escapeHtml(s.name)}</span>
-            <span class="stop-meta">${s.status === "fault" ? t("stateFault") : problemLabel(s.result)}</span></li>`).join("")
+            <span class="stop-meta">${s.result === "defect-other" ? t("fdOther") : s.status === "fault" ? t("stateFault") : problemLabel(s.result)}${s.note ? ` · ${escapeHtml(s.note)}` : ""}</span></li>`).join("")
             || `<li class="stop-meta">${t("noProblems")}</li>`}
         </ul>
         ${backToMenu()}`);
@@ -523,18 +524,53 @@
         <p class="alert-icon" aria-hidden="true">${"⚠\ufe0e"}</p>
         <h2>${t("faTitle")}</h2>
         <p class="sub">${t("faSub", { name: escapeHtml(stops[i].name) })}</p>
-        <div class="actions">
+        <div class="alert-choices">
           <button class="btn btn--fault" type="button" data-fault="yes">${t("faYes")}</button>
           <button class="btn" type="button" data-fault="no">${t("faNo")}</button>
+          <a class="btn btn--help" href="tel:${DATA.tour.depot.phone}" data-help>${t("faHelp")}</a>
         </div>
-        <div class="countdown"><i style="animation-duration:${ALERT_MS}ms"></i></div>
-        <p class="privacy">${t("faAuto", { s: ALERT_MS / 1000 })}</p>
+        <div class="countdown" id="countdown"><i style="animation-duration:${ALERT_MS}ms"></i></div>
+        <p class="privacy" id="countdown-text">${t("faAuto", { s: ALERT_MS / 1000 })}</p>
       </div>`);
     clearTimeout(alertTimer);
-    alertTimer = setTimeout(() => answerFault(true), ALERT_MS);
+    alertTimer = setTimeout(() => answerFault("sensor"), ALERT_MS);
   }
 
-  function answerFault(broken) {
+  // The crew is engaged: no more auto-confirm.
+  function stopCountdown() {
+    clearTimeout(alertTimer);
+    $("countdown")?.remove();
+    $("countdown-text")?.remove();
+  }
+
+  // Common defects with one tap; the note is optional (typing with gloves is hard).
+  function openDefectList() {
+    stopCountdown();
+    openSheet(`
+      <h2>${t("fdTitle")}</h2>
+      <p class="sub">${escapeHtml(stops[faultAlert].name)}</p>
+      <div class="choices">
+        ${["sensor", "bin", "other"].map((k) =>
+          `<button class="choice choice--wide" type="button" data-defect="${k}">${t({ sensor: "fdSensor", bin: "fdBin", other: "fdOther" }[k])}</button>`).join("")}
+      </div>
+      <input class="note" id="defect-note" type="text" maxlength="120" placeholder="${t("fdNote")}">
+      <div class="actions">
+        <button class="btn btn--primary" type="button" data-defect-send disabled>${t("fdSend")}</button>
+      </div>`);
+  }
+
+  function pickDefect(kind) {
+    $("sheet").querySelectorAll("[data-defect]").forEach((b) => b.classList.toggle("choice--on", b.dataset.defect === kind));
+    $("sheet").querySelector("[data-defect-send]").disabled = false;
+  }
+
+  function sendDefect() {
+    const picked = $("sheet").querySelector(".choice--on");
+    if (picked) answerFault(picked.dataset.defect, $("defect-note").value.trim());
+  }
+
+  // kind: "sensor" | "bin" | "other" (defect) or "ok" (bin was emptied, sensor fine)
+  function answerFault(kind, note = "") {
     const i = faultAlert;
     if (i === null) return;
     faultAlert = null;
@@ -542,8 +578,16 @@
     closeSheet();
     const s = stops[i];
     if (s.status !== "todo") return;
-    saveFeedback({ binId: s.binId, sensorBroken: broken, at: new Date().toISOString() });
-    if (broken) return sensorFault(i);
+    saveFeedback({ binId: s.binId, defect: kind === "ok" ? null : kind, note: note || undefined, at: new Date().toISOString() });
+    s.note = note;
+    if (kind === "sensor") return sensorFault(i);
+    if (kind === "bin") return demoProblem(i, "bin-damaged");
+    if (kind === "other") {
+      s.status = "fault";
+      s.result = "defect-other";
+      liveEvent(t("tOther", { name: s.name }), "fault");
+      return render();
+    }
     s.status = "done";
     s.result = "sensor-checked";
     liveEvent(t("tChecked", { name: s.name }), "ok");
@@ -660,7 +704,7 @@
   // ---------- events ----------
 
   document.addEventListener("click", (e) => {
-    const el = e.target.closest("button, [data-close]");
+    const el = e.target.closest("button, [data-close], [data-help]");
     if (!el) return;
     const d = el.dataset;
     if (d.start !== undefined) startTour();
@@ -669,7 +713,11 @@
     else if (d.problem) reportProblem(Number(d.stop), d.problem);
     else if (d.add) addBin(d.add);
     else if (d.sup !== undefined) checkSupervisor();
-    else if (d.fault) answerFault(d.fault === "yes");
+    else if (d.fault === "yes") openDefectList();
+    else if (d.fault === "no") answerFault("ok");
+    else if (d.help !== undefined) stopCountdown();  // the tel: link still opens the call
+    else if (d.defect) pickDefect(d.defect);
+    else if (d.defectSend !== undefined) sendDefect();
     else if (d.menu) openMenuPage(d.menu);
     else if (d.lang) setLang(d.lang);
     else if (d.team) { loginTeam = d.team; renderLogin(); }
