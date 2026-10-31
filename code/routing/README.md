@@ -112,6 +112,19 @@ fill level only; it does not create collection demand or select a route. No
 sensor quality/status semantics are defined yet, so backend quality fields
 remain an unresolved integration requirement.
 
+## Stage 3 planning inputs
+
+`assemble_planning_input` combines a `ClassifiedSnapshot` and a validated,
+explicitly ordered `TravelCostMatrix` into immutable `PlanningInput` data for a
+future solver. Candidates retain their bin identity, classification, and
+explicit collection demand. Unknown classifications are excluded with a sensor
+review diagnostic; they are not silently treated as zero demand or declared
+faulty. Missing demand and missing travel nodes are visible exclusions.
+
+An oversized demand remains intact and is marked with a diagnostic. `None` in a
+travel matrix is explicitly unreachable, while malformed dimensions and missing
+required nodes block assembly. No route optimization is implemented.
+
 ## Synthetic test data
 
 Fixtures in `tests/conftest.py` are synthetic and exist only to exercise the

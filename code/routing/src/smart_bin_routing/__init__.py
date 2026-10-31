@@ -19,6 +19,12 @@ from .models import (
     PlanningSnapshot,
     PlanningStatus,
 )
+from .planning import (
+    PlanningInput,
+    PlanningInputAssembly,
+    RoutingCandidate,
+    assemble_planning_input,
+)
 
 __all__ = [
     "BinMetadata",
@@ -33,6 +39,10 @@ __all__ = [
     "PlanningResult",
     "PlanningSnapshot",
     "PlanningStatus",
+    "PlanningInput",
+    "PlanningInputAssembly",
+    "RoutingCandidate",
+    "assemble_planning_input",
     "assess_observation",
     "classify_fill",
     "classify_snapshot",

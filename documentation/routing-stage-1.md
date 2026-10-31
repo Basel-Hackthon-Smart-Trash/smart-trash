@@ -53,6 +53,61 @@ travel costs are generated.
 
 No capacity, threshold, freshness, or demand-estimation defaults are claimed.
 
+## Stage 3: planning-input assembly
+
+Stage 3 adds `assemble_planning_input` and the immutable
+`PlanningInput`/`RoutingCandidate` models. It prepares solver-independent inputs
+but does not optimize or generate routes.
+
+The boundary contains the explicit planning timestamp, configured depot identity,
+stable bin identities, each bin's `FillClassification`, supplied
+`CollectionDemand`, truck capacity and demand unit, and the unchanged
+`TravelCostMatrix`. Candidate order follows classified-bin order. The travel
+matrix retains its provider-supplied `node_ids` order and is never silently
+reordered. Distance and duration matrices require their respective explicit
+units; asymmetric values are allowed.
+
+Classification and route readiness remain separate. Unknown classifications are
+kept visible through a `unknown_classification_sensor_check` diagnostic and are
+excluded from candidates pending sensor review. This does not declare a sensor
+fault; sensor-health correlation and quality semantics require later historical
+or backend inputs. Missing demand and bins absent from the travel-cost node
+ordering are explicit exclusions. Missing demand is never treated as zero, and
+fill fraction is never converted into demand.
+
+An oversized candidate is preserved with its supplied demand and a
+`demand_exceeds_truck_capacity` diagnostic. No split collection or extra trip is
+created. A malformed matrix or missing depot node blocks assembly. A `None`
+matrix cell is a valid explicitly unreachable connection and remains distinct
+from malformed dimensions or missing node identities; route feasibility through
+other nodes is a future solver responsibility.
+
+Synthetic tests use arbitrary `synthetic-*` identities and costs only. They are
+test data, not measurements for KVA Basel or actual bins. Real geographic,
+backend, sensor-health, and demand-estimation adapters remain deferred.
+
+Example:
+
+```python
+classified = classify_snapshot(snapshot, config, planning_time)
+assembly = assemble_planning_input(classified, synthetic_costs)
+assert assembly.valid
+assert assembly.planning_input.candidates[0].bin_id == "synthetic-bin-1"
+```
+
+Stage 3 checks:
+
+```text
+cd code/routing
+uv run pytest
+uv run ruff check .
+uv run ruff format --check .
+```
+
+Before real-data integration, the project still needs confirmed vehicle-access
+depot mapping, a travel-cost provider and units, demand semantics, and explicit
+sensor-quality/history requirements.
+
 ## Stage 2 classification flow
 
 The public flow is:

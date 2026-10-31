@@ -7,7 +7,7 @@ from datetime import datetime
 from enum import StrEnum
 from math import isfinite
 
-from .models import FillObservation, PlanningConfig, PlanningSnapshot
+from .models import CollectionDemand, FillObservation, PlanningConfig, PlanningSnapshot
 from .validation import Diagnostic, DiagnosticSeverity, ValidationReport, validate_snapshot
 
 
@@ -43,11 +43,13 @@ class ClassifiedSnapshot:
     entries: tuple[ClassifiedBin, ...]
     config: PlanningConfig
     validation: ValidationReport
+    demands: tuple[CollectionDemand, ...] = ()
 
     def __post_init__(self) -> None:
         if self.planning_time.tzinfo is None or self.planning_time.utcoffset() is None:
             raise ValueError("planning_time must be timezone-aware")
         object.__setattr__(self, "entries", tuple(self.entries))
+        object.__setattr__(self, "demands", tuple(self.demands))
 
     @property
     def valid(self) -> bool:
@@ -131,7 +133,7 @@ def classify_snapshot(
 
     validation = validate_snapshot(snapshot, config)
     if not validation.valid:
-        return ClassifiedSnapshot(planning_time, (), config, validation)
+        return ClassifiedSnapshot(planning_time, (), config, validation, snapshot.demands)
 
     observations_by_bin = {observation.bin_id: observation for observation in snapshot.observations}
     entries = []
@@ -151,4 +153,4 @@ def classify_snapshot(
                 diagnostics=diagnostics,
             )
         )
-    return ClassifiedSnapshot(planning_time, tuple(entries), config, validation)
+    return ClassifiedSnapshot(planning_time, tuple(entries), config, validation, snapshot.demands)

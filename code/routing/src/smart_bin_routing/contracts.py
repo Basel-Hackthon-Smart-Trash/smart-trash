@@ -37,6 +37,7 @@ class TravelCostMatrix:
     distances: tuple[tuple[float | None, ...], ...] | None = None
     durations_seconds: tuple[tuple[float | None, ...], ...] | None = None
     distance_unit: str | None = None
+    duration_unit: str | None = None
 
     def __post_init__(self) -> None:
         node_ids = tuple(self.node_ids)
@@ -74,10 +75,18 @@ class TravelCostMatrix:
             raise ValueError("at least one travel-cost matrix is required")
         if self.distances is not None and not self.distance_unit:
             raise ValueError("distance_unit is required when distances are supplied")
+        if self.durations_seconds is not None and not self.duration_unit:
+            raise ValueError("duration_unit is required when durations are supplied")
 
 
 class TravelCostProvider(Protocol):
-    """Provide normalized costs without exposing graph-library objects."""
+    """Provide normalized costs without exposing graph-library objects.
+
+    Implementations accept a normalized snapshot and requested node order, then
+    return costs using that exact order. They must declare units and represent
+    explicitly unavailable connections as ``None``; validation of dimensions,
+    values, and required identities belongs to the normalized boundary.
+    """
 
     def costs_for(self, snapshot: PlanningSnapshot, node_ids: Sequence[str]) -> TravelCostMatrix:
         """Return costs for the requested node order and planning snapshot."""
