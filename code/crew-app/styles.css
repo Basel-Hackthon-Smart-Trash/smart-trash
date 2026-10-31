@@ -78,6 +78,7 @@ h1 { margin: 2px 0 0; font-size: 26px; line-height: 1.15; }
 .seg { flex: 1; height: 10px; border-radius: 3px; background: rgba(255,255,255,.2); transition: background .3s; }
 .seg--done { background: var(--fill-low); }
 .seg--next { background: #fff; }
+.seg--fault { background: var(--fault); }
 .seg--skipped { background: repeating-linear-gradient(45deg, rgba(255,255,255,.45) 0 3px, transparent 3px 6px); }
 
 .map { height: 340px; border-radius: var(--radius); overflow: hidden; border: 1px solid var(--line); }
@@ -89,6 +90,7 @@ h1 { margin: 2px 0 0; font-size: 26px; line-height: 1.15; }
 }
 .marker--next { background: var(--accent); color: #fff; border-color: #fff; box-shadow: 0 0 0 3px var(--accent); }
 .marker--done, .marker--skipped { opacity: .45; }
+.marker--fault { border-color: var(--fault); color: var(--fault); }
 .marker--depot { background: var(--brand); color: #fff; border-color: #fff; width: 26px; height: 26px; font-size: 12px; }
 
 /* Next stop card */
@@ -118,6 +120,8 @@ h1 { margin: 2px 0 0; font-size: 26px; line-height: 1.15; }
 .stop--next .stop-num { background: var(--accent); border-color: var(--accent); color: #fff; }
 .stop--done, .stop--skipped { opacity: .55; }
 .stop--done .stop-num { background: var(--ink); color: #fff; }
+.stop--fault { border-color: var(--fault); }
+.stop--fault .stop-state { color: var(--fault); }
 .stop-name { font-weight: 700; }
 .stop-meta { font-size: 15px; color: var(--ink-soft); }
 .stop-state { font-size: 14px; font-weight: 700; color: var(--ink-soft); text-align: right; }
@@ -202,6 +206,7 @@ h1 { margin: 2px 0 0; font-size: 26px; line-height: 1.15; }
 
 .done { min-height: 70vh; display: grid; place-content: center; justify-items: center; gap: 8px; text-align: center; }
 .done-icon { display: grid; place-items: center; width: 88px; height: 88px; border-radius: 50%; background: var(--accent); color: #fff; font-size: 48px; font-weight: 800; }
+.done-sub { margin: 0; font-size: 18px; font-weight: 700; color: var(--ink-soft); }
 .done-report { list-style: none; margin: 8px 0 20px; padding: 0; display: grid; gap: 6px; text-align: left; font-size: 18px; }
 .done-report b { display: inline-block; min-width: 32px; font-size: 22px; }
 

@@ -16,7 +16,7 @@
   ];
 
   // Demo pace of the simulated sensor feed: one fill-drop event every few seconds.
-  const SENSOR_TICK_MS = 6000;
+  const SENSOR_TICK_MS = 2500;
 
   let stops, nearby, map, routeLayer, undoTimer, lastAction, started, sensorTimer;
 
@@ -70,7 +70,7 @@
       if (s.status === "skipped") return;
       const leg = distanceM(prev, s);
       total += leg;
-      if (s.status === "done") done += leg;
+      if (s.status !== "todo") done += leg;
       prev = s;
     });
     return { total, done };
@@ -187,7 +187,8 @@
     }
 
     $("stops").innerHTML = stops.map((s, i) => {
-      const state = s.status === "done" ? (s.result === "sensor" ? "✓ Sensor" : "✓ Emptied")
+      const state = s.status === "fault" ? "⚠ Sensor fault"
+        : s.status === "done" ? (s.result === "sensor" ? "✓ Sensor" : "✓ Emptied")
         : s.status === "skipped" ? PROBLEMS.find((p) => p.id === s.result).label : i === next ? "Next" : "";
       const tag = s.source === "crew-added" ? `<span class="badge badge--added">added by crew</span>` : "";
       return `<li><button class="stop stop--${i === next ? "next" : s.status}" type="button" data-open="${i}">
@@ -210,9 +211,12 @@
     const rows = [
       [count((s) => s.result === "sensor"), "emptied · detected by sensor"],
       [count((s) => s.result === "crew"), "emptied · tapped (fixed schedule)"],
+      [count((s) => s.result === "sensor-fault"), "sensor faulty · sent to maintenance"],
       ...PROBLEMS.map((p) => [count((s) => s.result === p.id), `skipped · ${p.label.toLowerCase()}`]),
       [count((s) => s.source === "crew-added"), "added by crew"],
     ].filter(([n]) => n > 0);
+    $("done-title").textContent = `Well done, ${DATA.tour.crew}!`;
+    $("done-sub").textContent = `All ${stops.length} bins emptied or reported.`;
     $("done-summary").innerHTML = rows.map(([n, label]) => `<li><b>${n}</b> ${label}</li>`).join("");
   }
 
@@ -258,7 +262,8 @@
   function sensorTick() {
     const i = nextIndex();
     if (i === -1 || !$("sheet").hidden || stops[i].source === "fixed-schedule") return;
-    sensorEmptied(i);
+    if (stops[i].demo === "sensor-fault") sensorFault(i);
+    else sensorEmptied(i);
   }
 
   function sensorEmptied(i) {
@@ -266,6 +271,15 @@
     s.status = "done";
     s.result = "sensor";
     showToast(`${s.name} ✓ detected by sensor`);
+    render();
+  }
+
+  // Crew visited, but the fill level did not drop: the sensor is flagged for maintenance.
+  function sensorFault(i) {
+    const s = stops[i];
+    s.status = "fault";
+    s.result = "sensor-fault";
+    showToast(`${s.name} ⚠ no fill drop · sensor flagged`);
     render();
   }
 

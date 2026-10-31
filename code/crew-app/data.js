@@ -25,7 +25,8 @@ window.SMART_TRASH_DATA = {
     { binId: "BS-0105", name: "Barfüsserplatz", area: "Grossbasel", lat: 47.5547, lon: 7.5893,
       fill: 97, source: "sensor", why: ["full ~10:00", "Herbstmesse"] },
     { binId: "BS-0132", name: "Petersplatz", area: "Grossbasel", lat: 47.5592, lon: 7.5824,
-      fill: 85, source: "sensor", why: ["full ~14:00", "Herbstmesse"] },
+      fill: 85, source: "sensor", why: ["full ~14:00", "Herbstmesse"],
+      demo: "sensor-fault" }, // demo script: no fill drop after the visit, sensor gets flagged
     { binId: "BS-0177", name: "Schützenmattpark", area: "Grossbasel", lat: 47.5550, lon: 7.5735,
       fill: 78, source: "sensor", why: ["full ~16:00", "park", "Saturday"] },
   ],
