@@ -1,4 +1,4 @@
-﻿# Proof of Concept for the System Architecture
+# Proof of Concept for the System Architecture
 
 ## 1. Purpose and Scenario
 
