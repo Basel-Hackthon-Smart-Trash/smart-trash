@@ -3,7 +3,7 @@
 ## Folders
 | Folder | Owner | What |
 | --- | --- | --- |
-| `code/routing` | Routing | `smart_bin_routing`: validation, classification, OR-Tools route for one truck, one trip. **Unchanged.** |
+| `code/routing` | Andy | `smart_bin_routing`: validation, classification, OR-Tools route for one truck, one trip. **Unchanged.** |
 | `code/prediction` | Abbas | `smartbins`: simulation, fault detection, fill forecast (hour, weekend, temperature, events), bin selection, truck limits, daily run |
 | `code/web` | Abbas / UI | Leaflet dashboard, reads `data/bins.json` |
 
