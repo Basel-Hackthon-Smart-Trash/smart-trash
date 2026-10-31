@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#14231b">
+  <title>Smart Trash Crew</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="phone">
+    <header class="topbar" id="topbar">
+      <div class="topbar-row">
+        <!-- Maria's logo, recoloured white for the dark top bar (source: assets/brand/) -->
+        <img class="brand" src="brand/logo-light.svg" alt="Smart Trash">
+        <div class="topbar-right" id="topbar-right" hidden>
+          <div class="crew"><span class="crew-dot" aria-hidden="true"></span><span id="crew-name"></span></div>
+          <button class="menu-btn" id="menu-btn" type="button" data-i18n-label="menu"><span class="menu-icon" aria-hidden="true"></span></button>
+        </div>
+      </div>
+      <!-- Route status: appears after "Start collecting", stays visible while scrolling -->
+      <div class="status" id="status" aria-live="polite" hidden>
+        <div class="status-text"><b id="status-stops"></b><span data-i18n="stops"></span><span id="status-left"></span></div>
+        <div class="segments" id="segments" aria-hidden="true"></div>
+        <p class="live-event" id="live-event" hidden></p>
+      </div>
+    </header>
+
+    <!-- Sign in: as a team, never as a person -->
+    <main id="screen-login" class="screen" hidden>
+      <div class="login">
+        <h1 data-i18n="loginTitle"></h1>
+        <p class="login-label" data-i18n="loginTeam"></p>
+        <div class="team-list" id="team-list"></div>
+        <p class="login-label" data-i18n="language"></p>
+        <div class="lang-list" id="login-langs"></div>
+        <button class="btn btn--primary btn--start" type="button" id="login-btn" data-i18n="loginBtn"></button>
+        <p class="privacy" data-i18n="loginNote"></p>
+      </div>
+    </main>
+
+    <main id="screen-tour" class="screen" hidden>
+      <section class="tour-head">
+        <p class="eyebrow"><span id="tour-date"></span> <span class="badge badge--data" id="data-label">SIMULATED</span></p>
+        <h1 id="tour-name"></h1>
+      </section>
+
+      <div id="map" class="map" role="img"></div>
+
+      <section class="next" id="next-card"></section>
+
+      <h2 class="section-title" data-i18n="todaysStops"></h2>
+      <ol class="stops" id="stops"></ol>
+
+      <button class="add-bin" id="add-bin-btn" type="button" data-i18n="addBin"></button>
+    </main>
+
+    <main id="screen-done" class="screen" hidden>
+      <div class="done">
+        <div class="done-icon" aria-hidden="true">✓</div>
+        <h1 id="done-title"></h1>
+        <p class="done-sub" id="done-sub"></p>
+        <ul class="done-report" id="done-summary"></ul>
+        <div class="done-actions">
+          <button class="btn" type="button" id="edit-report-btn" data-i18n="editReport"></button>
+          <button class="btn btn--primary" type="button" id="restart-btn" data-i18n="restart"></button>
+        </div>
+      </div>
+    </main>
+
+    <!-- Stop / Resume: full width at the bottom, where the thumb reaches with gloves -->
+    <div class="action-bar" id="action-bar" hidden>
+      <p class="bar-info" id="bar-info"></p>
+      <button class="stop-btn" id="stop-btn" type="button"></button>
+    </div>
+
+    <!-- Bottom sheet: content is filled by app.js -->
+    <div class="sheet-backdrop" id="sheet-backdrop" hidden></div>
+    <section class="sheet" id="sheet" role="dialog" aria-modal="true" hidden></section>
+
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="data.js"></script>
+  <script src="i18n.js"></script>
+  <script src="live-data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Smart Trash</title>
+  <style>
+    :root { --bg: #eef1ee; --ink: #111814; --brand: #14231b; --accent: #1f7a4d; --line: #d5dcd7; }
+    body { margin: 0; background: var(--bg); color: var(--ink); font: 18px/1.4 system-ui, -apple-system, sans-serif; }
+    header { padding: 16px; background: var(--brand); }
+    header img { display: block; height: 28px; }
+    main { max-width: 440px; margin: 0 auto; padding: 24px 16px; display: grid; gap: 12px; }
+    a { display: block; padding: 16px; border: 2px solid var(--line); border-radius: 8px; background: #fff; color: inherit; text-decoration: none; font-weight: 800; }
+    a small { display: block; font-weight: 500; color: #4a564f; }
+    a.main { border-color: var(--accent); background: var(--accent); color: #fff; }
+    a.main small { color: #e3f2ea; }
+  </style>
+</head>
+<body>
+  <header><img src="crew-app/brand/logo-light.svg" alt="Smart Trash"></header>
+  <main>
+    <a class="main" href="crew-app/?demo">Crew app · pitch demo<small>4 bins, one per case, about 20 s</small></a>
+    <a href="crew-app/">Crew app · live routes<small>Sign in as a truck, real route from the prediction</small></a>
+    <a href="web/">City dashboard<small>All trucks, all bins, waste hotspots</small></a>
+  </main>
+</body>
+</html>

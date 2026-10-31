@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Smart Bins – Dashboard</title>
+
+  <!-- Leaflet (map library) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <aside class="sidebar">
+    <h1>Smart Bins</h1>
+    <p class="data-badge" id="data-badge">Loading data…</p>
+
+    <section>
+      <h2>Today</h2>
+      <ul class="summary" id="summary"></ul>
+    </section>
+
+    <section>
+      <h2>Trucks today</h2>
+      <div id="zone-filter"></div>
+    </section>
+
+    <section>
+      <h2>Layers</h2>
+      <label class="layer-toggle"><input type="checkbox" id="toggle-hotspots" checked> Waste hotspots (real data)</label>
+    </section>
+
+    <section>
+      <h2>Legend</h2>
+      <ul class="legend">
+        <li><span class="dot red"></span>Empty today (90 % or full before tomorrow)</li>
+        <li><span class="dot orange"></span>Also empty today (70–89 %)</li>
+        <li><span class="dot green"></span>Skip</li>
+        <li><span class="dot fault"></span>Sensor fault</li>
+        <li><span class="dot depot"></span>Werkhof</li>
+      </ul>
+    </section>
+  </aside>
+
+  <main id="map"></main>
+
+  <script src="map.js"></script>
+</body>
+</html>

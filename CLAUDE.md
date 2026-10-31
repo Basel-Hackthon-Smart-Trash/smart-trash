@@ -1,8 +1,8 @@
 # Smart Trash: Empty When Full
 
-BaselHack project. Fill-level sensors + software that **predicts** when public bins are full, **detects** faulty sensors, and **optimizes** which bins to empty and the route. Pilot city: Lucerne (~960 bins). Tasks and roles: [documentation/tasks.md](documentation/tasks.md).
+BaselHack project. Fill-level sensors + software that **predicts** when public bins are full, **detects** faulty sensors, and **optimizes** which bins to empty and the route. Pilot city: Basel (demo data: Basel open data + OpenStreetMap bins). Depot: Stadtreinigung Werkhof, Brüssel-Strasse 22. Tasks and roles: [documentation/tasks.md](documentation/tasks.md).
 
-Team: Rai (UI/UX), Andy (Data Science), Abbas (Development, lead), Achim (Business). Talk to each person in the language they write in; code, docs and commits are in English.
+Team: Rai (UI/UX), Andy (Data Science), Abbas (Development, lead), Dennis (Backend, connects everything), Maria (Brand identity). Talk to each person in the language they write in; code, docs and commits are in English.
 
 ## Hackathon rules (judged: "Compliance with the rules")
 
@@ -25,7 +25,7 @@ Team: Rai (UI/UX), Andy (Data Science), Abbas (Development, lead), Achim (Busine
 - **Explain decisions:** every bin on a route shows a short "why" line (e.g. "full ~14:00 · 28 °C · event").
 - **Outdoor-ready crew view:** big touch targets (gloves), high contrast (sunlight), works offline.
 - **Fallback visible:** a bin with no valid data shows it is back on the fixed schedule.
-- Three views: crew (mobile), city administration (desktop), maintenance (desktop). DE + EN.
+- Three views: crew (mobile), city administration (desktop), maintenance (desktop). Languages: DE, FR, IT + EN.
 - Real open data for Basel lives in `assets/geojson/` (`100070`: litter reports, `100288`: street cleanliness index). It is not bin fill-level data; fill levels stay `SIMULATED`.
 
 ## Brand and design

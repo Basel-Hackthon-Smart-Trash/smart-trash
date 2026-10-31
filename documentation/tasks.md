@@ -12,7 +12,8 @@
 | Abbas | Development + **Project Lead (A)** | Architecture, backend, routing, hardware, final technical decisions, sprint planning |
 | Rai | UI/UX | Dashboard, mobile crew app, user research, pitch design |
 | Andy | Data Science | Forecast, fault detection, simulation, evaluation, impact numbers |
-| Achim | Marketing, Value & Finance | Business model, pricing, finance, market, legal/compliance, sales, pitch content |
+| Dennis | Backend | API and data flow that connects sensors, models and the dashboard |
+| Maria | Brand identity | Smart Trash visual identity (logo, colours, typography) |
 
 ### Decision rules
 - Each owner decides within their own area.
@@ -27,7 +28,7 @@
 Swiss cities empty public bins **when they are full, not when the plan says so**, which saves staff time, bags, fuel and CO₂, and leaves fewer overflowing bins.
 
 ### Goal for this project phase (A: 6 weeks)
-A **working pilot-ready system** plus a **signed or agreed pilot** with the City of Lucerne (or one other Swiss city).
+A **working pilot-ready system** plus a **signed or agreed pilot** with the City of Basel (or one other Swiss city).
 
 ### In scope (MVP)
 - Fill-level forecast per bin
@@ -95,19 +96,19 @@ Swiss cities empty public waste bins on a fixed schedule. Half-empty bins get em
 | 8 | Dashboard too much text, "nicht übersichtlich" | Rai | High |
 | 9 | Simulated vs. real data not always labelled | Rai + Andy | High |
 | 10 | Crew trust in daily changing routes | Rai | Medium |
-| 11 | Competition slide had wrong facts | Achim + Rai | High |
-| 12 | Business model open (HaaS vs. software license) | Achim | High |
-| 13 | CHF 20/month per bin is only an assumption | Achim | High |
-| 14 | No proof the system pays off for a city | Achim + Andy | High |
+| 11 | Competition slide had wrong facts | Rai | High |
+| 12 | Business model open (HaaS vs. software license) | Open | High |
+| 13 | CHF 20/month per bin is only an assumption | Open | High |
+| 14 | No proof the system pays off for a city | Andy | High |
 | 15 | Sensor choice open (dead zones, steel bins, battery) | Abbas | Medium |
 | 16 | Demo video not recorded | Rai | Medium |
 | 17 | **No physical sensor tested on a real bin** | Abbas | High |
 | 18 | **No ground truth**: nobody records the real fill level when a bin is emptied | Rai + Andy | High |
-| 19 | **Data protection and hosting not defined** (nDSG, Swiss hosting) | Achim + Abbas | Medium |
-| 20 | **Public procurement rules unknown** (how a city may buy from us) | Achim | Medium |
-| 21 | **No team agreement** on ownership of code, idea and revenue | Achim | High |
-| 22 | **Environmental impact not measured** (CO₂, bags, km), which is weak for an SDG 11 project | Andy + Achim | Medium |
-| 23 | **No installation and maintenance concept** (mounting, battery change, vandalism, support) | Abbas + Achim | Medium |
+| 19 | **Data protection and hosting not defined** (nDSG, Swiss hosting) | Abbas | Medium |
+| 20 | **Public procurement rules unknown** (how a city may buy from us) | Open | Medium |
+| 21 | **No team agreement** on ownership of code, idea and revenue | Open | High |
+| 22 | **Environmental impact not measured** (CO₂, bags, km), which is weak for an SDG 11 project | Andy | Medium |
+| 23 | **No installation and maintenance concept** (mounting, battery change, vandalism, support) | Abbas | Medium |
 | 24 | **Only one language**; Swiss cities need DE/FR/IT | Rai | Low |
 | 25 | **No security concept** (API auth, device security, data integrity) | Abbas | Medium |
 | 26 | **No backup if the live demo fails** | Abbas + Rai | High |
@@ -134,7 +135,7 @@ Swiss cities empty public waste bins on a fixed schedule. Half-empty bins get em
 
 **Pitch**
 - [ ] Record demo video + sensor-building video (self-made)
-- [ ] Pitch deck design (content from Achim)
+- [ ] Pitch deck design
 - [ ] Prepare **backup demo** (screen recording + offline version) with Abbas
 
 ### Andy: Data Science
@@ -149,12 +150,12 @@ Swiss cities empty public waste bins on a fixed schedule. Half-empty bins get em
 - [ ] Test cases for faults: stuck value, jump-and-freeze, "full but 0 kg", full bins that are *not* faults (#2)
 - [ ] More realistic simulation; document every assumption
 - [ ] Data quality checks (missing values, gaps, duplicates)
-- [ ] Collect open data from Lucerne and other cities to check the simulation
+- [ ] Collect open data from Basel and other cities to check the simulation
 - [ ] Analyse real data from Abbas' sensor prototype
 
 **Evaluation & impact**
 - [ ] Honest metrics vs. fair baseline: unnecessary emptyings, overflow hours, detected faults, distance, staff hours
-- [ ] **Impact numbers**: saved km, fuel, CO₂, plastic bags per year (input for Achim)
+- [ ] **Impact numbers**: saved km, fuel, CO₂, plastic bags per year (input for the pitch)
 - [ ] Sensitivity analysis: how good are results if sensors fail 5%/10%/20% of the time?
 
 ### Abbas: Development + Project Lead
@@ -166,14 +167,14 @@ Swiss cities empty public waste bins on a fixed schedule. Half-empty bins get em
 - [ ] Export/integration for city systems (CSV, GIS, maybe fleet software)
 
 **Hardware**
-- [ ] Sensor research: ultrasonic vs. ToF vs. radar, LoRaWAN coverage, battery life, price per bin (input for Achim)
+- [ ] Sensor research: ultrasonic vs. ToF vs. radar, LoRaWAN coverage, battery life, price per bin (input for the pitch)
 - [ ] **Build 1 sensor prototype and test it on 1–3 real bins** (with permission) for at least 1 week (#17)
 - [ ] Mounting concept for different bin types
 
 **Quality & security**
 - [ ] Automated tests + CI pipeline in Azure DevOps (incl. Andy's fault tests)
 - [ ] Security: API authentication, encrypted transfer, device IDs, access roles (crew/city/admin)
-- [ ] Swiss/EU hosting decision (with Achim)
+- [ ] Swiss/EU hosting decision
 - [ ] Technical documentation (setup, architecture diagram, API)
 - [ ] Backup demo that works without internet (#26)
 
@@ -181,7 +182,7 @@ Swiss cities empty public waste bins on a fixed schedule. Half-empty bins get em
 - [ ] Set up Azure DevOps board, sprints and Definition of Done (see section 8)
 - [ ] Lead the weekly sync, keep the decision log and risk list up to date
 
-### Achim: Marketing, Value & Finance
+### Open: Marketing, Value & Finance (no owner yet)
 **Value & positioning**
 - [ ] Value proposition per customer: city administration, Werkhof crew, waste contractors
 - [ ] Fix competition slide with correct facts (BrighterBins, Sensoneo, Bigbelly, others)
@@ -215,10 +216,10 @@ Swiss cities empty public waste bins on a fixed schedule. Half-empty bins get em
 - [ ] **SDG 11 impact story** with Andy's CO₂/bags/km numbers (#22)
 - [ ] Prepare **jury Q&A**: 15 hardest questions with answers (price, competitors, Bern failure, data protection, why us)
 - [ ] One-page flyer, landing page text, LinkedIn
-- [ ] Lead the pilot proposal for Lucerne
+- [ ] Lead the pilot proposal for Basel
 
-### Shared (all four)
-- [ ] Decide business model (Achim recommends)
+### Shared (whole team)
+- [ ] Decide business model
 - [ ] Sign the team agreement
 - [ ] Pilot proposal: 20–30 bins, 3 months, success metrics, go/no-go criteria
 - [ ] Rehearse the pitch at least 3 times with timer and Q&A
@@ -231,8 +232,8 @@ Swiss cities empty public waste bins on a fixed schedule. Half-empty bins get em
 |---|---|---|
 | Installation | Who mounts sensors, how long per bin, which tools? | Abbas |
 | Battery | How long does it last, who changes it, alarm before empty? | Abbas |
-| Vandalism/theft | Mounting, insurance, replacement cost | Abbas + Achim |
-| Support | Who answers when the city has a problem, response time? | Achim |
+| Vandalism/theft | Mounting, insurance, replacement cost | Abbas |
+| Support | Who answers when the city has a problem, response time? | Open |
 | Data loss | What happens if the network or a sensor is down? (fallback = fixed schedule) | Abbas + Andy |
 | Training | How is the crew trained (15-min session, short guide)? | Rai |
 
@@ -266,13 +267,13 @@ Swiss cities empty public waste bins on a fixed schedule. Half-empty bins get em
 | Risk | Impact | Likelihood | Countermeasure | Owner |
 |---|---|---|---|---|
 | Sensors give false readings (like Bern) | High | Medium | Plausibility checks + crew feedback + field test | Andy + Abbas |
-| No city wants a pilot | High | Medium | Interviews early, offer free pilot, ask contractors too | Achim |
-| Competitors are cheaper/better | High | Medium | Focus on differentiator, sensor-agnostic software | Achim |
+| No city wants a pilot | High | Medium | Interviews early, offer free pilot, ask contractors too | Open |
+| Competitors are cheaper/better | High | Medium | Focus on differentiator, sensor-agnostic software | Open |
 | Crew doesn't trust the app | Medium | Medium | Explanations, involve crew early, fallback to fixed plan | Rai |
 | Real savings smaller than simulated | Medium | High | Report honestly, focus on overflow reduction | Andy |
 | Team members leave/no time | High | Medium | Team agreement, documentation, clear owners | Abbas |
 | Live demo fails at pitch | High | Low | Offline backup + screen recording | Abbas + Rai |
-| Procurement makes sales slow | Medium | High | Start under thresholds with a pilot | Achim |
+| Procurement makes sales slow | Medium | High | Start under thresholds with a pilot | Open |
 
 ---
 
@@ -292,13 +293,16 @@ Swiss cities empty public waste bins on a fixed schedule. Half-empty bins get em
 
 | Who needs | What | From |
 |---|---|---|
-| Achim | Savings + impact numbers | Andy |
-| Achim | Hardware, connectivity, hosting cost | Abbas |
-| Rai | Pitch content and numbers | Achim |
+| Open | Savings + impact numbers | Andy |
+| Open | Hardware, connectivity, hosting cost | Abbas |
+| Rai | Pitch content and numbers | Open |
 | Rai | Model explanations for the "why" line | Andy |
 | Andy | Real sensor data + crew feedback data | Abbas + Rai |
 | Abbas | Final model and test cases | Andy |
 | Abbas | Screen designs | Rai |
+| Dennis | Data each screen needs (data contract) | Rai |
+| Rai | API endpoints for the screens | Dennis |
+| Rai | Brand identity (colours, logo, fonts) | Maria |
 
 ---
 
@@ -323,8 +327,8 @@ Swiss cities empty public waste bins on a fixed schedule. Half-empty bins get em
 |---|---|---|---|
 | A1 | Abbas is project lead | Team decision | All |
 | A2 | Project phase = 6 weeks | Team decision | All |
-| A3 | CHF 20/month per bin | Price research + interviews | Achim |
+| A3 | CHF 20/month per bin | Price research + interviews | Open |
 | A4 | KPI targets in section 6 | Literature + pilot data | Andy |
-| A5 | LoRaWAN coverage in Lucerne | Coverage maps | Abbas |
-| A6 | City allows sensor test on its bins | Ask Lucerne | Achim |
+| A5 | LoRaWAN coverage in Basel | Coverage maps | Abbas |
+| A6 | City allows sensor test on its bins | Ask Basel | Open |
 | A7 | Weekly sync on Monday evening | Team decision | Abbas |
