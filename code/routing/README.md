@@ -1,8 +1,9 @@
 # Smart Bin Routing Foundation
 
-Stage 1 provides source-independent Python contracts and structural validation
-for the future routing component. It does not classify fill levels, optimize a
-route, read GeoJSON, use OSMnx or OR-Tools, or connect to a backend.
+Stages 1 and 2 provide source-independent Python contracts, structural
+validation, and deterministic contextual fill classification. The package does
+not optimize a route, read GeoJSON, use OSMnx or OR-Tools, or connect to a
+backend.
 
 ## Development
 
@@ -45,6 +46,71 @@ confirmed in a later geographic stage.
 
 Capacity, demand units, and threshold values must be supplied explicitly.
 No operational defaults are claimed.
+
+## Stage 2 classification
+
+`FillObservation.fill_fraction` is a normalized fraction from `0` through `1`.
+Classification requires an explicit timezone-aware `planning_time` and a
+`PlanningConfig` with a positive `observation_max_age_seconds`. The exact
+boundaries are:
+
+```text
+green  = fill < yellow_threshold
+yellow = yellow_threshold <= fill < red_threshold
+red    = fill >= red_threshold
+```
+
+For example:
+
+```python
+from datetime import UTC, datetime
+
+from smart_bin_routing import (
+    BinMetadata,
+    FillObservation,
+    PlanningConfig,
+    PlanningSnapshot,
+    classify_snapshot,
+)
+
+config = PlanningConfig(
+    start_node_id="kva-basel",
+    end_node_id="kva-basel",
+    truck_capacity=100,
+    demand_unit="kg",
+    yellow_threshold=0.6,
+    red_threshold=0.8,
+    observation_max_age_seconds=3600,
+    allowed_future_skew_seconds=0,
+)
+snapshot = PlanningSnapshot(
+    bins=(BinMetadata("synthetic-bin-1"),),
+    observations=(
+        FillObservation(
+            "synthetic-bin-1",
+            0.8,
+            datetime(2026, 10, 31, 12, 0, tzinfo=UTC),
+        ),
+    ),
+)
+result = classify_snapshot(snapshot, config, datetime(2026, 10, 31, 12, 0, tzinfo=UTC))
+assert result.entries[0].classification.value == "red"
+```
+
+An observation exactly as old as `observation_max_age_seconds` is valid. An
+observation older than that is `unknown` with reason code
+`stale_observation`. An observation later than the planning time plus
+`allowed_future_skew_seconds` is `unknown` with reason code
+`future_observation`; the exact future boundary is valid. Missing observations
+remain visible as `unknown` with `missing_observation`. Input timestamps are
+never rewritten.
+
+Structural errors are returned in `result.validation` and prevent classified
+entries from being produced. A structurally valid snapshot can still contain
+per-bin contextual diagnostics and unknown classifications. Color describes
+fill level only; it does not create collection demand or select a route. No
+sensor quality/status semantics are defined yet, so backend quality fields
+remain an unresolved integration requirement.
 
 ## Synthetic test data
 

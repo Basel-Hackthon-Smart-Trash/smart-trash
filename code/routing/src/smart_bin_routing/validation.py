@@ -63,6 +63,17 @@ def validate_snapshot(snapshot: PlanningSnapshot, config: PlanningConfig) -> Val
                 )
             )
 
+    observation_ids = [item.bin_id for item in snapshot.observations]
+    for bin_id in sorted({item for item in observation_ids if observation_ids.count(item) > 1}):
+        diagnostics.append(
+            Diagnostic(
+                "duplicate_observation_bin",
+                "more than one observation refers to the same bin",
+                DiagnosticSeverity.ERROR,
+                bin_id,
+            )
+        )
+
     for demand in snapshot.demands:
         if demand.bin_id not in known_bins:
             diagnostics.append(

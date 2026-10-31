@@ -36,6 +36,7 @@ def synthetic_config() -> PlanningConfig:
         demand_unit="kg",
         yellow_threshold=0.5,
         red_threshold=0.8,
+        observation_max_age_seconds=3600,
     )
 
 

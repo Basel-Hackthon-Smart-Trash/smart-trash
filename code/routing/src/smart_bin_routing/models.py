@@ -128,9 +128,10 @@ class PlanningConfig:
     demand_unit: str
     yellow_threshold: float
     red_threshold: float
+    observation_max_age_seconds: float
     demand_policy: DemandPolicy = DemandPolicy.EXPLICIT_ONLY
     route_duration_limit_seconds: float | None = None
-    observation_max_age_seconds: float | None = None
+    allowed_future_skew_seconds: float = 0.0
 
     def __post_init__(self) -> None:
         _require_text(self.start_node_id, "start_node_id")
@@ -151,9 +152,18 @@ class PlanningConfig:
         ):
             if value is not None and _require_finite_number(value, name) <= 0:
                 raise ValueError(f"{name} must be greater than zero when provided")
+        future_skew = _require_finite_number(
+            self.allowed_future_skew_seconds, "allowed_future_skew_seconds"
+        )
+        if future_skew < 0:
+            raise ValueError("allowed_future_skew_seconds must not be negative")
         object.__setattr__(self, "truck_capacity", capacity)
         object.__setattr__(self, "yellow_threshold", yellow)
         object.__setattr__(self, "red_threshold", red)
+        object.__setattr__(
+            self, "observation_max_age_seconds", float(self.observation_max_age_seconds)
+        )
+        object.__setattr__(self, "allowed_future_skew_seconds", future_skew)
 
 
 @dataclass(frozen=True, slots=True)

@@ -35,4 +35,4 @@ def test_location_has_explicit_coordinate_fields():
 
 def test_planning_config_rejects_reversed_thresholds():
     with pytest.raises(ValueError, match="thresholds"):
-        PlanningConfig("start", "end", 10, "kg", 0.8, 0.5)
+        PlanningConfig("start", "end", 10, "kg", 0.8, 0.5, 3600)

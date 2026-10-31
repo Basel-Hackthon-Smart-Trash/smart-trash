@@ -30,6 +30,8 @@ def prototype_configuration(
     demand_unit: str,
     yellow_threshold: float,
     red_threshold: float,
+    observation_max_age_seconds: float,
+    allowed_future_skew_seconds: float = 0.0,
 ) -> PlanningConfig:
     """Build the documented prototype configuration with a round trip.
 
@@ -44,4 +46,6 @@ def prototype_configuration(
         demand_unit=demand_unit,
         yellow_threshold=yellow_threshold,
         red_threshold=red_threshold,
+        observation_max_age_seconds=observation_max_age_seconds,
+        allowed_future_skew_seconds=allowed_future_skew_seconds,
     )

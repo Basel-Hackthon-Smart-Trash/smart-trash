@@ -40,6 +40,7 @@ def test_prototype_configuration_is_kva_round_trip():
         demand_unit="kg",
         yellow_threshold=0.5,
         red_threshold=0.8,
+        observation_max_age_seconds=3600,
     )
 
     assert KVA_BASEL.node_id == "kva-basel"
