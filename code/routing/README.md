@@ -1,9 +1,10 @@
-# Smart Bin Routing Foundation
+# Smart Bin Routing
 
 Stages 1 and 2 provide source-independent Python contracts, structural
-validation, and deterministic contextual fill classification. The package does
-not optimize a route, read GeoJSON, use OSMnx or OR-Tools, or connect to a
-backend.
+validation, and deterministic contextual fill classification. Stage 3 assembles
+validated planning inputs, and Stage 4 provides a bounded OR-Tools optimizer
+for one mandatory-visit truck trip. The package does not read GeoJSON, use
+OSMnx, or connect to a backend.
 
 ## Development
 
@@ -123,7 +124,9 @@ faulty. Missing demand and missing travel nodes are visible exclusions.
 
 An oversized demand remains intact and is marked with a diagnostic. `None` in a
 travel matrix is explicitly unreachable, while malformed dimensions and missing
-required nodes block assembly. No route optimization is implemented.
+required nodes block assembly. Stage 4 optimizes the order of all admitted
+candidates with one truck and one trip. See
+`../../documentation/routing-stage-4.md` for the solver API and limitations.
 
 ## Synthetic test data
 

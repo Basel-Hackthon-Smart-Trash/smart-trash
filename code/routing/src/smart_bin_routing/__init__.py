@@ -15,6 +15,7 @@ from .models import (
     FillObservation,
     GeoLocation,
     PlanningConfig,
+    PlanningDiagnostic,
     PlanningResult,
     PlanningSnapshot,
     PlanningStatus,
@@ -25,6 +26,7 @@ from .planning import (
     RoutingCandidate,
     assemble_planning_input,
 )
+from .solver import CostMetric, SolverConfig, optimize_route
 
 __all__ = [
     "BinMetadata",
@@ -36,6 +38,7 @@ __all__ = [
     "FillClassification",
     "GeoLocation",
     "PlanningConfig",
+    "PlanningDiagnostic",
     "PlanningResult",
     "PlanningSnapshot",
     "PlanningStatus",
@@ -46,4 +49,7 @@ __all__ = [
     "assess_observation",
     "classify_fill",
     "classify_snapshot",
+    "CostMetric",
+    "SolverConfig",
+    "optimize_route",
 ]

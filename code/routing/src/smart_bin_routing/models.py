@@ -181,17 +181,36 @@ class PlanningSnapshot:
 
 
 class PlanningStatus(StrEnum):
-    """Status vocabulary reserved for the future planner result."""
+    """Outcome vocabulary for one bounded planning attempt."""
 
     NOT_RUN = "not_run"
     FEASIBLE = "feasible"
+    NO_WORK = "no_work"
     INFEASIBLE = "infeasible"
     INVALID_INPUT = "invalid_input"
+    SEARCH_EXHAUSTED = "search_exhausted"
+    TIME_LIMIT = "time_limit"
+    SOLVER_ERROR = "solver_error"
+
+
+@dataclass(frozen=True, slots=True)
+class PlanningDiagnostic:
+    """Structured explanation attached to a planning result."""
+
+    code: str
+    message: str
+    severity: str = "error"
+    bin_id: str | None = None
 
 
 @dataclass(frozen=True, slots=True)
 class PlanningResult:
-    """Result envelope without route-generation behavior in Stage 1."""
+    """Immutable result envelope for route planning.
+
+    ``stops`` contains bin IDs in collection order. ``route_nodes`` contains
+    the complete route, including the depot at both ends. Load totals are
+    after collection at each stop when supplied by the solver.
+    """
 
     status: PlanningStatus
     stops: tuple[str, ...] = ()
@@ -200,6 +219,16 @@ class PlanningResult:
     travel_duration_seconds: float | None = None
     skipped_bins: tuple[str, ...] = ()
     diagnostics: tuple[str, ...] = ()
+    route_nodes: tuple[str, ...] = ()
+    depot_id: str | None = None
+    truck_capacity: float | None = None
+    demand_unit: str | None = None
+    total_travel_cost: float | None = None
+    travel_cost_unit: str | None = None
+    objective_value: int | float | None = None
+    loads_after_stop: tuple[float, ...] = ()
+    diagnostic_details: tuple[PlanningDiagnostic, ...] = ()
+    solver_metadata: tuple[tuple[str, str], ...] = ()
 
     def __post_init__(self) -> None:
         if not isinstance(self.status, PlanningStatus):
@@ -207,3 +236,7 @@ class PlanningResult:
         object.__setattr__(self, "stops", tuple(self.stops))
         object.__setattr__(self, "skipped_bins", tuple(self.skipped_bins))
         object.__setattr__(self, "diagnostics", tuple(self.diagnostics))
+        object.__setattr__(self, "route_nodes", tuple(self.route_nodes))
+        object.__setattr__(self, "loads_after_stop", tuple(self.loads_after_stop))
+        object.__setattr__(self, "diagnostic_details", tuple(self.diagnostic_details))
+        object.__setattr__(self, "solver_metadata", tuple(self.solver_metadata))
