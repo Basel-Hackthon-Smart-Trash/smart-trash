@@ -259,5 +259,8 @@ h1 { margin: 2px 0 0; font-size: 26px; line-height: 1.15; }
 .legend .seg--todo { background: var(--line); }
 .legend .seg--skipped { background: repeating-linear-gradient(45deg, var(--ink-soft) 0 3px, transparent 3px 6px); }
 .legend .badge { flex: none; }
+.legend b { flex: none; width: 24px; text-align: center; font-size: 20px; }
+.pv-yes b { color: var(--accent); }
+.pv-no b { color: var(--fill-over); }
 
 .leaflet-control-attribution { font-size: 10px; }

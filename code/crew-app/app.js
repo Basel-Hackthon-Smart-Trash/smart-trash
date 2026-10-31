@@ -361,6 +361,7 @@
         <button class="menu-item" type="button" data-menu="report">${t("mReport")}</button>
         <button class="menu-item" type="button" data-menu="problems">${t("mProblems")}</button>
         <button class="menu-item" type="button" data-menu="legend">${t("mLegend")}</button>
+        <button class="menu-item" type="button" data-menu="privacy">${t("mPrivacy")}</button>
         <a class="menu-item menu-item--call" href="tel:${DATA.tour.depot.phone}">${t("mCall")}</a>
       </div>
       <p class="question">${t("language")}</p>
@@ -399,6 +400,16 @@
           ${list.map((s) => `<li class="problem-row"><span class="stop-name">${escapeHtml(s.name)}</span>
             <span class="stop-meta">${s.status === "fault" ? t("stateFault") : problemLabel(s.result)}</span></li>`).join("")
             || `<li class="stop-meta">${t("noProblems")}</li>`}
+        </ul>
+        ${backToMenu()}`);
+    }
+    // Matches what the app really does: reports per bin, no GPS, no per-person timing.
+    if (page === "privacy") {
+      const row = (ok, key) => `<li class="${ok ? "pv-yes" : "pv-no"}"><b>${ok ? "✓" : "✕"}</b>${t(key)}</li>`;
+      return openSheet(`
+        <h2>${t("pvTitle")}</h2>
+        <ul class="legend">
+          ${row(true, "pvYes1")}${row(true, "pvYes2")}${row(false, "pvNo1")}${row(false, "pvNo2")}${row(false, "pvNo3")}
         </ul>
         ${backToMenu()}`);
     }
