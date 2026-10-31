@@ -69,11 +69,12 @@ flowchart LR
 ## Try it
 
 ```bash
-cd code/crew-app
+cd code
 python3 -m http.server 5050
 ```
 
-Open <http://localhost:5050>, sign in, and tap **▶ Start collecting**. The demo tour has four bins, one for each case (sensor OK, sensor fault, no sensor, bin damaged), and ends with the report after about 20 seconds. The phone stays in the pocket: it only asks the crew when a sensor looks broken.
+- <http://localhost:5050/crew-app/>: sign in as a truck and see its real route from the prediction pipeline.
+- <http://localhost:5050/crew-app/?demo>: the pitch demo. Tap **▶ Start collecting**. The demo tour has four bins, one for each case (sensor OK, sensor fault, no sensor, bin damaged), and ends with the report after about 20 seconds. The phone stays in the pocket: it only asks the crew when a sensor looks broken.
 
 Details: [documentation/crew-app.md](documentation/crew-app.md)
 

@@ -6,12 +6,20 @@ Code: [`code/crew-app/`](../code/crew-app/) · User stories: [user-stories.md](u
 
 ## Run it
 
+Serve the `code/` folder, so the crew app can read the same data as the city dashboard:
+
 ```bash
-cd code/crew-app
+cd code
 python3 -m http.server 5050 --bind 0.0.0.0
 ```
 
-Open `http://localhost:5050` on the laptop. To use it on a phone on the same Wi-Fi, open `http://<laptop-ip>:5050`.
+| URL | What |
+|---|---|
+| `http://localhost:5050/crew-app/` | Live routes from `code/web/data/bins.json` (one truck per team) |
+| `http://localhost:5050/crew-app/?demo` | The pitch demo: four bins, one per case |
+| `http://localhost:5050/web/` | City dashboard (all trucks) |
+
+Without `bins.json` the crew app falls back to the demo tour. On a phone on the same Wi-Fi, use the laptop's IP instead of `localhost`.
 
 The map tiles and Leaflet load from the internet. Everything else works offline.
 
@@ -43,6 +51,22 @@ The supervisor code for **＋ Add a bin** is `1234`. It is a demo value, the app
 | `data.js` | **SIMULATED** demo data: teams, tour, depot, stops, nearby bins |
 | `i18n.js` | UI texts in DE, FR, IT, EN, plus translations of the "why" keywords |
 | `styles.css` | Design tokens (colours, radius, touch size) at the top, then the components |
+
+## Live data (prediction + routing)
+
+`live-data.js` reads `code/web/data/bins.json`, the output of the daily run in `code/prediction` (see [prediction-and-integration.md](prediction-and-integration.md)). The city dashboard reads the same file.
+
+| Crew app | `bins.json` |
+|---|---|
+| Teams on the sign-in screen | `routes[n]` → "Truck n+1 · stops · km" |
+| Stops in order | `routes[n].stops` → `bins[id]` |
+| Fill level | `fill_percent` |
+| "why" keywords | `predicted_full_at` and the context in `reason`, e.g. "full ~12:00 · weekend" |
+| Fixed schedule | `fault: true` |
+| Bins the crew may add | Bins on no route, sensor OK, closest to the route |
+| SIMULATED / REAL | `simulated` |
+
+**Missing:** street names. The file has `osm_id` but no `name`; the app shows the bin id until a `name` or `street` field is added.
 
 ## Data contract (for the backend)
 
@@ -87,6 +111,7 @@ The supervisor code for **＋ Add a bin** is `1234`. It is a demo value, the app
 ## Known limits
 
 - Fill levels, the sensor feed and the depot phone number are simulated.
+- Live mode simulates the sensor events along the real route; real events will come from the MQTT broker.
 - The location check (Defect alert near a suspect bin, 40 m) needs HTTPS, e.g. GitHub Pages; on plain http it does nothing and the demo feed triggers the alert instead.
 - FR and IT texts need a check by a native speaker.
 - City administration and maintenance views are not built yet.
