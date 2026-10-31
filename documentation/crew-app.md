@@ -24,8 +24,8 @@ The map tiles and Leaflet load from the internet. Everything else works offline.
 | # | Bin | Case | What the app shows |
 |---|---|---|---|
 | 1 | Messeplatz | Sensor sees the fill drop | ✓ detected by sensor |
-| 2 | Claraplatz | No fill drop after the visit | Alert pops up: "Sensor problem?" Yes / No; confirms itself after 6 s |
-| 3 | Mittlere Brücke | No valid sensor: fixed schedule | ✓ emptied · tapped |
+| 2 | Mittlere Brücke | No valid sensor: fixed schedule | ✓ emptied · tapped |
+| 3 | Claraplatz | No fill drop after the visit | Alert "Defect?" Yes / No / Help; Yes opens common defects + optional note; confirms itself after 6 s |
 | 4 | Barfüsserplatz | Crew reports a problem | skipped · Bin damaged |
 
 4. At the end, the **Well done** screen shows the tour report.
