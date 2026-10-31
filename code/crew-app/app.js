@@ -88,9 +88,9 @@
   function initMap() {
     if (!window.L) { $("map").hidden = true; return; }
     map = L.map("map", { zoomControl: false, attributionControl: true });
-    L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
+    L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
       maxZoom: 19,
-      attribution: "© OpenStreetMap, © CARTO",
+      attribution: "© OpenStreetMap contributors",
     }).addTo(map);
     routeLayer = L.layerGroup().addTo(map);
     const pts = [DATA.tour.depot, ...stops].map((s) => [s.lat, s.lon]);
@@ -127,6 +127,7 @@
     $("data-label").textContent = DATA.dataLabel;
     $("tour-date").textContent = new Date(DATA.tour.date).toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long" });
     $("tour-name").textContent = DATA.tour.name;
+    $("crew-name").textContent = DATA.tour.crew;
     $("progress-num").textContent = `${finished}/${total}`;
     $("progress-fill").style.width = `${(finished / total) * 100}%`;
 

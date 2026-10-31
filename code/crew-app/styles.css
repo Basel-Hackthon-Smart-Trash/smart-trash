@@ -52,7 +52,8 @@ button { font: inherit; cursor: pointer; }
   background: var(--brand); color: #fff;
 }
 .brand { font-weight: 800; font-size: 20px; letter-spacing: -.01em; }
-.brand-sub { font-weight: 500; opacity: .7; }
+.crew { display: flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: 999px; background: rgba(255,255,255,.12); font-weight: 700; font-size: 16px; }
+.crew-dot { width: 10px; height: 10px; border-radius: 50%; background: #51cf66; }
 
 .badge {
   display: inline-block; padding: 3px 9px; border-radius: 999px;
@@ -62,10 +63,10 @@ button { font: inherit; cursor: pointer; }
 .badge--fixed { background: #ece9fb; color: var(--fault); }
 .badge--added { background: #e3f2ea; color: var(--accent); }
 
-.screen { padding: 16px 16px 120px; }
+.screen { padding: 16px 16px 32px; }
 
 .tour-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 12px; }
-.eyebrow { margin: 0; color: var(--ink-soft); font-size: 15px; font-weight: 600; }
+.eyebrow { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin: 0; color: var(--ink-soft); font-size: 15px; font-weight: 600; }
 h1 { margin: 2px 0 0; font-size: 26px; line-height: 1.15; }
 .progress { text-align: right; }
 .progress-num { display: block; font-size: 28px; font-weight: 800; }
@@ -73,7 +74,7 @@ h1 { margin: 2px 0 0; font-size: 26px; line-height: 1.15; }
 .progress-bar { height: 8px; margin: 12px 0 16px; background: var(--line); border-radius: 99px; overflow: hidden; }
 #progress-fill { height: 100%; width: 0; background: var(--accent); transition: width .3s; }
 
-.map { height: 210px; border-radius: var(--radius); overflow: hidden; border: 1px solid var(--line); }
+.map { height: 260px; border-radius: var(--radius); overflow: hidden; border: 1px solid var(--line); }
 .marker {
   display: grid; place-items: center;
   width: 30px; height: 30px; border-radius: 50%;
@@ -138,13 +139,7 @@ h1 { margin: 2px 0 0; font-size: 26px; line-height: 1.15; }
 .hint { margin: 12px 0 0; font-weight: 700; }
 .btn--ghost { border-color: transparent; background: transparent; color: var(--ink-soft); text-decoration: underline; font-weight: 700; }
 
-.fab {
-  position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
-  z-index: 600; min-height: var(--tap); padding: 0 26px;
-  border: none; border-radius: 999px;
-  background: var(--brand); color: #fff; font-weight: 800; font-size: 18px;
-  box-shadow: 0 8px 24px rgba(0,0,0,.25);
-}
+.add-bin { margin-top: 16px; }
 
 /* Bottom sheet */
 .sheet-backdrop { position: fixed; inset: 0; z-index: 900; background: rgba(10,16,12,.5); }

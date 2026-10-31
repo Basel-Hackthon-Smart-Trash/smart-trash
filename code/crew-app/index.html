@@ -11,14 +11,14 @@
 <body>
   <div class="phone">
     <header class="topbar">
-      <div class="brand">Smart Trash <span class="brand-sub">Crew</span></div>
-      <span class="badge badge--data" id="data-label">SIMULATED</span>
+      <div class="brand">Smart Trash</div>
+      <div class="crew" aria-label="Signed in team"><span class="crew-dot" aria-hidden="true"></span><span id="crew-name"></span></div>
     </header>
 
     <main id="screen-tour" class="screen">
       <section class="tour-head">
         <div>
-          <p class="eyebrow" id="tour-date"></p>
+          <p class="eyebrow"><span id="tour-date"></span> <span class="badge badge--data" id="data-label">SIMULATED</span></p>
           <h1 id="tour-name"></h1>
         </div>
         <div class="progress" aria-live="polite">
@@ -35,7 +35,7 @@
       <h2 class="section-title">Today's stops</h2>
       <ol class="stops" id="stops"></ol>
 
-      <button class="fab" id="add-bin-btn" type="button">＋ Add a bin</button>
+      <button class="btn add-bin" id="add-bin-btn" type="button">＋ Overflowing bin not on my list</button>
     </main>
 
     <main id="screen-done" class="screen" hidden>
