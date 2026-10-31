@@ -62,6 +62,7 @@ The supervisor code for **＋ Add a bin** is `1234`. It is a demo value, the app
     fill,                            // predicted %, or null when there is no valid sensor
     source,                          // "sensor" | "fixed-schedule"
     why: ["full ~11:00", "Herbstmesse"],  // max 3 keywords
+    suspect,                         // true: sensor reading looks wrong; the app asks when the crew is near
     demo                             // demo script only: "sensor-fault" | "bin-damaged"
   }],
   nearby: [{ binId, name, area, lat, lon, fill }]   // bins the crew can add
@@ -81,10 +82,11 @@ The supervisor code for **＋ Add a bin** is `1234`. It is a demo value, the app
 | Explain decisions | Every stop has a "why" line |
 | Outdoor-ready | Touch targets of at least 48–60 px, high contrast, offline sync status |
 | Fallback visible | Bins without a valid sensor show a "fixed schedule" badge and need one tap |
-| No worker tracking | Team sign-in; reports per bin; privacy page in the menu |
+| No worker tracking | Team sign-in; reports per bin; privacy page in the menu; location only while the app is open, compared on the phone, never sent or stored |
 
 ## Known limits
 
 - Fill levels, the sensor feed and the depot phone number are simulated.
+- The location check (Defect alert near a suspect bin, 40 m) needs HTTPS, e.g. GitHub Pages; on plain http it does nothing and the demo feed triggers the alert instead.
 - FR and IT texts need a check by a native speaker.
 - City administration and maintenance views are not built yet.

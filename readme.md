@@ -34,7 +34,7 @@ A mobile web app for the street-cleaning crew:
 - **Status bar** with one segment per bin, stops done and km left.
 - **End-of-tour report** about the bins, never about the worker.
 - **Menu**: today's report, problems, legend, privacy, call the depot, sync status, DE / FR / IT / EN.
-- **Team sign-in**: no personal accounts, no GPS tracking, no ranking of workers.
+- **Team sign-in**: no personal accounts, no tracking, no ranking of workers. Location is read only while the app is open, and only on the phone.
 
 ## How a tour works
 
@@ -62,7 +62,8 @@ flowchart LR
 | One defect list everywhere | The same three choices in the alert and after Stop: learned once |
 | Yes / No / Help, auto-confirm after 6 s | Like a navigation alert: never blocks the crew when nobody answers |
 | Undo after every report | Mistakes with gloves happen; nothing is final after one tap |
-| Team sign-in, reports per bin | No GPS tracking, no times per person, no ranking: the crew must not feel monitored |
+| Team sign-in, reports per bin | No tracking, no times per person, no ranking: the crew must not feel monitored |
+| Location only when the app is open | Opening the app next to a suspect bin brings up the Defect alert; the position stays on the phone, is never sent or stored, and needs no new hardware |
 | Bins without valid data show "fixed schedule" | The fallback is visible, never hidden |
 
 ## Try it

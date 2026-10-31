@@ -54,6 +54,7 @@ We keep the project lean: all user stories are for the crew member. Each one is 
 - One "Start collecting" button before the tour
 - After start: no taps needed; fill-drop events check off the stops
 - "Stop" pauses the tour at any time: Resume (big), Report a problem (same defect list), Call depot, or End tour now (small link); remaining stops show as "not done" in the report
+- Opening the app within about 40 m of a suspect bin brings up the same Defect alert; the location is used only while the app is open, stays on the phone, and is never sent or stored
 - Every answer can be undone: an Undo after each defect report and after ending the tour early
 - End of tour: "Well done" and a report: emptied by sensor, emptied by tap, sensor faults, skipped with reason, added
 - The report is about bins and the tour, never about the worker: no times, no speed, no ranking
