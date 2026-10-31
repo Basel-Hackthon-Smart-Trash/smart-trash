@@ -76,6 +76,14 @@ Open <http://localhost:5050>, sign in, and tap **▶ Start collecting**. The dem
 
 Details: [documentation/crew-app.md](documentation/crew-app.md)
 
+## Status
+
+| | |
+|---|---|
+| **Built** | Crew app: tour, live sensor events, defect alert, Stop / pause, undo, report, menu, team sign-in, DE / FR / IT / EN |
+| **Next** | Connect the backend ([architecture PoC](documentation/Proof_of_Concept_for_the_system_architecture.md)); city administration view; maintenance view |
+| **Later** | Real sensors on real bins; forecast model on real data; route optimisation with several vehicles |
+
 ## Honest data
 
 - All fill levels, forecasts and sensor events in the demo are **SIMULATED**, and the app says so.
@@ -101,6 +109,12 @@ Work is tracked on the [project board](https://github.com/orgs/Basel-Hackthon-Sm
 | Andy | Data science |
 | Dennis | Backend |
 | Maria | Brand identity |
+
+## Credits
+
+- Map: [Leaflet](https://leafletjs.com) and © [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors
+- Open data: [Open Data Basel-Stadt](https://data.bs.ch) (datasets 100070 and 100288)
+- AI tooling (allowed by the hackathon rules) helped write code and documentation; all code was written during the hack
 
 ## License
 
