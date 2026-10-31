@@ -2,9 +2,9 @@
 
 **Predict · Detect · Optimize.** Fill-level sensors and software that tell a city which public bins are full, which sensors are faulty, and which bins to empty today.
 
-BaselHack 2026 · pilot city: Lucerne (about 960 public bins)
+BaselHack 2026 · pilot city: **Basel** (309 bins in the demo area, from OpenStreetMap)
 
-**Try it on your phone:** [crew app demo](https://basel-hackthon-smart-trash.github.io/smart-trash/code/crew-app/?demo)
+**Try it on your phone:** [crew app, live routes](https://basel-hackthon-smart-trash.github.io/smart-trash/code/crew-app/) · [crew app, pitch demo](https://basel-hackthon-smart-trash.github.io/smart-trash/code/crew-app/?demo) · [city dashboard](https://basel-hackthon-smart-trash.github.io/smart-trash/code/web/)
 
 <p>
   <img src="assets/screenshots/crew-login.png" width="200" alt="Sign in as a team">
@@ -15,7 +15,7 @@ BaselHack 2026 · pilot city: Lucerne (about 960 public bins)
 
 ## The problem
 
-Swiss cities empty public bins on a **fixed schedule**. Half-empty bins get emptied, while bins at lakesides, parks and events overflow on hot weekends. Lucerne spends around 16,100 working hours a year emptying its bins.
+Swiss cities empty public bins on a **fixed schedule**. Half-empty bins get emptied, while bins on the Rhine banks, in parks and at events overflow on warm weekends. For scale: Lucerne alone spends around 16,100 working hours a year emptying its bins.
 
 Sensors alone don't solve this. False readings made Bern stop two sensor pilots (2012, 2018).
 
