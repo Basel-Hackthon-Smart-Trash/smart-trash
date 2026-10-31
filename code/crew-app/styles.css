@@ -101,6 +101,8 @@ h1 { margin: 2px 0 0; font-size: 26px; line-height: 1.15; }
   min-height: 44px; padding: 0 14px; border: 2px solid rgba(255,255,255,.5); border-radius: var(--radius-btn);
   background: transparent; color: #fff; font-size: 15px; font-weight: 800;
 }
+.reported { display: flex; align-items: center; justify-content: space-between; }
+.undo-link { min-height: 40px; padding: 0 12px; border: 2px solid currentColor; border-radius: var(--radius-btn); background: transparent; color: inherit; font-weight: 800; }
 .stop-btn--paused { background: #fff; border-color: #fff; color: var(--brand); }
 .segments { display: flex; gap: 4px; margin-top: 8px; }
 .seg { flex: 1; height: 10px; border-radius: 3px; background: rgba(255,255,255,.2); transition: background .3s; }
@@ -273,7 +275,7 @@ h1 { margin: 2px 0 0; font-size: 26px; line-height: 1.15; }
 }
 
 .toast {
-  position: fixed; left: 50%; bottom: 96px; transform: translateX(-50%);
+  position: fixed; left: 50%; bottom: calc(16px + env(safe-area-inset-bottom)); transform: translateX(-50%);
   z-index: 1100; display: flex; align-items: center; gap: 16px;
   width: calc(100% - 32px); max-width: 408px; padding: 12px 12px 12px 18px;
   background: var(--ink); color: #fff; border-radius: var(--radius); font-weight: 700;

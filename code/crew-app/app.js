@@ -578,7 +578,7 @@
     if (faultAlert !== null) return answerFault(picked.dataset.defect, note);
     closeSheet();
     applyDefect(defectStop, picked.dataset.defect, note);
-    if (paused) openPause(true);
+    if (paused) openPause(defectStop);
   }
 
   // kind: "sensor" | "bin" | "other" (defect) or "ok" (bin was emptied, sensor fine)
@@ -596,27 +596,41 @@
     if (!s || s.status !== "todo") return;
     saveFeedback({ binId: s.binId, defect: kind === "ok" ? null : kind, note: note || undefined, at: new Date().toISOString() });
     s.note = note;
-    if (kind === "sensor") return sensorFault(i);
-    if (kind === "bin") return demoProblem(i, "bin-damaged");
-    if (kind === "other") {
+    if (kind === "sensor") sensorFault(i);
+    else if (kind === "bin") demoProblem(i, "bin-damaged");
+    else if (kind === "other") {
       s.status = "fault";
       s.result = "defect-other";
       liveEvent(t("tOther", { name: s.name }), "fault");
-      return render();
+      render();
+    } else {
+      s.status = "done";
+      s.result = "sensor-checked";
+      liveEvent(t("tChecked", { name: s.name }), "ok");
+      render();
     }
-    s.status = "done";
-    s.result = "sensor-checked";
-    liveEvent(t("tChecked", { name: s.name }), "ok");
-    render();
+    // Wrong answer? Undo puts the stop back; the pause sheet has its own Undo button.
+    if (!paused) showToast(t("tReported", { name: s.name }), () => undoStop(i));
+  }
+
+  function undoStop(i) {
+    const s = stops[i];
+    s.status = "todo";
+    s.result = null;
+    s.note = "";
+    removeLastFeedback();
   }
 
   // ---------- stop: pause the tour (sensor feed stops) ----------
 
   // Three choices and a small link: Resume is the big, safe default; End is hard to hit by mistake.
-  function openPause(reported) {
+  // reportedStop: index of the stop just reported from this sheet, offers an Undo
+  function openPause(reportedStop) {
+    const reported = Number.isInteger(reportedStop);
     openSheet(`
       <h2>${t("pTitle")}</h2>
-      ${reported ? `<p class="sync sync--on">${t("pReported")}</p>` : ""}
+      ${reported ? `<p class="sync sync--on reported">${t("pReported")}
+        <button class="undo-link" type="button" data-undo-stop="${reportedStop}">${t("undo")}</button></p>` : ""}
       <div class="actions">
         <button class="btn btn--primary btn--start" type="button" data-resume>${t("resume")}</button>
         <button class="btn" type="button" data-pause-report>${t("pReport")}</button>
@@ -646,6 +660,10 @@
     closeSheet();
     stops.forEach((s) => { if (s.status === "todo") { s.status = "skipped"; s.result = "not-done"; } });
     render();
+    showToast(t("tEnded"), () => {
+      stops.forEach((s) => { if (s.result === "not-done") { s.status = "todo"; s.result = null; } });
+      paused = true;  // back to the paused tour; Resume continues
+    });
   }
 
   function demoCrewTap(i) {
@@ -771,6 +789,7 @@
     else if (d.resume !== undefined) resumeTour();
     else if (d.pauseReport !== undefined) openDefectList(nextIndex());
     else if (d.end !== undefined) endTour();
+    else if (d.undoStop !== undefined) { undoStop(Number(d.undoStop)); openPause(); render(); }
     else if (d.fault === "no") answerFault("ok");
     else if (d.help !== undefined) stopCountdown();  // the tel: link still opens the call
     else if (d.defect) pickDefect(d.defect);
