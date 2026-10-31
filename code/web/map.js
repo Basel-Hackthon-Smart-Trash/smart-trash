@@ -17,7 +17,8 @@ const COLORS = {
 const ZONE_COLORS = ["#2b6cb0", "#c05621", "#2f855a", "#805ad5", "#b83280", "#2c7a7b"];
 
 // ===== Map =====
-const map = L.map("map").setView(START_VIEW, START_ZOOM);
+// On phones one finger scrolls the page (to reach the numbers below); pinch still zooms the map
+const map = L.map("map", { dragging: !L.Browser.mobile, tap: !L.Browser.mobile }).setView(START_VIEW, START_ZOOM);
 
 L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
   maxZoom: 19,
