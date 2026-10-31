@@ -2,17 +2,17 @@ import pytest
 
 from smart_bin_routing.contracts import TravelCostMatrix
 from smart_bin_routing.models import PlanningStatus
-from smart_bin_routing.prototype_config import KVA_BASEL, prototype_configuration
+from smart_bin_routing.prototype_config import STADTREINIGUNG_BASEL, prototype_configuration
 
 
 def test_travel_cost_matrix_preserves_explicit_order():
     matrix = TravelCostMatrix(
-        node_ids=("kva-basel", "bin-1"),
+        node_ids=("stadtreinigung-basel", "bin-1"),
         distances=((0.0, 2.5), (None, 0.0)),
         distance_unit="km",
     )
 
-    assert matrix.node_ids == ("kva-basel", "bin-1")
+    assert matrix.node_ids == ("stadtreinigung-basel", "bin-1")
     assert matrix.distances[1][0] is None
 
 
@@ -34,7 +34,7 @@ def test_travel_cost_matrix_rejects_non_numeric_values():
         )
 
 
-def test_prototype_configuration_is_kva_round_trip():
+def test_prototype_configuration_is_stadtreinigung_round_trip():
     config = prototype_configuration(
         truck_capacity=100,
         demand_unit="kg",
@@ -43,9 +43,9 @@ def test_prototype_configuration_is_kva_round_trip():
         observation_max_age_seconds=3600,
     )
 
-    assert KVA_BASEL.node_id == "kva-basel"
-    assert KVA_BASEL.vehicle_access_confirmed is False
-    assert config.start_node_id == config.end_node_id == "kva-basel"
+    assert STADTREINIGUNG_BASEL.node_id == "stadtreinigung-basel"
+    assert STADTREINIGUNG_BASEL.vehicle_access_confirmed is False
+    assert config.start_node_id == config.end_node_id == "stadtreinigung-basel"
 
 
 def test_planning_status_has_no_claim_of_optimality():

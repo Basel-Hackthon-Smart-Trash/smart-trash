@@ -33,10 +33,10 @@ uv run python examples/stage5_collection_plan.py
 
 The example uses synthetic observations, explicit test demands, and
 approximate `synthetic-km` costs. It does not represent verified navigation
-or real KVA Basel travel distances.
+or real Stadtreinigung Basel travel distances.
 
-The package supports Python 3.12 through 3.15. Runtime dependencies are from
-the standard library. Pytest and Ruff are development dependencies.
+The package supports Python 3.12 through 3.15. OR-Tools is the routing runtime
+dependency; Pytest and Ruff are development dependencies.
 
 ## Contract boundaries
 
@@ -54,14 +54,17 @@ missing connection is zero cost.
 The documented prototype models a round trip:
 
 ```text
-KVA Basel -> selected collection stops -> KVA Basel
+Stadtreinigung (SR) -> selected collection stops -> Stadtreinigung (SR)
 ```
 
-Both node identifiers are `kva-basel`. The descriptive location is KVA Basel,
-Hagenaustrasse 40, 4056 Basel, a general-waste incineration plant. This is a
-project modeling assumption, not proof of a depot or vehicle entrance. No
-coordinates are included; vehicle access and road-network snapping must be
-confirmed in a later geographic stage.
+Both node identifiers are `stadtreinigung-basel`. The modeled address is
+Stadtreinigung (SR), Brüssel-Strasse 22, 4053 Basel, Switzerland. This is a
+project modeling decision, not proof of a depot entrance or unloading access.
+Coordinates are deliberately absent from the runtime configuration. The
+explicit geocoding utility in
+`smart_bin_routing.adapters.depot_geocoding` can create an accepted local
+address-point record for a later geographic provider; it does not verify truck
+access or perform road-network snapping.
 
 Capacity, demand units, and threshold values must be supplied explicitly.
 No operational defaults are claimed.
@@ -93,8 +96,8 @@ from smart_bin_routing import (
 )
 
 config = PlanningConfig(
-    start_node_id="kva-basel",
-    end_node_id="kva-basel",
+    start_node_id="stadtreinigung-basel",
+    end_node_id="stadtreinigung-basel",
     truck_capacity=100,
     demand_unit="kg",
     yellow_threshold=0.6,

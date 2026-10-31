@@ -16,11 +16,11 @@ class PrototypeLocation:
     vehicle_access_confirmed: bool = False
 
 
-KVA_BASEL = PrototypeLocation(
-    node_id="kva-basel",
-    name="KVA Basel",
-    description="General-waste incineration plant",
-    address="Hagenaustrasse 40, 4056 Basel",
+STADTREINIGUNG_BASEL = PrototypeLocation(
+    node_id="stadtreinigung-basel",
+    name="Stadtreinigung (SR)",
+    description="Fixed modeled route start and end",
+    address="Brüssel-Strasse 22, 4053 Basel, Switzerland",
 )
 
 
@@ -40,8 +40,8 @@ def prototype_configuration(
     """
 
     return PlanningConfig(
-        start_node_id=KVA_BASEL.node_id,
-        end_node_id=KVA_BASEL.node_id,
+        start_node_id=STADTREINIGUNG_BASEL.node_id,
+        end_node_id=STADTREINIGUNG_BASEL.node_id,
         truck_capacity=truck_capacity,
         demand_unit=demand_unit,
         yellow_threshold=yellow_threshold,

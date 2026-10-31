@@ -37,7 +37,7 @@ snapshot = PlanningSnapshot(
     ),
 )
 travel_costs = TravelCostMatrix(
-    ("synthetic-bin-b", "kva-basel", "synthetic-bin-a"),
+    ("synthetic-bin-b", "stadtreinigung-basel", "synthetic-bin-a"),
     distances=((0, 4, 1), (2, 0, 3), (5, 1, 0)),
     distance_unit="synthetic-km",
 )
@@ -45,7 +45,7 @@ travel_costs = TravelCostMatrix(
 result = plan_collection(CollectionPlanRequest(snapshot, config, planning_time, travel_costs))
 
 print("data: SIMULATED (synthetic observations and approximate test distances)")
-print("depot: KVA Basel (modeled, vehicle access unconfirmed)")
+print("depot: Stadtreinigung Basel (modeled, vehicle access unconfirmed)")
 print("input bins:", len(snapshot.bins))
 print("eligible bins:", sum(item.routing_ready for item in result.bins))
 print("status:", result.status.value)
