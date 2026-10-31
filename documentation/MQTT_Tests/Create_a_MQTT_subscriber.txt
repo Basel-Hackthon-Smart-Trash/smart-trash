@@ -3,7 +3,7 @@ You can use temporary Mosquitto containers as test clients.
 
 Terminal 1: start a subscriber
 
-docker run --rm -it \
+sudo docker run --rm -it \
   --network smart-trash-network \
   eclipse-mosquitto:2 \
   mosquitto_sub \
@@ -14,7 +14,7 @@ docker run --rm -it \
   -v
   
 Terminal 2: publish a test batch
-docker run --rm \
+sudo docker run --rm \
   --network smart-trash-network \
   eclipse-mosquitto:2 \
   mosquitto_pub \
