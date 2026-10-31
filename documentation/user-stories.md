@@ -11,7 +11,7 @@ We keep the project lean: **three user stories**, all for the crew member. Each 
 | # | Story | Issue |
 |---|---|---|
 | 1 | See which bins need me today and why | [#1](https://github.com/Basel-Hackthon-Smart-Trash/smart-trash/issues/1) |
-| 2 | One-tap feedback after emptying | [#2](https://github.com/Basel-Hackthon-Smart-Trash/smart-trash/issues/2) |
+| 2 | Zero taps: the sensor detects emptying, I only report problems | [#2](https://github.com/Basel-Hackthon-Smart-Trash/smart-trash/issues/2) |
 | 3 | Stay in control: skip a stop or add a bin | [#3](https://github.com/Basel-Hackthon-Smart-Trash/smart-trash/issues/3) |
 
 ### 1 · See which bins need me today and why
@@ -24,21 +24,22 @@ We keep the project lean: **three user stories**, all for the crew member. Each 
 - All fill levels carry a SIMULATED or REAL badge
 - Readable at a glance outdoors: large text, high contrast
 
-### 2 · One-tap feedback after emptying
+### 2 · Zero taps: the sensor detects emptying, I only report problems
 
-**As a crew member, I can report the real fill level with one tap after emptying a bin, so that the system learns and broken sensors are caught, without extra work for me.**
+**As a crew member, I just empty the bin and move on, so that the app adds no work to my day. The sensor sees the fill level drop and checks the stop off.**
 
-- Options: empty / half / full / overflowing / sensor broken
-- One tap saves and jumps to the next stop; about 2 seconds per bin
-- Large buttons usable with gloves
-- Undo is possible right after tapping
-- Feedback is stored per bin, not per worker: no time tracking, no ranking of workers
+- A normal stop needs no tap: the fill drop marks it as emptied
+- Bins without valid sensor data (fixed schedule) need one tap: "Emptied"
+- Problems only, one tap: not reachable / unsafe / bin damaged
+- Large buttons usable with gloves; undo right after tapping
+- A sensor that shows no drop after a visit is flagged as faulty automatically
+- Reports are stored per bin, not per worker: no time tracking, no ranking of workers
 
 ### 3 · Stay in control: skip a stop or add a bin
 
 **As a crew member, I can skip a stop or add a bin that is not on my route, so that my own experience on the street still counts and the system learns from it.**
 
-- Skip a stop with one tap and a reason: already empty / not reachable / unsafe
+- Skip a stop with one tap and a reason: not reachable / unsafe / bin damaged
 - Add an overflowing bin I see nearby from the map or list
 - Skipped and added bins are sent back as feedback for the forecast
 - No extra justification beyond the one-tap reason

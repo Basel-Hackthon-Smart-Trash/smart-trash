@@ -134,6 +134,8 @@ h1 { margin: 2px 0 0; font-size: 26px; line-height: 1.15; }
   font-weight: 800; font-size: 19px;
 }
 .btn--primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.btn--demo { border-style: dashed; border-color: var(--ink-soft); color: var(--ink-soft); font-size: 17px; }
+.hint { margin: 12px 0 0; font-weight: 700; }
 .btn--ghost { border-color: transparent; background: transparent; color: var(--ink-soft); text-decoration: underline; font-weight: 700; }
 
 .fab {

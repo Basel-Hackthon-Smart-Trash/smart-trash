@@ -1,6 +1,6 @@
 // Smart Trash crew prototype. Covers the three user stories:
 //   #1 see which bins need me today and why
-//   #2 one-tap feedback after emptying
+//   #2 zero taps: the sensor detects emptying; the crew only reports problems
 //   #3 stay in control: skip a stop or add a bin
 (function () {
   "use strict";
@@ -8,16 +8,11 @@
   const DATA = window.SMART_TRASH_DATA;
   const FEEDBACK_KEY = "smarttrash.feedback";
 
-  const LEVELS = [
-    { id: "empty", label: "Empty", pct: 5 },
-    { id: "half", label: "Half", pct: 50 },
-    { id: "full", label: "Full", pct: 90 },
-    { id: "overflowing", label: "Overflowing", pct: 100 },
-  ];
-  const SKIP_REASONS = [
-    { id: "already-empty", label: "Already empty" },
+  // Exceptions only. A normal stop needs no tap: the fill drop tells the system it was emptied.
+  const PROBLEMS = [
     { id: "not-reachable", label: "Not reachable" },
     { id: "unsafe", label: "Unsafe" },
+    { id: "bin-damaged", label: "Bin damaged" },
   ];
 
   let stops, nearby, map, routeLayer, undoTimer, lastAction;
@@ -71,7 +66,7 @@
     return finished.length ? finished[finished.length - 1] : DATA.tour.depot;
   }
 
-  // Feedback is stored per bin only: no worker id, no timing per person.
+  // Crew reports are stored per bin only: no worker id, no timing per person.
   function saveFeedback(entry) {
     try {
       const all = JSON.parse(localStorage.getItem(FEEDBACK_KEY) || "[]");
@@ -149,14 +144,18 @@
         <span class="stop-meta">${formatDistance(distanceM(from, n))} · ${escapeHtml(n.area)}</span>
       </div>
       ${whyHtml(n.why)}
-      <div class="actions" style="display:grid;gap:8px;margin-top:14px">
-        <button class="btn btn--primary" type="button" data-open="${next}">Bin emptied →</button>
+      <p class="hint">${n.source === "sensor" ? "Just empty it. The sensor checks it off." : "No sensor here: tap when emptied."}</p>
+      <div class="actions" style="display:grid;gap:8px;margin-top:10px">
+        ${n.source === "sensor"
+          ? `<button class="btn btn--demo" type="button" data-sensor="${next}">▶ Demo: sensor sees emptying</button>`
+          : `<button class="btn btn--primary" type="button" data-emptied="${next}">✓ Emptied</button>`}
         <a class="btn" href="https://www.google.com/maps/dir/?api=1&destination=${n.lat},${n.lon}" target="_blank" rel="noopener">Navigate</a>
+        <button class="btn btn--ghost" type="button" data-open="${next}">Problem?</button>
       </div>`;
 
     $("stops").innerHTML = stops.map((s, i) => {
-      const state = s.status === "done" ? `✓ ${LEVELS.find((l) => l.id === s.result)?.label || "Done"}`
-        : s.status === "skipped" ? "Skipped" : i === next ? "Next" : "";
+      const state = s.status === "done" ? (s.result === "sensor" ? "✓ Sensor" : "✓ Emptied")
+        : s.status === "skipped" ? PROBLEMS.find((p) => p.id === s.result).label : i === next ? "Next" : "";
       const tag = s.source === "crew-added" ? `<span class="badge badge--added">added by crew</span>` : "";
       return `<li><button class="stop stop--${i === next ? "next" : s.status}" type="button" data-open="${i}">
           <span class="stop-num">${s.status === "done" ? "✓" : i + 1}</span>
@@ -174,11 +173,12 @@
   function renderDone() {
     const done = stops.filter((s) => s.status === "done").length;
     const skipped = stops.filter((s) => s.status === "skipped").length;
+    const bySensor = stops.filter((s) => s.result === "sensor").length;
     const added = stops.filter((s) => s.source === "crew-added").length;
-    $("done-summary").textContent = `${done} bins emptied · ${skipped} skipped · ${added} added by you. Thanks — your feedback trains tomorrow's forecast.`;
+    $("done-summary").textContent = `${done} emptied · ${bySensor} checked off by sensor, no tap · ${skipped} skipped · ${added} added`;
   }
 
-  // ---------- stop sheet: feedback (story #2) + skip (story #3) ----------
+  // ---------- stop sheet: problems only (stories #2 and #3) ----------
 
   function openSheet(html) {
     $("sheet").innerHTML = `<div class="sheet-grip"></div>${html}`;
@@ -198,52 +198,42 @@
       <h2>${escapeHtml(s.name)}</h2>
       <p class="sub">${s.fill == null ? "No valid sensor data · fixed schedule" : `Predicted ${s.fill}%`} · ${escapeHtml(s.binId)}</p>
       ${whyHtml(s.why)}
-      <p class="question">How full was it?</p>
+      ${s.source === "sensor" ? "" : `<div class="actions"><button class="btn btn--primary" type="button" data-emptied="${i}">✓ Emptied</button></div>`}
+      <p class="question">Problem? Skip with one tap:</p>
       <div class="choices">
-        ${LEVELS.map((l) => `
-          <button class="choice" type="button" data-feedback="${l.id}" data-stop="${i}">
-            <span class="lvl"><i style="width:${l.pct}%;background:${fillColor(l.pct)}"></i></span>
-            ${l.label}
-          </button>`).join("")}
-        <button class="choice choice--wide choice--fault" type="button" data-feedback="sensor-broken" data-stop="${i}">⚠ Sensor broken</button>
+        ${PROBLEMS.map((p) => `<button class="choice choice--wide" type="button" data-problem="${p.id}" data-stop="${i}">${p.label}</button>`).join("")}
       </div>
-      <p class="privacy">Feedback is about the bin, not about you.</p>
-      <div class="actions">
-        <button class="btn btn--ghost" type="button" data-skip="${i}">Skip this stop</button>
-      </div>`);
+      <p class="privacy">Reports are about the bin, not about you.</p>
+      <div class="actions"><button class="btn btn--ghost" type="button" data-close>Back</button></div>`);
   }
 
-  function openSkip(i) {
+  // In the real system this comes from the backend when the fill level drops; here a demo button triggers it.
+  function sensorEmptied(i) {
     const s = stops[i];
-    openSheet(`
-      <h2>Skip ${escapeHtml(s.name)}?</h2>
-      <p class="sub">One tap, no explanation needed.</p>
-      <div class="choices">
-        ${SKIP_REASONS.map((r) => `<button class="choice choice--wide" type="button" data-skip-reason="${r.id}" data-stop="${i}">${r.label}</button>`).join("")}
-      </div>
-      <div class="actions"><button class="btn btn--ghost" type="button" data-open="${i}">Back</button></div>`);
-  }
-
-  function recordFeedback(i, level) {
-    const s = stops[i];
-    const prev = { status: s.status, result: s.result };
     s.status = "done";
-    s.result = level;
-    saveFeedback({ binId: s.binId, level, at: new Date().toISOString() });
-    closeSheet();
-    const label = level === "sensor-broken" ? "Sensor broken" : LEVELS.find((l) => l.id === level).label;
-    showToast(`${s.name}: ${label} ✓`, () => { Object.assign(s, prev); removeLastFeedback(); });
+    s.result = "sensor";
+    showToast(`${s.name} ✓ detected by sensor`);
     render();
   }
 
-  function recordSkip(i, reason) {
+  // Bins without valid sensor data (fixed schedule) need one tap.
+  function crewEmptied(i) {
     const s = stops[i];
-    const prev = { status: s.status, result: s.result };
-    s.status = "skipped";
-    s.result = reason;
-    saveFeedback({ binId: s.binId, skipped: reason, at: new Date().toISOString() });
+    s.status = "done";
+    s.result = "crew";
+    saveFeedback({ binId: s.binId, emptied: true, at: new Date().toISOString() });
     closeSheet();
-    showToast(`${s.name} skipped`, () => { Object.assign(s, prev); removeLastFeedback(); });
+    showToast(`${s.name} ✓ emptied`, () => { s.status = "todo"; s.result = null; removeLastFeedback(); });
+    render();
+  }
+
+  function reportProblem(i, problem) {
+    const s = stops[i];
+    s.status = "skipped";
+    s.result = problem;
+    saveFeedback({ binId: s.binId, problem, at: new Date().toISOString() });
+    closeSheet();
+    showToast(`${s.name} skipped`, () => { s.status = "todo"; s.result = null; removeLastFeedback(); });
     render();
   }
 
@@ -286,8 +276,9 @@
 
   function showToast(text, undo) {
     clearTimeout(undoTimer);
-    lastAction = undo;
+    lastAction = undo || null;
     $("toast-text").textContent = text;
+    $("toast-undo").hidden = !undo;
     $("toast").hidden = false;
     undoTimer = setTimeout(() => { $("toast").hidden = true; lastAction = null; }, 5000);
   }
@@ -299,9 +290,9 @@
     if (!t) return;
     const d = t.dataset;
     if (d.open !== undefined) openStop(Number(d.open));
-    else if (d.feedback) recordFeedback(Number(d.stop), d.feedback);
-    else if (d.skip !== undefined) openSkip(Number(d.skip));
-    else if (d.skipReason) recordSkip(Number(d.stop), d.skipReason);
+    else if (d.sensor !== undefined) sensorEmptied(Number(d.sensor));
+    else if (d.emptied !== undefined) crewEmptied(Number(d.emptied));
+    else if (d.problem) reportProblem(Number(d.stop), d.problem);
     else if (d.add) addBin(d.add);
     else if (d.close !== undefined) closeSheet();
   });
