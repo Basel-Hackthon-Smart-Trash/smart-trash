@@ -1,6 +1,6 @@
 # User Stories
 
-We keep the project lean: **three user stories**, all for the crew member. Each one is a GitHub issue on the [project board](https://github.com/orgs/Basel-Hackthon-Smart-Trash/projects/1).
+We keep the project lean: all user stories are for the crew member. Each one is a GitHub issue on the [project board](https://github.com/orgs/Basel-Hackthon-Smart-Trash/projects/1).
 
 ## Persona
 
@@ -13,6 +13,9 @@ We keep the project lean: **three user stories**, all for the crew member. Each 
 | 1 | See which bins need me today and why | [#1](https://github.com/Basel-Hackthon-Smart-Trash/smart-trash/issues/1) |
 | 2 | Zero taps: the sensor detects emptying, I only report problems | [#2](https://github.com/Basel-Hackthon-Smart-Trash/smart-trash/issues/2) |
 | 3 | Stay in control: skip a stop or add a bin | [#3](https://github.com/Basel-Hackthon-Smart-Trash/smart-trash/issues/3) |
+| 4 | Start collecting, sensors check off bins, tour report | [#10](https://github.com/Basel-Hackthon-Smart-Trash/smart-trash/issues/10) |
+| 5 | Always see how far along the route I am | [#11](https://github.com/Basel-Hackthon-Smart-Trash/smart-trash/issues/11) |
+| 6 | Menu: report, problems, help, language, sign in / out | [#12](https://github.com/Basel-Hackthon-Smart-Trash/smart-trash/issues/12) |
 
 ### 1 · See which bins need me today and why
 
@@ -43,3 +46,31 @@ We keep the project lean: **three user stories**, all for the crew member. Each 
 - Add an overflowing bin I see nearby from the map or list; a supervisor confirms it with a code, because it changes the route
 - Skipped and added bins are sent back as feedback for the forecast
 - No extra justification beyond the one-tap reason
+
+### 4 · Start collecting, sensors check off bins, tour report
+
+**As a crew member, I tap "Start collecting" once and then just work. The sensors check off each bin, and at the end I see a short tour report.**
+
+- One "Start collecting" button before the tour
+- After start: no taps needed; fill-drop events check off the stops
+- End of tour: "Well done" and a report: emptied by sensor, emptied by tap, sensor faults, skipped with reason, added
+- The report is about bins and the tour, never about the worker: no times, no speed, no ranking
+
+### 5 · Always see how far along the route I am
+
+**As a crew member, I always see how far along my route I am, so that I know at a glance how much is left while I walk.**
+
+- Status bar fixed under the top bar, visible while scrolling, shown after "Start collecting"
+- One segment per bin, coloured by status: emptied, next, sensor fault, skipped, to do
+- Stops done / total and km left
+
+### 6 · Menu: report, problems, help, language, sign in / out
+
+**As a crew member, I can open a simple menu to find what I need without leaving the tour.**
+
+- Sign in as a team, never as a person; sign out from the menu
+- Today's report at any time, problems reported today, legend of colours and badges
+- Sync status: online with last sync, or offline with reports waiting
+- One tap to call the depot
+- Privacy page: what we store and what we do not
+- Languages: DE, FR, IT, EN (starts in English)
