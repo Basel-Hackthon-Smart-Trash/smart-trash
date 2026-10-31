@@ -18,8 +18,9 @@
     { id: "bin-damaged", key: "binDamaged" },
   ];
 
-  // Demo pace of the simulated sensor feed: one fill-drop event every few seconds.
-  const SENSOR_TICK_MS = 1500;
+  // Demo pace of the simulated sensor feed: a pause at each stop, then the event animates.
+  const SENSOR_TICK_MS = 1600;
+  const EVENT_MS = 1300;
 
   let stops, nearby, map, routeLayer, undoTimer, lastAction, started, sensorTimer;
   let lastSync = new Date(), pending = 0;  // reports stay on the phone while offline
@@ -30,7 +31,7 @@
 
   function reset() {
     started = false;
-    clearInterval(sensorTimer);
+    clearTimeout(sensorTimer);
     $("live-event").hidden = true;
     stops = DATA.stops.map((s) => ({ ...s, status: "todo", result: null }));
     nearby = DATA.nearby.map((b) => ({ ...b }));
@@ -105,7 +106,7 @@
 
   function fillHtml(pct) {
     if (pct == null) return `<span class="badge badge--fixed">${t("fixedSchedule")}</span>`;
-    return `<span class="fill"><span class="fill-bar"><i style="width:${pct}%;background:${fillColor(pct)}"></i></span>${pct}%</span>`;
+    return `<span class="fill"><span class="fill-bar"><i style="width:${pct}%;background:${fillColor(pct)}"></i></span><span class="fill-num">${pct}%</span></span>`;
   }
 
   function whyHtml(why) {
@@ -316,7 +317,7 @@
   const reportHtml = (rows) => rows.map(([n, label]) => `<li><b>${n}</b> ${label}</li>`).join("");
 
   function renderDone() {
-    clearInterval(sensorTimer);
+    clearTimeout(sensorTimer);
     $("done-title").textContent = t("wellDone", { crew: session.team });
     $("done-sub").textContent = t("allDone", { n: stops.length });
     $("done-summary").innerHTML = reportHtml(reportRows());
@@ -433,21 +434,50 @@
   // Start collecting: from here the crew needs no taps; sensor events check off the stops.
   function startTour() {
     started = true;
-    clearInterval(sensorTimer);
-    sensorTimer = setInterval(sensorTick, SENSOR_TICK_MS);
+    clearTimeout(sensorTimer);
     render();
+    sensorTimer = setTimeout(sensorTick, SENSOR_TICK_MS);
   }
 
   // In the real system the backend pushes a fill-drop event; here a timer simulates the feed.
   // A fixed-schedule bin has no sensor: in the demo the crew's tap is simulated too, so the run never stalls.
+  // Each event first animates (so the jury sees the process), then updates the tour.
   function sensorTick() {
     const i = nextIndex();
-    if (i === -1 || !$("sheet").hidden) return;
-    if (stops[i].source === "fixed-schedule") demoCrewTap(i);
-    else if (stops[i].demo === "sensor-fault") sensorFault(i);
-    else if (stops[i].demo === "bin-damaged") demoProblem(i, "bin-damaged");
-    else sensorEmptied(i);
-    if (navigator.onLine) lastSync = new Date();
+    if (i === -1) return;
+    if (!$("sheet").hidden) { sensorTimer = setTimeout(sensorTick, 500); return; }
+    const s = stops[i];
+    const kind = s.source === "fixed-schedule" ? "tap" : s.demo === "sensor-fault" ? "fault" : s.demo === "bin-damaged" ? "skip" : "ok";
+    animateEvent(kind);
+    sensorTimer = setTimeout(() => {
+      if (s.status === "todo") {
+        if (kind === "tap") demoCrewTap(i);
+        else if (kind === "fault") sensorFault(i);
+        else if (kind === "skip") demoProblem(i, "bin-damaged");
+        else sensorEmptied(i);
+        if (navigator.onLine) lastSync = new Date();
+      }
+      sensorTimer = setTimeout(sensorTick, SENSOR_TICK_MS);
+    }, EVENT_MS);
+  }
+
+  // Marker pings like a sensor signal; on a normal stop the fill bar drains to 0 %.
+  function animateEvent(kind) {
+    const card = $("next-card");
+    card.classList.add(`next--${kind}`);
+    const marker = document.querySelector(".marker--next");
+    if (marker) marker.classList.add(kind === "fault" ? "marker--ping-fault" : "marker--ping");
+    if (kind === "tap") card.querySelector("[data-emptied]")?.classList.add("btn--pressed");
+    const bar = card.querySelector(".fill-bar i"), num = card.querySelector(".fill-num");
+    if (kind !== "ok" || !bar || !num) return;
+    const from = parseInt(num.textContent, 10), t0 = performance.now();
+    bar.style.transition = `width ${EVENT_MS * 0.8}ms ease-in`;
+    bar.style.width = "0%";
+    (function count(now) {
+      const p = Math.min(1, Math.max(0, (now - t0) / (EVENT_MS * 0.8)));  // rAF time can be slightly before t0
+      num.textContent = `${Math.round(from * (1 - p))}%`;
+      if (p < 1) requestAnimationFrame(count);
+    })(t0);
   }
 
   // Sensor events go to the live line in the top bar, so they never cover the next-stop card.

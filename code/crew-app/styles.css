@@ -116,7 +116,7 @@ h1 { margin: 2px 0 0; font-size: 26px; line-height: 1.15; }
 
 .map { height: 340px; border-radius: var(--radius); overflow: hidden; border: 1px solid var(--line); isolation: isolate; } /* keeps Leaflet's z-index under the collecting scrim */
 .marker {
-  display: grid; place-items: center;
+  position: relative; display: grid; place-items: center;
   width: 30px; height: 30px; border-radius: 50%;
   background: #fff; color: var(--ink); border: 3px solid var(--ink);
   font: 800 14px/1 var(--font);
@@ -124,6 +124,12 @@ h1 { margin: 2px 0 0; font-size: 26px; line-height: 1.15; }
 .marker--next { background: var(--accent); color: #fff; border-color: #fff; box-shadow: 0 0 0 3px var(--accent); }
 .marker--done, .marker--skipped { opacity: .45; }
 .marker--fault { border-color: var(--fault); color: var(--fault); }
+.marker--ping::after, .marker--ping-fault::after {
+  content: ""; position: absolute; inset: -4px; border-radius: 50%;
+  border: 3px solid var(--accent); animation: ping .65s ease-out 2;
+}
+.marker--ping-fault::after { border-color: var(--fault); }
+@keyframes ping { from { transform: scale(1); opacity: 1; } to { transform: scale(2.4); opacity: 0; } }
 .marker--depot { background: var(--brand); color: #fff; border-color: #fff; width: 26px; height: 26px; font-size: 12px; }
 
 /* Next stop card */
@@ -132,6 +138,17 @@ h1 { margin: 2px 0 0; font-size: 26px; line-height: 1.15; }
   background: var(--surface); border-radius: var(--radius);
   border: 2px solid var(--accent);
 }
+.next--ok { animation: glow-ok 1.3s ease-out; }
+.next--fault { animation: glow-fault 1.3s ease-out; }
+.next--skip { animation: glow-skip 1.3s ease-out; }
+.next--tap { animation: glow-ok 1.3s ease-out; }
+.next--fault .fill-bar { animation: shake .4s ease-in-out 2; }
+@keyframes glow-ok { 50% { box-shadow: 0 0 0 6px rgba(31,122,77,.45); } }
+@keyframes glow-fault { 50% { box-shadow: 0 0 0 6px rgba(91,75,183,.5); border-color: var(--fault); } }
+@keyframes glow-skip { 50% { box-shadow: 0 0 0 6px rgba(74,86,79,.45); border-color: var(--ink-soft); } }
+@keyframes shake { 25% { transform: translateX(-4px); } 75% { transform: translateX(4px); } }
+.btn--pressed { animation: press .5s ease-in-out; }
+@keyframes press { 40% { transform: scale(.95); filter: brightness(.85); } }
 .next-label { margin: 0 0 4px; color: var(--accent); font-size: 14px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; }
 .next h2 { margin: 0; font-size: 24px; }
 .next .row { display: flex; justify-content: space-between; align-items: center; margin: 10px 0 14px; gap: 12px; }
