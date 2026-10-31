@@ -43,7 +43,7 @@ services:
       - "127.0.0.1:${POSTGRES_HOST_PORT:-5432}:5432"
 
     volumes:
-      - timescaledb-data:/var/lib/postgresql/data
+      - timescaledb-pg18-data:/var/lib/postgresql
       - ./code/database/init:/docker-entrypoint-initdb.d:ro
 
     networks:
@@ -71,5 +71,5 @@ volumes:
   mosquitto-log:
     name: smart-trash-mosquitto-log
 
-  timescaledb-data:
-    name: smart-trash-timescaledb-data
+  timescaledb-pg18-data:
+    name: smart-trash-timescaledb-pg18-data
