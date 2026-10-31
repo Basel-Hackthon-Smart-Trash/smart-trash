@@ -21,6 +21,7 @@ window.SMART_TRASH_DATA = {
       fill: null, source: "fixed-schedule", why: ["sensor fault", "fixed schedule"] }, // no sensor: one tap
     { binId: "BS-0388", name: "Claraplatz", area: "Kleinbasel", lat: 47.5627, lon: 7.5939,
       fill: 88, source: "sensor", why: ["full ~13:00", "shopping Saturday"],
+      suspect: true,  // backend: sensor reading looks wrong; the app asks when the crew is next to it
       demo: "sensor-fault" }, // no fill drop after the visit: sensor gets flagged
     { binId: "BS-0105", name: "Barfüsserplatz", area: "Grossbasel", lat: 47.5547, lon: 7.5893,
       fill: 97, source: "sensor", why: ["full ~10:00", "Herbstmesse"],

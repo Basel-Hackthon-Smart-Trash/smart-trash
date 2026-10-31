@@ -22,9 +22,11 @@
   const SENSOR_TICK_MS = 1600;
   const EVENT_MS = 1300;
   const ALERT_MS = 6000;  // fault alert confirms itself after this, like a navigation alert
+  const NEAR_M = 40;      // crew opens the app this close to a suspect bin: ask about it
 
   let stops, nearby, map, routeLayer, undoTimer, lastAction, started, sensorTimer;
-  let lastSync = new Date(), pending = 0, faultAlert = null, alertTimer, defectStop = null, paused = false;  // reports stay on the phone while offline
+  let lastSync = new Date(), pending = 0, faultAlert = null, alertTimer, defectStop = null, paused = false, geoWatch = null;
+  const asked = new Set();  // suspect bins already asked about by location  // reports stay on the phone while offline
   const session = loadSession();        // { team, lang }: a team, never a person
   let loginTeam = session.team || DATA.teams[0];
 
@@ -32,6 +34,8 @@
 
   function reset() {
     started = false;
+    stopGeo();
+    asked.clear();
     clearTimeout(sensorTimer);
     clearTimeout(alertTimer);
     faultAlert = null;
@@ -328,6 +332,7 @@
 
   function renderDone() {
     clearTimeout(sensorTimer);
+    stopGeo();
     $("done-title").textContent = t("wellDone", { crew: session.team });
     const notDone = stops.filter((s) => s.result === "not-done").length;
     $("done-sub").textContent = notDone ? t("endedEarly", { n: notDone }) : t("allDone", { n: stops.length });
@@ -449,7 +454,32 @@
     started = true;
     clearTimeout(sensorTimer);
     render();
+    startGeo();
     sensorTimer = setTimeout(sensorTick, SENSOR_TICK_MS);
+  }
+
+  // ---------- location: only while the app is open, only on the phone ----------
+  // No new hardware: when the crew opens the app next to a suspect bin, the app asks about it.
+  // The position is compared here and then dropped: never stored, never sent.
+  // Browsers allow location only over HTTPS; on plain http this quietly does nothing.
+
+  function startGeo() {
+    if (geoWatch !== null || !started || !window.isSecureContext || !navigator.geolocation) return;
+    geoWatch = navigator.geolocation.watchPosition(onPosition, () => {}, { enableHighAccuracy: true, maximumAge: 10000 });
+  }
+
+  function stopGeo() {
+    if (geoWatch !== null) navigator.geolocation.clearWatch(geoWatch);
+    geoWatch = null;
+  }
+
+  function onPosition(p) {
+    if (paused || faultAlert !== null || !$("sheet").hidden) return;
+    const here = { lat: p.coords.latitude, lon: p.coords.longitude };
+    const i = stops.findIndex((s) => s.status === "todo" && s.suspect && !asked.has(s.binId) && distanceM(here, s) < NEAR_M);
+    if (i === -1) return;
+    asked.add(stops[i].binId);
+    openFaultAlert(i);
   }
 
   // In the real system the backend pushes a fill-drop event; here a timer simulates the feed.
@@ -805,6 +835,8 @@
   window.addEventListener("offline", () => { if (!$("sheet").hidden && $("sheet").querySelector(".sync")) openMenu(); });
   $("add-bin-btn").addEventListener("click", openSupervisor);
   $("menu-btn").addEventListener("click", openMenu);
+  // Phone back in the pocket: stop reading the location
+  document.addEventListener("visibilitychange", () => (document.hidden ? stopGeo() : startGeo()));
   $("stop-btn").addEventListener("click", () => (paused ? openPause(false) : stopTour()));
   $("login-btn").addEventListener("click", login);
   $("toast-undo").addEventListener("click", () => {
