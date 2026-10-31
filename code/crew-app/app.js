@@ -468,6 +468,7 @@
   function startTour() {
     started = true;
     clearTimeout(sensorTimer);
+    window.scrollTo(0, 0);  // Start sits mid-page; the full-screen map is sized from the top
     render();
     startGeo();
     sensorTimer = setTimeout(sensorTick, SENSOR_TICK_MS);
