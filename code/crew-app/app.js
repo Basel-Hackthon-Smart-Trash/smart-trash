@@ -196,7 +196,7 @@
   // While collecting, the map fills the screen between the top bar and the Stop bar.
   function sizeMap() {
     const el = $("map");
-    const h = started && !$("action-bar").hidden
+    const h = !$("action-bar").hidden
       ? Math.max(260, Math.floor(window.innerHeight - (el.getBoundingClientRect().top + window.scrollY) - $("action-bar").offsetHeight - 12))
       : 340;
     if (el.offsetHeight === h) return false;
@@ -226,7 +226,7 @@
         zIndexOffset: i === next ? 1000 : 0,
       }).on("click", () => openStop(i)).addTo(routeLayer);
       // Next stop's name sits on the map, since the card is hidden while collecting
-      if (i === next && started) m.bindTooltip(escapeHtml(s.name), { permanent: true, direction: "top", offset: [0, -16], className: "next-tip" });
+      if (i === next) m.bindTooltip(escapeHtml(s.name), { permanent: true, direction: "top", offset: [0, -16], className: "next-tip" });
     });
   }
 
@@ -270,9 +270,14 @@
     $("crew-name").textContent = session.team;
     const route = routeProgress();
     $("status").hidden = !started;
-    $("action-bar").hidden = !started || next === -1;
-    $("stop-btn").textContent = paused ? t("resume") : t("stop");
-    $("stop-btn").classList.toggle("stop-btn--paused", paused);
+    // One bottom button for the whole tour: Start, then Stop, then Resume when paused
+    $("action-bar").hidden = next === -1;
+    $("stop-btn").textContent = !started ? t("start") : paused ? t("resume") : t("stop");
+    $("stop-btn").classList.toggle("stop-btn--go", !started || paused);
+    $("bar-info").hidden = started;
+    if (!started && next !== -1) {
+      $("bar-info").textContent = t("barInfo", { n: total, d: formatDistance(route.total), name: stops[next].name });
+    }
     $("screen-tour").classList.toggle("collecting", started);
     $("status-stops").textContent = `${finished}/${total}`;
     $("status-left").textContent = t("left", { d: formatDistance(route.total - route.done) });
@@ -285,14 +290,7 @@
     if (next === -1) return renderDone();
 
     if (!started) {
-      const bySensor = stops.filter((s) => s.source === "sensor").length;
-      $("next-card").innerHTML = `
-        <p class="next-label">${t("today")}</p>
-        <h2>${t("stopsN", { n: total })}</h2>
-        <p class="hint">${t("startHint", { s: bySensor, f: total - bySensor })}</p>
-        <div class="actions" style="display:grid;margin-top:14px">
-          <button class="btn btn--primary btn--start" type="button" data-start>${t("start")}</button>
-        </div>`;
+      $("next-card").innerHTML = "";  // the summary and Start live in the bottom bar
     } else {
       const n = stops[next];
       const from = currentPosition();
@@ -908,7 +906,7 @@
   window.addEventListener("resize", () => { if (map && sizeMap()) map.invalidateSize(); });
   // Phone back in the pocket: stop reading the location
   document.addEventListener("visibilitychange", () => (document.hidden ? stopGeo() : startGeo()));
-  $("stop-btn").addEventListener("click", () => (paused ? openPause(false) : stopTour()));
+  $("stop-btn").addEventListener("click", () => (!started ? startTour() : paused ? openPause(false) : stopTour()));
   $("login-btn").addEventListener("click", login);
   $("toast-undo").addEventListener("click", () => {
     if (lastAction) lastAction();

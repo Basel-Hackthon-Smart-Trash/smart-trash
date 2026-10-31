@@ -103,7 +103,11 @@ h1 { margin: 2px 0 0; font-size: 26px; line-height: 1.15; }
   width: 100%; min-height: 64px; border: 0; border-radius: var(--radius-btn);
   background: #fff; color: var(--brand); font-size: 22px; font-weight: 800;
 }
-.stop-btn--paused { background: var(--accent); color: var(--accent-ink); }
+.stop-btn--go { background: var(--accent); color: var(--accent-ink); }
+.bar-info { margin: 0 0 10px; color: #fff; font-size: 16px; font-weight: 700; text-align: center; }
+.next:empty { display: none; }
+#screen-tour { padding-bottom: 170px; }  /* list below the map stays clear of the bottom bar */
+#screen-tour.collecting { padding-bottom: 0; }
 .reported { display: flex; align-items: center; justify-content: space-between; }
 .undo-link { min-height: 40px; padding: 0 12px; border: 2px solid currentColor; border-radius: var(--radius-btn); background: transparent; color: inherit; font-weight: 800; }
 .segments { display: flex; gap: 4px; margin-top: 8px; }
