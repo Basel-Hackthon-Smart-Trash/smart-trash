@@ -40,6 +40,6 @@ We keep the project lean: **three user stories**, all for the crew member. Each 
 **As a crew member, I can skip a stop or add a bin that is not on my route, so that my own experience on the street still counts and the system learns from it.**
 
 - Skip a stop with one tap and a reason: not reachable / unsafe / bin damaged
-- Add an overflowing bin I see nearby from the map or list
+- Add an overflowing bin I see nearby from the map or list; a supervisor confirms it with a code, because it changes the route
 - Skipped and added bins are sent back as feedback for the forecast
 - No extra justification beyond the one-tap reason
