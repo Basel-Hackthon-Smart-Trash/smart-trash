@@ -13,38 +13,54 @@
     <header class="topbar">
       <div class="topbar-row">
         <div class="brand">Smart Trash</div>
-        <div class="crew" aria-label="Signed in team"><span class="crew-dot" aria-hidden="true"></span><span id="crew-name"></span></div>
+        <div class="topbar-right" id="topbar-right" hidden>
+          <div class="crew"><span class="crew-dot" aria-hidden="true"></span><span id="crew-name"></span></div>
+          <button class="menu-btn" id="menu-btn" type="button" data-i18n-label="menu">☰</button>
+        </div>
       </div>
       <!-- Route status: appears after "Start collecting", stays visible while scrolling -->
       <div class="status" id="status" aria-live="polite" hidden>
-        <div class="status-text"><b id="status-stops"></b><span>stops</span><span id="status-left"></span></div>
+        <div class="status-text"><b id="status-stops"></b><span data-i18n="stops"></span><span id="status-left"></span></div>
         <div class="segments" id="segments" aria-hidden="true"></div>
       </div>
     </header>
 
-    <main id="screen-tour" class="screen">
+    <!-- Sign in: as a team, never as a person -->
+    <main id="screen-login" class="screen" hidden>
+      <div class="login">
+        <h1 data-i18n="loginTitle"></h1>
+        <p class="login-label" data-i18n="loginTeam"></p>
+        <div class="team-list" id="team-list"></div>
+        <p class="login-label" data-i18n="language"></p>
+        <div class="lang-list" id="login-langs"></div>
+        <button class="btn btn--primary btn--start" type="button" id="login-btn" data-i18n="loginBtn"></button>
+        <p class="privacy" data-i18n="loginNote"></p>
+      </div>
+    </main>
+
+    <main id="screen-tour" class="screen" hidden>
       <section class="tour-head">
         <p class="eyebrow"><span id="tour-date"></span> <span class="badge badge--data" id="data-label">SIMULATED</span></p>
         <h1 id="tour-name"></h1>
       </section>
 
-      <div id="map" class="map" role="img" aria-label="Map of today's stops"></div>
+      <div id="map" class="map" role="img"></div>
 
       <section class="next" id="next-card"></section>
 
-      <h2 class="section-title">Today's stops</h2>
+      <h2 class="section-title" data-i18n="todaysStops"></h2>
       <ol class="stops" id="stops"></ol>
 
-      <button class="add-bin" id="add-bin-btn" type="button">＋ Add a bin</button>
+      <button class="add-bin" id="add-bin-btn" type="button" data-i18n="addBin"></button>
     </main>
 
     <main id="screen-done" class="screen" hidden>
       <div class="done">
         <div class="done-icon" aria-hidden="true">✓</div>
-        <h1 id="done-title">Well done!</h1>
+        <h1 id="done-title"></h1>
         <p class="done-sub" id="done-sub"></p>
         <ul class="done-report" id="done-summary"></ul>
-        <button class="btn btn--primary" type="button" id="restart-btn">Restart demo</button>
+        <button class="btn btn--primary" type="button" id="restart-btn" data-i18n="restart"></button>
       </div>
     </main>
 
@@ -54,12 +70,13 @@
 
     <div class="toast" id="toast" role="status" hidden>
       <span id="toast-text"></span>
-      <button type="button" id="toast-undo">Undo</button>
+      <button type="button" id="toast-undo" data-i18n="undo"></button>
     </div>
   </div>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="data.js"></script>
+  <script src="i18n.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

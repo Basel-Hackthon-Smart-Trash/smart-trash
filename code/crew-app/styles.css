@@ -55,6 +55,12 @@ button { font: inherit; cursor: pointer; }
 .brand { font-weight: 800; font-size: 20px; letter-spacing: -.01em; }
 .crew { display: flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: 999px; background: rgba(255,255,255,.12); font-weight: 700; font-size: 16px; }
 .crew-dot { width: 10px; height: 10px; border-radius: 50%; background: #51cf66; }
+.topbar-right { display: flex; align-items: center; gap: 8px; }
+.menu-btn {
+  display: grid; place-items: center; width: 48px; height: 48px;
+  border: 2px solid rgba(255,255,255,.35); border-radius: var(--radius-btn);
+  background: transparent; color: #fff; font-size: 24px; font-weight: 800;
+}
 
 .badge {
   display: inline-block; padding: 3px 9px; border-radius: 999px;
@@ -209,5 +215,46 @@ h1 { margin: 2px 0 0; font-size: 26px; line-height: 1.15; }
 .done-sub { margin: 0; font-size: 18px; font-weight: 700; color: var(--ink-soft); }
 .done-report { list-style: none; margin: 8px 0 20px; padding: 0; display: grid; gap: 6px; text-align: left; font-size: 18px; }
 .done-report b { display: inline-block; min-width: 32px; font-size: 22px; }
+
+/* Sign in */
+.login { display: grid; gap: 10px; padding-top: 12px; }
+.login h1 { margin-bottom: 8px; }
+.login-label { margin: 12px 0 0; color: var(--ink-soft); font-size: 15px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; }
+.team-list { display: grid; gap: 8px; }
+.team {
+  min-height: var(--tap); padding: 0 16px; text-align: left;
+  border: 2px solid var(--line); border-radius: var(--radius-btn); background: var(--surface);
+  color: var(--ink); font-size: 19px; font-weight: 800;
+}
+.team--on { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+.team--on::after { content: "✓"; float: right; color: var(--accent); }
+.login .btn--start { margin-top: 16px; }
+
+/* Language switch: five equal buttons */
+.lang-list { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+.lang {
+  min-height: 52px; border: 2px solid var(--line); border-radius: var(--radius-btn);
+  background: var(--surface); color: var(--ink); font-size: 17px; font-weight: 800;
+}
+.lang--on { background: var(--ink); border-color: var(--ink); color: #fff; }
+
+/* Menu */
+.menu-list { display: grid; gap: 8px; }
+.menu-item {
+  display: flex; align-items: center; gap: 14px; min-height: var(--tap); padding: 0 16px;
+  border: 2px solid var(--line); border-radius: var(--radius-btn); background: var(--surface);
+  color: var(--ink); font-size: 19px; font-weight: 800; text-align: left;
+}
+.menu-item span { width: 28px; text-align: center; font-size: 22px; }
+.problem-row {
+  display: flex; justify-content: space-between; align-items: center; gap: 8px; min-height: var(--tap); padding: 12px;
+  border: 2px solid var(--line); border-radius: var(--radius-btn);
+}
+.legend { list-style: none; margin: 8px 0 0; padding: 0; display: grid; gap: 12px; font-weight: 700; }
+.legend li { display: flex; align-items: center; gap: 12px; }
+.legend-seg { flex: none; width: 40px; border: 1px solid var(--line); }
+.legend .seg--todo { background: var(--line); }
+.legend .seg--skipped { background: repeating-linear-gradient(45deg, var(--ink-soft) 0 3px, transparent 3px 6px); }
+.legend .badge { flex: none; }
 
 .leaflet-control-attribution { font-size: 10px; }

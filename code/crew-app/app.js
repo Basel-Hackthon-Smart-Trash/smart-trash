@@ -1,24 +1,29 @@
-// Smart Trash crew prototype. Covers the three user stories:
+// Smart Trash crew prototype. Covers the crew user stories:
 //   #1 see which bins need me today and why
 //   #2 zero taps: the sensor detects emptying; the crew only reports problems
 //   #3 stay in control: skip a stop or add a bin
+//   #12 menu: report, problems, legend, language, sign in / out
 (function () {
   "use strict";
 
   const DATA = window.SMART_TRASH_DATA;
+  const I18N = window.SMART_TRASH_I18N;
   const FEEDBACK_KEY = "smarttrash.feedback";
+  const SESSION_KEY = "smarttrash.session";
 
   // Exceptions only. A normal stop needs no tap: the fill drop tells the system it was emptied.
   const PROBLEMS = [
-    { id: "not-reachable", label: "Not reachable" },
-    { id: "unsafe", label: "Unsafe" },
-    { id: "bin-damaged", label: "Bin damaged" },
+    { id: "not-reachable", key: "notReachable" },
+    { id: "unsafe", key: "unsafe" },
+    { id: "bin-damaged", key: "binDamaged" },
   ];
 
   // Demo pace of the simulated sensor feed: one fill-drop event every few seconds.
   const SENSOR_TICK_MS = 1500;
 
   let stops, nearby, map, routeLayer, undoTimer, lastAction, started, sensorTimer;
+  const session = loadSession();        // { team, lang }: a team, never a person
+  let loginTeam = session.team || DATA.teams[0];
 
   const $ = (id) => document.getElementById(id);
 
@@ -27,6 +32,63 @@
     clearInterval(sensorTimer);
     stops = DATA.stops.map((s) => ({ ...s, status: "todo", result: null }));
     nearby = DATA.nearby.map((b) => ({ ...b }));
+  }
+
+  // ---------- language ----------
+
+  function t(key, vars) {
+    const text = (I18N[session.lang] || I18N.en)[key] ?? I18N.en[key] ?? key;
+    return vars ? text.replace(/\{(\w+)\}/g, (_, k) => vars[k]) : text;
+  }
+
+  // "why" keywords come from the data in English; translate the ones we know.
+  function whyText(w) {
+    const full = /^full ~(.+)$/.exec(w);
+    if (full) return t("full", { t: full[1] });
+    return (I18N[session.lang] || I18N.en)[w] || w;
+  }
+
+  const problemLabel = (id) => t(PROBLEMS.find((p) => p.id === id).key);
+  const locale = () => (I18N.languages.find((l) => l.id === session.lang) || I18N.languages[4]).locale;
+
+  function langButtons() {
+    return I18N.languages.map((l) =>
+      `<button class="lang ${l.id === session.lang ? "lang--on" : ""}" type="button" data-lang="${l.id}">${l.label}</button>`).join("");
+  }
+
+  function setLang(id) {
+    session.lang = id;
+    saveSession();
+    if (!$("sheet").hidden) openMenu();
+    render();
+  }
+
+  // ---------- session (per-device convenience only) ----------
+
+  function loadSession() {
+    try {
+      const s = JSON.parse(localStorage.getItem(SESSION_KEY) || "{}");
+      return { team: s.team || null, lang: s.lang || "en" };
+    } catch (e) { return { team: null, lang: "en" }; }
+  }
+
+  function saveSession() {
+    try { localStorage.setItem(SESSION_KEY, JSON.stringify(session)); } catch (e) { /* ignore */ }
+  }
+
+  function login() {
+    session.team = loginTeam;
+    saveSession();
+    reset();
+    render();
+  }
+
+  function logout() {
+    session.team = null;
+    saveSession();
+    closeSheet();
+    reset();
+    render();
   }
 
   // ---------- helpers ----------
@@ -40,12 +102,12 @@
   }
 
   function fillHtml(pct) {
-    if (pct == null) return `<span class="badge badge--fixed">fixed schedule</span>`;
+    if (pct == null) return `<span class="badge badge--fixed">${t("fixedSchedule")}</span>`;
     return `<span class="fill"><span class="fill-bar"><i style="width:${pct}%;background:${fillColor(pct)}"></i></span>${pct}%</span>`;
   }
 
   function whyHtml(why) {
-    return `<div class="why">${why.map((w) => `<span>${escapeHtml(w)}</span>`).join("")}</div>`;
+    return `<div class="why">${why.map((w) => `<span>${escapeHtml(whyText(w))}</span>`).join("")}</div>`;
   }
 
   function escapeHtml(s) {
@@ -103,6 +165,7 @@
 
   // ---------- map ----------
 
+  // Created on first render of the tour screen: Leaflet needs a visible container.
   function initMap() {
     if (!window.L) { $("map").hidden = true; return; }
     map = L.map("map", { zoomControl: false, attributionControl: true });
@@ -116,7 +179,9 @@
   }
 
   function renderMap() {
+    if (!map) initMap();
     if (!map) return;
+    map.invalidateSize();
     routeLayer.clearLayers();
     const next = nextIndex();
     const line = [DATA.tour.depot, ...stops.filter((s) => s.status !== "skipped")].map((s) => [s.lat, s.lon]);
@@ -135,21 +200,48 @@
     });
   }
 
-  // ---------- tour screen (story #1) ----------
+  // ---------- screens ----------
+
+  function renderStatic() {
+    document.documentElement.lang = session.lang;
+    document.querySelectorAll("[data-i18n]").forEach((el) => { el.textContent = t(el.dataset.i18n); });
+    document.querySelectorAll("[data-i18n-label]").forEach((el) => { el.setAttribute("aria-label", t(el.dataset.i18nLabel)); });
+  }
 
   function render() {
+    renderStatic();
+    const signedIn = !!session.team;
+    $("topbar-right").hidden = !signedIn;
+    $("screen-login").hidden = signedIn;
+    if (!signedIn) {
+      $("status").hidden = true;
+      $("screen-tour").hidden = true;
+      $("screen-done").hidden = true;
+      return renderLogin();
+    }
+    renderTour();
+  }
+
+  function renderLogin() {
+    $("team-list").innerHTML = DATA.teams.map((team) =>
+      `<button class="team ${team === loginTeam ? "team--on" : ""}" type="button" data-team="${escapeHtml(team)}">${escapeHtml(team)}</button>`).join("");
+    $("login-langs").innerHTML = langButtons();
+  }
+
+  // Tour screen (story #1)
+  function renderTour() {
     const total = stops.length;
     const finished = stops.filter((s) => s.status !== "todo").length;
     const next = nextIndex();
 
     $("data-label").textContent = DATA.dataLabel;
-    $("tour-date").textContent = new Date(DATA.tour.date).toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long" });
+    $("tour-date").textContent = new Date(DATA.tour.date).toLocaleDateString(locale(), { weekday: "long", day: "numeric", month: "long" });
     $("tour-name").textContent = DATA.tour.name;
-    $("crew-name").textContent = DATA.tour.crew;
+    $("crew-name").textContent = session.team;
     const route = routeProgress();
     $("status").hidden = !started;
     $("status-stops").textContent = `${finished}/${total}`;
-    $("status-left").textContent = `${formatDistance(route.total - route.done)} left`;
+    $("status-left").textContent = t("left", { d: formatDistance(route.total - route.done) });
     // One segment per bin, coloured by its status
     $("segments").innerHTML = stops.map((s, i) =>
       `<i class="seg seg--${i === next ? "next" : s.status}"></i>`).join("");
@@ -161,36 +253,36 @@
     if (!started) {
       const bySensor = stops.filter((s) => s.source === "sensor").length;
       $("next-card").innerHTML = `
-        <p class="next-label">Today</p>
-        <h2>${total} stops</h2>
-        <p class="hint">${bySensor} with sensor: checked off automatically. ${total - bySensor} fixed schedule: one tap.</p>
+        <p class="next-label">${t("today")}</p>
+        <h2>${t("stopsN", { n: total })}</h2>
+        <p class="hint">${t("startHint", { s: bySensor, f: total - bySensor })}</p>
         <div class="actions" style="display:grid;margin-top:14px">
-          <button class="btn btn--primary btn--start" type="button" data-start>▶ Start collecting</button>
+          <button class="btn btn--primary btn--start" type="button" data-start>${t("start")}</button>
         </div>`;
     } else {
       const n = stops[next];
       const from = currentPosition();
       $("next-card").innerHTML = `
-        <p class="next-label">Next stop <span class="live">● sensors live</span></p>
+        <p class="next-label">${t("nextStop")} <span class="live">${t("live")}</span></p>
         <h2>${escapeHtml(n.name)}</h2>
         <div class="row">
           ${fillHtml(n.fill)}
           <span class="stop-meta">${formatDistance(distanceM(from, n))} · ${escapeHtml(n.area)}</span>
         </div>
         ${whyHtml(n.why)}
-        <p class="hint">${n.source === "sensor" ? "Just empty it. The sensor checks it off." : "No sensor here: tap when emptied."}</p>
+        <p class="hint">${n.source === "sensor" ? t("hintSensor") : t("hintFixed")}</p>
         <div class="actions" style="display:grid;gap:8px;margin-top:10px">
-          ${n.source === "sensor" ? "" : `<button class="btn btn--primary" type="button" data-emptied="${next}">✓ Emptied</button>`}
-          <a class="btn" href="https://www.google.com/maps/dir/?api=1&destination=${n.lat},${n.lon}" target="_blank" rel="noopener">Navigate</a>
-          <button class="btn btn--ghost" type="button" data-open="${next}">Problem?</button>
+          ${n.source === "sensor" ? "" : `<button class="btn btn--primary" type="button" data-emptied="${next}">${t("emptied")}</button>`}
+          <a class="btn" href="https://www.google.com/maps/dir/?api=1&destination=${n.lat},${n.lon}" target="_blank" rel="noopener">${t("navigate")}</a>
+          <button class="btn btn--ghost" type="button" data-open="${next}">${t("problemQ")}</button>
         </div>`;
     }
 
     $("stops").innerHTML = stops.map((s, i) => {
-      const state = s.status === "fault" ? "⚠ Sensor fault"
-        : s.status === "done" ? (s.result === "sensor" ? "✓ Sensor" : "✓ Emptied")
-        : s.status === "skipped" ? PROBLEMS.find((p) => p.id === s.result).label : i === next ? "Next" : "";
-      const tag = s.source === "crew-added" ? `<span class="badge badge--added">added by crew</span>` : "";
+      const state = s.status === "fault" ? t("stateFault")
+        : s.status === "done" ? (s.result === "sensor" ? t("stateSensor") : t("stateEmptied"))
+        : s.status === "skipped" ? problemLabel(s.result) : i === next ? t("stateNext") : "";
+      const tag = s.source === "crew-added" ? `<span class="badge badge--added">${t("addedByCrew")}</span>` : "";
       return `<li><button class="stop stop--${i === next ? "next" : s.status}" type="button" data-open="${i}">
           <span class="stop-num">${s.status === "done" ? "✓" : i + 1}</span>
           <span>
@@ -205,22 +297,27 @@
   }
 
   // Report about the tour and the bins, never about the worker: no times, no speed.
-  function renderDone() {
-    clearInterval(sensorTimer);
+  function reportRows() {
     const count = (fn) => stops.filter(fn).length;
-    const rows = [
-      [count((s) => s.result === "sensor"), "emptied · detected by sensor"],
-      [count((s) => s.result === "crew"), "emptied · tapped (fixed schedule)"],
-      [count((s) => s.result === "sensor-fault"), "sensor faulty · sent to maintenance"],
-      ...PROBLEMS.map((p) => [count((s) => s.result === p.id), `skipped · ${p.label.toLowerCase()}`]),
-      [count((s) => s.source === "crew-added"), "added by crew"],
+    return [
+      [count((s) => s.result === "sensor"), t("rSensor")],
+      [count((s) => s.result === "crew"), t("rTap")],
+      [count((s) => s.result === "sensor-fault"), t("rFault")],
+      ...PROBLEMS.map((p) => [count((s) => s.result === p.id), t("rSkipped", { reason: t(p.key) })]),
+      [count((s) => s.source === "crew-added"), t("rAdded")],
     ].filter(([n]) => n > 0);
-    $("done-title").textContent = `Well done, ${DATA.tour.crew}!`;
-    $("done-sub").textContent = `All ${stops.length} bins emptied or reported.`;
-    $("done-summary").innerHTML = rows.map(([n, label]) => `<li><b>${n}</b> ${label}</li>`).join("");
   }
 
-  // ---------- stop sheet: problems only (stories #2 and #3) ----------
+  const reportHtml = (rows) => rows.map(([n, label]) => `<li><b>${n}</b> ${label}</li>`).join("");
+
+  function renderDone() {
+    clearInterval(sensorTimer);
+    $("done-title").textContent = t("wellDone", { crew: session.team });
+    $("done-sub").textContent = t("allDone", { n: stops.length });
+    $("done-summary").innerHTML = reportHtml(reportRows());
+  }
+
+  // ---------- bottom sheet ----------
 
   function openSheet(html) {
     $("sheet").innerHTML = `<div class="sheet-grip"></div>${html}`;
@@ -233,21 +330,80 @@
     $("sheet-backdrop").hidden = true;
   }
 
+  // Stop sheet: problems only (stories #2 and #3)
   function openStop(i) {
     const s = stops[i];
     if (s.status !== "todo") return;
     openSheet(`
       <h2>${escapeHtml(s.name)}</h2>
-      <p class="sub">${s.fill == null ? "No valid sensor data · fixed schedule" : `Predicted ${s.fill}%`} · ${escapeHtml(s.binId)}</p>
+      <p class="sub">${s.fill == null ? t("noValid") : t("predicted", { p: s.fill })} · ${escapeHtml(s.binId)}</p>
       ${whyHtml(s.why)}
-      ${s.source === "sensor" ? "" : `<div class="actions"><button class="btn btn--primary" type="button" data-emptied="${i}">✓ Emptied</button></div>`}
-      <p class="question">Problem? Skip with one tap:</p>
+      ${s.source === "sensor" ? "" : `<div class="actions"><button class="btn btn--primary" type="button" data-emptied="${i}">${t("emptied")}</button></div>`}
+      <p class="question">${t("skipQ")}</p>
       <div class="choices">
-        ${PROBLEMS.map((p) => `<button class="choice choice--wide" type="button" data-problem="${p.id}" data-stop="${i}">${p.label}</button>`).join("")}
+        ${PROBLEMS.map((p) => `<button class="choice choice--wide" type="button" data-problem="${p.id}" data-stop="${i}">${t(p.key)}</button>`).join("")}
       </div>
-      <p class="privacy">Reports are about the bin, not about you.</p>
-      <div class="actions"><button class="btn btn--ghost" type="button" data-close>Back</button></div>`);
+      <p class="privacy">${t("privacy")}</p>
+      <div class="actions"><button class="btn btn--ghost" type="button" data-close>${t("back")}</button></div>`);
   }
+
+  // ---------- menu (#12) ----------
+
+  function openMenu() {
+    openSheet(`
+      <h2>${t("menu")}</h2>
+      <p class="sub">${escapeHtml(session.team)}</p>
+      <div class="menu-list">
+        <button class="menu-item" type="button" data-menu="report"><span aria-hidden="true">📋</span>${t("mReport")}</button>
+        <button class="menu-item" type="button" data-menu="problems"><span aria-hidden="true">⚠</span>${t("mProblems")}</button>
+        <button class="menu-item" type="button" data-menu="legend"><span aria-hidden="true">?</span>${t("mLegend")}</button>
+      </div>
+      <p class="question">${t("language")}</p>
+      <div class="lang-list">${langButtons()}</div>
+      <div class="actions">
+        <button class="btn" type="button" data-menu="logout">${t("mLogout")}</button>
+        <button class="btn btn--ghost" type="button" data-close>${t("back")}</button>
+      </div>`);
+  }
+
+  const backToMenu = () => `<div class="actions"><button class="btn btn--ghost" type="button" data-menu="menu">${t("back")}</button></div>`;
+
+  function openMenuPage(page) {
+    if (page === "menu") return openMenu();
+    if (page === "logout") return logout();
+    if (page === "report") {
+      const rows = reportRows();
+      return openSheet(`
+        <h2>${t("mReport")}</h2>
+        <p class="sub">${escapeHtml(DATA.tour.name)} · ${stops.filter((s) => s.status !== "todo").length}/${stops.length}</p>
+        ${rows.length ? `<ul class="done-report">${reportHtml(rows)}</ul>` : `<p class="stop-meta">${t("reportEmpty")}</p>`}
+        ${backToMenu()}`);
+    }
+    if (page === "problems") {
+      const list = stops.filter((s) => s.status === "fault" || s.status === "skipped");
+      return openSheet(`
+        <h2>${t("mProblems")}</h2>
+        <ul class="nearby">
+          ${list.map((s) => `<li class="problem-row"><span class="stop-name">${escapeHtml(s.name)}</span>
+            <span class="stop-meta">${s.status === "fault" ? t("stateFault") : problemLabel(s.result)}</span></li>`).join("")
+            || `<li class="stop-meta">${t("noProblems")}</li>`}
+        </ul>
+        ${backToMenu()}`);
+    }
+    if (page === "legend") {
+      const seg = (cls, key) => `<li><i class="seg seg--${cls} legend-seg"></i>${t(key)}</li>`;
+      return openSheet(`
+        <h2>${t("mLegend")}</h2>
+        <ul class="legend">
+          ${seg("done", "lgDone")}${seg("next", "lgNext")}${seg("fault", "lgFault")}${seg("skipped", "lgSkipped")}${seg("todo", "lgTodo")}
+          <li><span class="badge badge--data">${DATA.dataLabel}</span>${t("lgSimulated")}</li>
+          <li><span class="badge badge--fixed">${t("fixedSchedule")}</span>${t("lgFixed")}</li>
+        </ul>
+        ${backToMenu()}`);
+    }
+  }
+
+  // ---------- simulated sensor feed ----------
 
   // Start collecting: from here the crew needs no taps; sensor events check off the stops.
   function startTour() {
@@ -272,7 +428,7 @@
     const s = stops[i];
     s.status = "done";
     s.result = "sensor";
-    showToast(`${s.name} ✓ detected by sensor`);
+    showToast(t("tSensor", { name: s.name }));
     render();
   }
 
@@ -281,7 +437,7 @@
     const s = stops[i];
     s.status = "fault";
     s.result = "sensor-fault";
-    showToast(`${s.name} ⚠ no fill drop · sensor flagged`);
+    showToast(t("tFault", { name: s.name }));
     render();
   }
 
@@ -289,7 +445,7 @@
     const s = stops[i];
     s.status = "done";
     s.result = "crew";
-    showToast(`${s.name} ✓ emptied · tapped (no sensor)`);
+    showToast(t("tTap", { name: s.name }));
     render();
   }
 
@@ -297,9 +453,11 @@
     const s = stops[i];
     s.status = "skipped";
     s.result = problem;
-    showToast(`${s.name} skipped · ${PROBLEMS.find((p) => p.id === problem).label.toLowerCase()}`);
+    showToast(t("tSkipped", { name: s.name, reason: problemLabel(problem) }));
     render();
   }
+
+  // ---------- crew actions ----------
 
   // Bins without valid sensor data (fixed schedule) need one tap.
   function crewEmptied(i) {
@@ -308,7 +466,7 @@
     s.result = "crew";
     saveFeedback({ binId: s.binId, emptied: true, at: new Date().toISOString() });
     closeSheet();
-    showToast(`${s.name} ✓ emptied`, () => { s.status = "todo"; s.result = null; removeLastFeedback(); });
+    showToast(t("tEmptied", { name: s.name }), () => { s.status = "todo"; s.result = null; removeLastFeedback(); });
     render();
   }
 
@@ -318,28 +476,28 @@
     s.result = problem;
     saveFeedback({ binId: s.binId, problem, at: new Date().toISOString() });
     closeSheet();
-    showToast(`${s.name} skipped`, () => { s.status = "todo"; s.result = null; removeLastFeedback(); });
+    showToast(t("tSkipped", { name: s.name, reason: problemLabel(problem) }),
+      () => { s.status = "todo"; s.result = null; removeLastFeedback(); });
     render();
   }
 
-  // ---------- add a bin (story #3) ----------
-
+  // Add a bin (story #3)
   function openAddBin() {
     const from = currentPosition();
     const list = nearby
       .map((b) => ({ ...b, d: distanceM(from, b) }))
       .sort((a, b) => a.d - b.d);
     openSheet(`
-      <h2>Add a bin</h2>
-      <p class="sub">Saw one that needs emptying? It becomes your next stop.</p>
+      <h2>${t("addBin").replace("＋ ", "")}</h2>
+      <p class="sub">${t("addSub")}</p>
       <ul class="nearby">
         ${list.map((b) => `
           <li><button type="button" data-add="${b.binId}">
-            <span><span class="stop-name">${escapeHtml(b.name)}</span><br><span class="stop-meta">${formatDistance(b.d)} · sensor ${b.fill}%</span></span>
-            <span class="badge badge--added">＋ Add</span>
-          </button></li>`).join("") || `<li class="stop-meta">No bins nearby.</li>`}
+            <span><span class="stop-name">${escapeHtml(b.name)}</span><br><span class="stop-meta">${formatDistance(b.d)} · ${t("sensorPct", { p: b.fill })}</span></span>
+            <span class="badge badge--added">${t("add")}</span>
+          </button></li>`).join("") || `<li class="stop-meta">${t("noNearby")}</li>`}
       </ul>
-      <div class="actions"><button class="btn btn--ghost" type="button" data-close>Cancel</button></div>`);
+      <div class="actions"><button class="btn btn--ghost" type="button" data-close>${t("cancel")}</button></div>`);
   }
 
   function addBin(binId) {
@@ -349,7 +507,7 @@
     stops.splice(at, 0, { ...bin, source: "crew-added", why: ["added by crew"], status: "todo", result: null });
     saveFeedback({ binId: bin.binId, addedByCrew: true, at: new Date().toISOString() });
     closeSheet();
-    showToast(`${bin.name} added as next stop`, () => {
+    showToast(t("tAdded", { name: bin.name }), () => {
       stops.splice(stops.findIndex((s) => s.binId === binId), 1);
       nearby.push(bin);
       removeLastFeedback();
@@ -371,28 +529,32 @@
   // ---------- events ----------
 
   document.addEventListener("click", (e) => {
-    const t = e.target.closest("button, [data-close]");
-    if (!t) return;
-    const d = t.dataset;
+    const el = e.target.closest("button, [data-close]");
+    if (!el) return;
+    const d = el.dataset;
     if (d.start !== undefined) startTour();
     else if (d.open !== undefined) openStop(Number(d.open));
     else if (d.emptied !== undefined) crewEmptied(Number(d.emptied));
     else if (d.problem) reportProblem(Number(d.stop), d.problem);
     else if (d.add) addBin(d.add);
+    else if (d.menu) openMenuPage(d.menu);
+    else if (d.lang) setLang(d.lang);
+    else if (d.team) { loginTeam = d.team; renderLogin(); }
     else if (d.close !== undefined) closeSheet();
   });
   $("sheet-backdrop").addEventListener("click", closeSheet);
   $("add-bin-btn").addEventListener("click", openAddBin);
+  $("menu-btn").addEventListener("click", openMenu);
+  $("login-btn").addEventListener("click", login);
   $("toast-undo").addEventListener("click", () => {
     if (lastAction) lastAction();
     lastAction = null;
     $("toast").hidden = true;
     render();
   });
-  $("restart-btn").addEventListener("click", () => { reset(); render(); if (map) map.invalidateSize(); });
+  $("restart-btn").addEventListener("click", () => { reset(); render(); });
   document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeSheet(); });
 
   reset();
-  initMap();
   render();
 })();

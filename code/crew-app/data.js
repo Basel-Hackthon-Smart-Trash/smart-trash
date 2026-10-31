@@ -3,6 +3,7 @@
 // Backend (Dennis): replace this file with an API call that returns the same shape.
 window.SMART_TRASH_DATA = {
   dataLabel: "SIMULATED",
+  teams: ["Team KB-3", "Team KB-1", "Team GB-2"], // sign-in choices: teams only, no personal accounts
   tour: {
     id: "tour-2026-10-31-kb",
     name: "Kleinbasel & Centre",

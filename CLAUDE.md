@@ -25,7 +25,7 @@ Team: Rai (UI/UX), Andy (Data Science), Abbas (Development, lead), Dennis (Backe
 - **Explain decisions:** every bin on a route shows a short "why" line (e.g. "full ~14:00 · 28 °C · event").
 - **Outdoor-ready crew view:** big touch targets (gloves), high contrast (sunlight), works offline.
 - **Fallback visible:** a bin with no valid data shows it is back on the fixed schedule.
-- Three views: crew (mobile), city administration (desktop), maintenance (desktop). DE + EN.
+- Three views: crew (mobile), city administration (desktop), maintenance (desktop). Languages: the four Swiss national languages (DE, FR, IT, RM) + EN.
 - Real open data for Basel lives in `assets/geojson/` (`100070`: litter reports, `100288`: street cleanliness index). It is not bin fill-level data; fill levels stay `SIMULATED`.
 
 ## Brand and design
