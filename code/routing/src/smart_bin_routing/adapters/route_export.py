@@ -97,6 +97,14 @@ def _provenance(
             "matching": {
                 "max_snap_distance_meters": road.matching.max_snap_distance_meters,
                 "unusable_policy": road.matching.unusable_policy.value,
+                "diagnostics": [
+                    {
+                        "code": diagnostic.code,
+                        "message": diagnostic.message,
+                        "severity": diagnostic.severity,
+                    }
+                    for diagnostic in road_costs.matching.diagnostics
+                ],
             },
             "graph_crs": road_costs.matching.graph_crs,
         }

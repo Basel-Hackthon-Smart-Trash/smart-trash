@@ -148,24 +148,34 @@
     return m < 1000 ? `${Math.round(m / 10) * 10} m` : `${(m / 1000).toFixed(1)} km`;
   }
 
-  // Route progress by distance: depot → stops in order; skipped stops drop out of the route.
-  function routeProgress() {
+  function drivingDistanceM(from, to) {
     const roadFeatures = DATA.tour.roadRoute?.features || [];
-    const roadDistance = (from, to) => {
-      const sourceId = from.binId || null;
-      const feature = roadFeatures.find((item) => {
-        const props = item.properties || {};
-        return props.target_id === to.binId
-          && (sourceId ? props.source_id === sourceId : !stops.some((s) => s.binId === props.source_id));
-      });
-      return feature?.properties?.distance_meters ?? distanceM(from, to);
-    };
+    if (!roadFeatures.length) return distanceM(from, to);
+
+    const sourceId = from.binId || null;
+    const feature = roadFeatures.find((item) => {
+      const props = item.properties || {};
+      return props.target_id === to.binId
+        && (sourceId ? props.source_id === sourceId : !stops.some((s) => s.binId === props.source_id));
+    });
+    const value = feature?.properties?.distance_meters;
+    return Number.isFinite(value) ? value : null;
+  }
+
+  function displayDistanceM(from, to) {
+    const distance = drivingDistanceM(from, to);
+    return distance === null ? "—" : formatDistance(distance);
+  }
+
+  // Route progress by driving distance: skipped stops remain part of the travel sequence.
+  function routeProgress() {
     let prev = DATA.tour.depot, total = 0, done = 0;
     stops.forEach((s) => {
-      if (s.status === "skipped") return;
-      const leg = roadDistance(prev, s);
-      total += leg;
-      if (s.status !== "todo") done += leg;
+      const leg = drivingDistanceM(prev, s);
+      if (leg !== null) {
+        total += leg;
+        if (s.status !== "todo") done += leg;
+      }
       prev = s;
     });
     return { total, done };
@@ -307,7 +317,7 @@
     if (next !== -1) {
       $("bar-info").textContent = !started ? t("barInfo", { n: total, d: DATA.tour.distanceKm ? `${DATA.tour.distanceKm} km` : formatDistance(route.total), name: stops[next].name })
         : paused ? t("pTitle")
-        : t("barNext", { name: stops[next].name, d: formatDistance(distanceM(currentPosition(), stops[next])) });
+        : t("barNext", { name: stops[next].name, d: displayDistanceM(currentPosition(), stops[next]) });
     }
     $("screen-tour").classList.toggle("collecting", started);
     $("status-stops").textContent = `${finished}/${total}`;
@@ -330,7 +340,7 @@
         <h2>${escapeHtml(n.name)}</h2>
         <div class="row">
           ${fillHtml(n.fill)}
-          <span class="stop-meta">${formatDistance(distanceM(from, n))} · ${escapeHtml(n.area)}</span>
+          <span class="stop-meta">${displayDistanceM(from, n)} · ${escapeHtml(n.area)}</span>
         </div>
         ${whyHtml(n.why)}
         <p class="hint">${n.source === "sensor" ? t("hintSensor") : t("hintFixed")}</p>

@@ -108,11 +108,13 @@ class MatchingResult:
     graph_identity: str
     graph_crs: str
     config: MatchingConfig
+    diagnostics: tuple[MatchDiagnostic, ...] = ()
 
     def __post_init__(self) -> None:
         ids = tuple(item.location_id for item in self.matches)
         if len(set(ids)) != len(ids):
             raise RoadCostError("location IDs must be unique")
+        object.__setattr__(self, "diagnostics", tuple(self.diagnostics))
 
     @property
     def usable(self) -> bool:
@@ -250,7 +252,22 @@ def match_locations(
                 diagnostics,
             )
         )
-    return MatchingResult(tuple(matches), artifact.provenance.graph_sha256, graph_crs_text, config)
+    by_node: dict[Any, list[str]] = {}
+    for item in matches:
+        if item.graph_node_id is not None:
+            by_node.setdefault(item.graph_node_id, []).append(item.location_id)
+    diagnostics = tuple(
+        MatchDiagnostic(
+            "duplicate_graph_node_match",
+            f"locations share graph node {node!r}: {', '.join(sorted(location_ids))}",
+            "warning",
+        )
+        for node, location_ids in sorted(by_node.items(), key=lambda item: _stable(item[0]))
+        if len(location_ids) > 1
+    )
+    return MatchingResult(
+        tuple(matches), artifact.provenance.graph_sha256, graph_crs_text, config, diagnostics
+    )
 
 
 def _edge_values(data: dict[str, Any]) -> tuple[float, float]:

@@ -118,6 +118,22 @@ def test_shared_graph_node_has_zero_length_path_and_distinct_location_ids():
     assert result.path_for("depot", "bin").keyed_edges == ()
 
 
+def test_shared_graph_node_is_reported_without_blocking_zero_driving_distance():
+    graph = graph_with_nodes(("shared", 7.58, 47.55))
+    result = build_road_costs(
+        artifact(graph),
+        locations(("depot", 7.58, 47.55), ("bin", 7.5801, 47.5501)),
+        depot_id="depot",
+        matching=MatchingConfig(100),
+        objective=RoadCostMetric.DISTANCE,
+    )
+
+    assert result.costs.distances == ((0.0, 0.0), (0.0, 0.0))
+    assert len(result.matching.diagnostics) == 1
+    assert result.matching.diagnostics[0].code == "duplicate_graph_node_match"
+    assert result.matching.diagnostics[0].severity == "warning"
+
+
 def test_excessive_snap_is_reported_or_rejected():
     graph = graph_with_nodes(("road", 8.0, 47.55))
     requested = locations(("depot", 7.58, 47.55))
