@@ -36,7 +36,7 @@ window.SMART_TRASH_I18N = {
     rFault: "sensor faulty · sent to maintenance", rSkipped: "skipped · {reason}", rAdded: "added by crew",
     wellDone: "Well done, {crew}!", allDone: "All {n} bins emptied or reported.",
     restart: "Done", reportEmpty: "Nothing yet. Start collecting.",
-    mReport: "Today's report", mProblems: "Problems today", mLegend: "Legend", mLogout: "Log out", mCall: "Call depot", editReport: "Edit report", barInfo: "{n} stops · {d} · first: {name}", barNext: "Next: {name} · {d}", rBins: "Bins · tap to correct", rCorrected: "emptied · corrected by crew", edTitle: "Correct status", tCorrected: "{name} corrected", tReported: "{name} · reported", tEnded: "Tour ended",
+    mReport: "Today's report", mProblems: "Problems today", mLegend: "Legend", mLogout: "Sign out", mCall: "Call depot", editReport: "Edit report", barInfo: "{n} stops · {d} · first: {name}", barNext: "Next: {name} · {d}", rBins: "Bins · tap to correct", rCorrected: "emptied · corrected by crew", edTitle: "Correct status", tCorrected: "{name} corrected", tReported: "{name} · reported", tEnded: "Tour ended",
     stop: "■ Stop", resume: "▶︎ Resume", pTitle: "Paused", pReport: "Report a problem", pEnd: "End tour now", pReported: "✓ Reported",
     notDone: "Not done", rNotDone: "not done · tour ended early", endedEarly: "Tour ended early · {n} bins not done.", mPrivacy: "Privacy",
     pvTitle: "What we store", pvYes1: "Bin reports: bin, problem, time", pvYes2: "Team name for today's tour",
