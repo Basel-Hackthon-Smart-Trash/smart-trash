@@ -269,9 +269,8 @@ h1 { margin: 2px 0 0; font-size: 26px; line-height: 1.15; }
 }
 .sheet-close {
   position: sticky; top: 0; float: right; z-index: 1; display: grid; place-items: center;
-  width: 52px; height: 52px; margin: -2px -6px 0 8px; border: 0; border-radius: 50%;
-  background: #eef0ee; color: var(--ink); font-size: 24px; font-weight: 800; line-height: 1;
-  box-shadow: 0 1px 6px rgba(0,0,0,.18);
+  width: 52px; height: 52px; margin: -2px -10px 0 8px; border: 0;  /* just the ✕; the tap area stays glove-sized */
+  background: transparent; color: var(--ink); font-size: 26px; font-weight: 800; line-height: 1;
 }
 .sheet-grip { width: 44px; height: 5px; margin: 0 auto 12px; border-radius: 9px; background: var(--line); }
 .sheet h2 { margin: 0; font-size: 24px; }
