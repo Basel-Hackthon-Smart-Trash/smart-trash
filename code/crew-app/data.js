@@ -9,23 +9,22 @@ window.SMART_TRASH_DATA = {
     id: "tour-2026-10-31-kb",
     name: "Kleinbasel & Centre",
     date: "2026-10-31",
-    crew: "Team KB-3", // a team, never a person: no worker tracking
     // Same depot as the prediction pipeline and the city dashboard (approx. position)
     depot: { name: "Werkhof Stadtreinigung, Brüssel-Strasse 22", lat: 47.536, lon: 7.606, phone: "+41610000000" }, // placeholder number, not a real line
   },
-  // Ordered stops for today. source: "sensor" | "fixed-schedule" (no valid sensor data)
+  // Ordered stops for today. source: "sensor" | "fixed-schedule" (no valid sensor data); battery: sensor battery in %
   // Demo: four bins, one per case. demo: scripted outcome when the simulated feed reaches the stop.
   stops: [
     { binId: "BS-0412", name: "Messeplatz", area: "Kleinbasel", lat: 47.5636, lon: 7.6002,
-      fill: 95, source: "sensor", why: ["full ~11:00", "Herbstmesse", "Saturday"] }, // sensor sees the drop
+      fill: 95, battery: 82, source: "sensor", why: ["full ~11:00", "Herbstmesse", "Saturday"] }, // sensor sees the drop
     { binId: "BS-0290", name: "Mittlere Brücke", area: "Kleinbasel", lat: 47.5603, lon: 7.5898,
-      fill: null, source: "fixed-schedule", why: ["sensor fault", "fixed schedule"] }, // no sensor: one tap
+      fill: null, battery: 64, source: "fixed-schedule", why: ["sensor fault", "fixed schedule"] }, // no sensor: one tap
     { binId: "BS-0388", name: "Claraplatz", area: "Kleinbasel", lat: 47.5627, lon: 7.5939,
-      fill: 88, source: "sensor", why: ["full ~13:00", "shopping Saturday"],
+      fill: 88, battery: 11, source: "sensor", why: ["full ~13:00", "shopping Saturday"],  // low battery
       suspect: true,  // backend: sensor reading looks wrong; the app asks when the crew is next to it
       demo: "sensor-fault" }, // no fill drop after the visit: sensor gets flagged
     { binId: "BS-0105", name: "Barfüsserplatz", area: "Grossbasel", lat: 47.5547, lon: 7.5893,
-      fill: 97, source: "sensor", why: ["full ~10:00", "Herbstmesse"],
+      fill: 97, battery: 57, source: "sensor", why: ["full ~10:00", "Herbstmesse"],
       demo: "bin-damaged" }, // crew reports a problem and skips
   ],
   // Bins near the route that are not on today's tour (crew can add them).

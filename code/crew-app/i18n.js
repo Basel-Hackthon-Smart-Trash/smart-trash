@@ -36,7 +36,7 @@ window.SMART_TRASH_I18N = {
     rFault: "sensor faulty · sent to maintenance", rSkipped: "skipped · {reason}", rAdded: "added by crew",
     wellDone: "Well done, {crew}!", allDone: "All {n} bins emptied or reported.",
     restart: "Done", reportEmpty: "Nothing yet. Start collecting.",
-    mReport: "Today's report", mProblems: "Problems today", mLegend: "Legend", mLogout: "Log out", mCall: "Call depot", editReport: "Edit report", barInfo: "{n} stops · {d} · first: {name}", barNext: "Next: {name} · {d}", rBins: "Bins · tap to correct", rCorrected: "emptied · corrected by crew", edTitle: "Correct status", tCorrected: "{name} corrected", tReported: "{name} · reported", tEnded: "Tour ended",
+    mReport: "Today's report", mProblems: "Problems today", mLegend: "Legend", mLogout: "Sign out", mCall: "Call depot", editReport: "Edit report", barInfo: "{n} stops · {d} · first: {name}", barNext: "Next: {name} · {d}", rBins: "Bins · tap to correct", rCorrected: "emptied · corrected by crew", edTitle: "Correct status", tCorrected: "{name} corrected", tReported: "{name} · reported", tEnded: "Tour ended",
     stop: "■ Stop", resume: "▶︎ Resume", pTitle: "Paused", pReport: "Report a problem", pEnd: "End tour now", pReported: "✓ Reported",
     notDone: "Not done", rNotDone: "not done · tour ended early", endedEarly: "Tour ended early · {n} bins not done.", mPrivacy: "Privacy",
     pvTitle: "What we store", pvYes1: "Bin reports: bin, problem, time", pvYes2: "Team name for today's tour",
@@ -44,10 +44,10 @@ window.SMART_TRASH_I18N = {
     syncOnline: "Online · last sync {t}", syncOffline: "Offline · {n} reports waiting",
     noProblems: "No problems reported.",
     lgDone: "Emptied", lgNext: "Next stop", lgFault: "Sensor fault · maintenance",
-    lgSkipped: "Skipped · problem reported", lgTodo: "To do",
+    lgSkipped: "Skipped · problem reported", lgTodo: "To do", stDone: "Collected", stSkipped: "Not collected", stFault: "Sensor fault",
     lgSimulated: "Demo data, not real sensors", lgFixed: "No valid sensor: back on the fixed schedule",
     full: "full ~{t}", Saturday: "Saturday", "shopping Saturday": "shopping Saturday",
-    "sensor fault": "sensor fault", "fixed schedule": "fixed schedule", "added by crew": "added by crew", "full now": "full now", weekend: "weekend",
+    "sensor fault": "sensor fault", "fixed schedule": "fixed schedule", "added by crew": "added by crew", "full now": "full now", weekend: "weekend", battery: "Battery {p}%", batteryLong: "Sensor battery {p}%", batteryLow: "low", "no recent data": "no recent data",
   },
 
   de: {
@@ -86,10 +86,10 @@ window.SMART_TRASH_I18N = {
     syncOnline: "Online · zuletzt synchronisiert {t}", syncOffline: "Offline · {n} Meldungen warten",
     noProblems: "Keine Probleme gemeldet.",
     lgDone: "Geleert", lgNext: "Nächster Stopp", lgFault: "Sensorfehler · Unterhalt",
-    lgSkipped: "Übersprungen · Problem gemeldet", lgTodo: "Offen",
+    lgSkipped: "Übersprungen · Problem gemeldet", lgTodo: "Offen", stDone: "Geleert", stSkipped: "Nicht geleert", stFault: "Sensorfehler",
     lgSimulated: "Demodaten, keine echten Sensoren", lgFixed: "Kein gültiger Sensor: zurück auf festem Plan",
     full: "voll ~{t}", Saturday: "Samstag", "shopping Saturday": "Einkaufssamstag",
-    "sensor fault": "Sensorfehler", "fixed schedule": "fester Plan", "added by crew": "vom Team ergänzt", "full now": "jetzt voll", weekend: "Wochenende",
+    "sensor fault": "Sensorfehler", "fixed schedule": "fester Plan", "added by crew": "vom Team ergänzt", "full now": "jetzt voll", weekend: "Wochenende", battery: "Batterie {p}%", batteryLong: "Sensorbatterie {p}%", batteryLow: "schwach", "no recent data": "keine neuen Daten",
   },
 
   fr: {
@@ -128,10 +128,10 @@ window.SMART_TRASH_I18N = {
     syncOnline: "En ligne · synchronisé à {t}", syncOffline: "Hors ligne · {n} signalements en attente",
     noProblems: "Aucun problème signalé.",
     lgDone: "Vidée", lgNext: "Prochain arrêt", lgFault: "Capteur en panne · maintenance",
-    lgSkipped: "Passée · problème signalé", lgTodo: "À faire",
+    lgSkipped: "Passée · problème signalé", lgTodo: "À faire", stDone: "Vidée", stSkipped: "Non vidée", stFault: "Capteur en panne",
     lgSimulated: "Données de démo, pas de vrais capteurs", lgFixed: "Pas de capteur valide : retour à l'horaire fixe",
     full: "pleine ~{t}", Saturday: "samedi", "shopping Saturday": "samedi shopping",
-    "sensor fault": "capteur en panne", "fixed schedule": "horaire fixe", "added by crew": "ajoutée par l'équipe", "full now": "pleine maintenant", weekend: "week-end",
+    "sensor fault": "capteur en panne", "fixed schedule": "horaire fixe", "added by crew": "ajoutée par l'équipe", "full now": "pleine maintenant", weekend: "week-end", battery: "Batterie {p}%", batteryLong: "Batterie du capteur {p}%", batteryLow: "faible", "no recent data": "pas de données récentes",
   },
 
   it: {
@@ -170,9 +170,9 @@ window.SMART_TRASH_I18N = {
     syncOnline: "Online · ultima sincronizzazione {t}", syncOffline: "Offline · {n} segnalazioni in attesa",
     noProblems: "Nessun problema segnalato.",
     lgDone: "Svuotato", lgNext: "Prossima fermata", lgFault: "Sensore guasto · manutenzione",
-    lgSkipped: "Saltato · problema segnalato", lgTodo: "Da fare",
+    lgSkipped: "Saltato · problema segnalato", lgTodo: "Da fare", stDone: "Svuotato", stSkipped: "Non svuotato", stFault: "Sensore guasto",
     lgSimulated: "Dati demo, non sensori reali", lgFixed: "Nessun sensore valido: torna all'orario fisso",
     full: "pieno ~{t}", Saturday: "sabato", "shopping Saturday": "sabato di shopping",
-    "sensor fault": "sensore guasto", "fixed schedule": "orario fisso", "added by crew": "aggiunto dalla squadra", "full now": "pieno ora", weekend: "fine settimana",
+    "sensor fault": "sensore guasto", "fixed schedule": "orario fisso", "added by crew": "aggiunto dalla squadra", "full now": "pieno ora", weekend: "fine settimana", battery: "Batteria {p}%", batteryLong: "Batteria del sensore {p}%", batteryLow: "scarica", "no recent data": "nessun dato recente",
   },
 };

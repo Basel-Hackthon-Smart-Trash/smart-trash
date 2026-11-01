@@ -10,6 +10,8 @@
   const I18N = window.SMART_TRASH_I18N;
   const FEEDBACK_KEY = "smarttrash.feedback";
   const SESSION_KEY = "smarttrash.session";
+  const TOUR_KEY = "smarttrash.tour";  // sessionStorage: survives back, reload and a trip to the start page
+  const LANG_KEY = "smarttrash.lang";  // sessionStorage: a new launch starts in English again
 
   // Exceptions only. A normal stop needs no tap: the fill drop tells the system it was emptied.
   const PROBLEMS = [
@@ -23,6 +25,18 @@
   const EVENT_MS = 1300;
   const ALERT_MS = 6000;  // fault alert confirms itself after this, like a navigation alert
   const NEAR_M = 40;      // crew opens the app this close to a suspect bin: ask about it
+  const LOW_BATTERY = 15; // %, same threshold as the fault detector (code/prediction config.LOW_BATTERY)
+
+  // One place for every finished-bin status: colour token, icon and labels.
+  // Used by the map badges, the stop list, the status bar, the report and both legends.
+  // Colours stay clear of the fill-level scale (green → amber → orange → red).
+  const STATUS = {
+    done: { color: "var(--st-done)", icon: "✓", short: "stDone", long: "lgDone" },
+    skipped: { color: "var(--st-skipped)", icon: "✕", short: "stSkipped", long: "lgSkipped" },
+    fault: { color: "var(--fault)", icon: "!", short: "stFault", long: "lgFault" },
+  };
+  const statusBadge = (status, cls = "st-badge") =>
+    STATUS[status] ? `<span class="${cls}" style="background:${STATUS[status].color}" aria-hidden="true">${STATUS[status].icon}</span>` : "";
 
   let stops, nearby, map, routeLayer, started, sensorTimer;
   let lastSync = new Date(), pending = 0, faultAlert = null, alertTimer, defectStop = null, paused = false, geoWatch = null;
@@ -33,6 +47,10 @@
   let live = null, mapFit = false;  // live: bins.json from the prediction pipeline (null = demo tour)
 
   const $ = (id) => document.getElementById(id);
+
+  // Tablet mounted in the truck (or ?tablet to preview it on a laptop): map and stop list side by side
+  const tablet = matchMedia("(min-width: 700px) and (pointer: coarse)").matches || new URLSearchParams(location.search).has("tablet");
+  document.documentElement.classList.toggle("tablet", tablet);
 
   function reset() {
     started = false;
@@ -81,18 +99,42 @@
   function loadSession() {
     try {
       const s = JSON.parse(localStorage.getItem(SESSION_KEY) || "{}");
-      return { team: s.team || null, lang: "en" }; // every launch starts in English
-    } catch (e) { return { team: null, lang: "en" }; }
+      return { team: s.team || null, lang: sessionStorage.getItem(LANG_KEY) || "en" }; // every launch starts in English
+    } catch { return { team: null, lang: "en" }; }
   }
 
   function saveSession() {
-    try { localStorage.setItem(SESSION_KEY, JSON.stringify(session)); } catch (e) { /* ignore */ }
+    try {
+      localStorage.setItem(SESSION_KEY, JSON.stringify({ team: session.team }));
+      sessionStorage.setItem(LANG_KEY, session.lang);
+    } catch { /* ignore */ }
+  }
+
+  // The tour itself: which stops are done, skipped or faulty, and today's report.
+  // Saved on every render, so pressing back or reloading never loses it.
+  const tourKey = () => `${DATA.tour.id}|${session.team}`;
+
+  function saveTour() {
+    try {
+      sessionStorage.setItem(TOUR_KEY, JSON.stringify({ key: tourKey(), started, stops, nearby, lastTour }));
+    } catch { /* storage unavailable: the tour still runs, it just is not kept */ }
+  }
+
+  // A running tour comes back paused: the crew taps Resume, nothing moves on its own.
+  function restoreTour() {
+    try {
+      const saved = JSON.parse(sessionStorage.getItem(TOUR_KEY) || "null");
+      if (!saved || saved.key !== tourKey() || !Array.isArray(saved.stops)) return;
+      ({ started, stops, nearby, lastTour } = saved);
+      paused = started && nextIndex() !== -1;
+    } catch { /* broken entry: start fresh */ }
   }
 
   // Live data: the signed-in truck team gets its own route from bins.json
   function applyTeamTour(team) {
-    if (!live) return;
-    Object.assign(DATA, window.SMART_TRASH_LIVE.tour(live, team));
+    const route = live && window.SMART_TRASH_LIVE.tour(live, team);
+    if (!route) return;  // no usable stops: keep the demo tour
+    Object.assign(DATA, route);
     lastTour = null;
     mapFit = true;
   }
@@ -126,6 +168,13 @@
   function fillHtml(pct) {
     if (pct == null) return `<span class="badge badge--fixed">${t("fixedSchedule")}</span>`;
     return `<span class="fill"><span class="fill-bar"><i style="width:${pct}%;background:${fillColor(pct)}"></i></span><span class="fill-num">${pct}%</span></span>`;
+  }
+
+  // Sensor battery: "Battery 82%" in lists, "Sensor battery 82%" on the next stop; low is highlighted
+  function batteryHtml(pct, long = false) {
+    if (pct == null) return "";
+    const low = pct < LOW_BATTERY;
+    return `<span class="battery ${low ? "battery--low" : ""}">${t(long ? "batteryLong" : "battery", { p: pct })}${low ? ` · ${t("batteryLow")}` : ""}</span>`;
   }
 
   function whyHtml(why) {
@@ -196,7 +245,7 @@
       const all = JSON.parse(localStorage.getItem(FEEDBACK_KEY) || "[]");
       all.push(entry);
       localStorage.setItem(FEEDBACK_KEY, JSON.stringify(all));
-    } catch (e) { /* storage unavailable: prototype keeps working */ }
+    } catch { /* storage unavailable: prototype keeps working */ }
   }
 
   function removeLastFeedback() {
@@ -204,7 +253,7 @@
       const all = JSON.parse(localStorage.getItem(FEEDBACK_KEY) || "[]");
       all.pop();
       localStorage.setItem(FEEDBACK_KEY, JSON.stringify(all));
-    } catch (e) { /* ignore */ }
+    } catch { /* ignore */ }
   }
 
   // ---------- map ----------
@@ -218,6 +267,14 @@
       attribution: "© OpenStreetMap contributors",
     }).addTo(map);
     routeLayer = L.layerGroup().addTo(map);
+    // Small legend for the status badges, in a corner of the map
+    const legend = L.control({ position: "bottomleft" });
+    legend.onAdd = () => {
+      const el = L.DomUtil.create("div", "map-legend");
+      el.id = "map-legend";
+      return el;
+    };
+    legend.addTo(map);
     const pts = [DATA.tour.depot, ...stops].map((s) => [s.lat, s.lon]);
     map.fitBounds(pts, { padding: [20, 20] });
   }
@@ -228,6 +285,7 @@
     const h = !$("action-bar").hidden
       ? Math.max(260, Math.floor(window.innerHeight - (el.getBoundingClientRect().top + window.scrollY) - $("action-bar").offsetHeight - 12))
       : 340;
+    if (tablet) $("tour-side").style.maxHeight = `${h}px`;  // the list beside the map scrolls on its own
     if (el.offsetHeight === h) return false;
     el.style.height = `${h}px`;
     return true;
@@ -257,14 +315,15 @@
     }).addTo(routeLayer);
 
     stops.forEach((s, i) => {
-      const cls = i === next ? "marker--next" : s.status !== "todo" ? `marker--${s.status}` : "";
+      const cls = i === next ? "marker--next" : s.status !== "todo" ? "marker--finished" : "";
       const m = L.marker([s.lat, s.lon], {
-        icon: L.divIcon({ className: "", html: `<div class="marker ${cls}">${s.status === "done" ? "✓" : i + 1}</div>`, iconSize: [30, 30] }),
+        icon: L.divIcon({ className: "", html: `<div class="marker ${cls}">${i + 1}${statusBadge(s.status)}</div>`, iconSize: [30, 30] }),
         zIndexOffset: i === next ? 1000 : 0,
       }).on("click", () => openStop(i)).addTo(routeLayer);
       // Next stop's name sits on the map, since the card is hidden while collecting
       if (i === next) m.bindTooltip(escapeHtml(s.name), { permanent: true, direction: "top", offset: [0, -16], className: "next-tip" });
     });
+    $("map-legend").innerHTML = Object.keys(STATUS).map((k) => `<span>${statusBadge(k)}${t(STATUS[k].short)}</span>`).join("");
   }
 
   // ---------- screens ----------
@@ -276,17 +335,42 @@
   }
 
   function render() {
+    saveTour();
     renderStatic();
     const signedIn = !!session.team;
     $("topbar-right").hidden = !signedIn;
     $("screen-login").hidden = signedIn;
+    syncUrl(!signedIn ? "login" : nextIndex() === -1 ? "done" : "tour");
     if (!signedIn) {
       $("status").hidden = true;
+      $("action-bar").hidden = true;  // Start belongs to a route: never before sign-in
       $("screen-tour").hidden = true;
       $("screen-done").hidden = true;
       return renderLogin();
     }
     renderTour();
+  }
+
+  // The URL names the route and the screen (#route=Truck%202&view=tour): a reload or a shared link opens the same route.
+  // ?demo stays in the query string.
+  function syncUrl(view) {
+    const hash = session.team ? `#${new URLSearchParams({ route: session.team, view })}` : "";
+    if (location.hash !== hash) history.replaceState(history.state, "", location.pathname + location.search + hash);
+  }
+
+  const routeFromUrl = () => new URLSearchParams(location.hash.slice(1)).get("route");
+
+  // Back button: closes an open sheet first, pauses a running tour second, and only then leaves the app.
+  // One extra history entry catches the press; the tour is saved in any case.
+  function guardBack() {
+    if (!history.state || !history.state.guard) history.pushState({ guard: true }, "");
+  }
+
+  function onBack(e) {
+    if (e.state && e.state.guard) return;  // forward onto our own entry: nothing to do
+    if (!$("sheet").hidden) { closeSheet(); guardBack(); }
+    else if (started && !paused && nextIndex() !== -1) { stopTour(); guardBack(); }
+    else history.back();  // nothing to close: go where the user wanted
   }
 
   function renderLogin() {
@@ -303,7 +387,7 @@
     const next = nextIndex();
 
     $("data-label").textContent = DATA.dataLabel;
-    $("tour-date").textContent = new Date(DATA.tour.date).toLocaleDateString(locale(), { weekday: "long", day: "numeric", month: "long" });
+    $("tour-date").textContent = new Date(`${DATA.tour.date}T12:00`).toLocaleDateString(locale(), { weekday: "long", day: "numeric", month: "long" });
     $("tour-name").textContent = DATA.tour.name;
     $("crew-name").textContent = session.team;
     const route = routeProgress();
@@ -322,8 +406,7 @@
     $("status-stops").textContent = `${finished}/${total}`;
     $("status-left").textContent = t("left", { d: formatDistance(route.total - route.done) });
     // One segment per bin, coloured by its status
-    $("segments").innerHTML = stops.map((s, i) =>
-      `<i class="seg seg--${i === next ? "next" : s.status}"></i>`).join("");
+    $("segments").innerHTML = stops.map((s, i) => segHtml(i === next ? "next" : s.status)).join("");
 
     $("screen-tour").hidden = next === -1;
     $("screen-done").hidden = next !== -1;
@@ -341,6 +424,7 @@
           ${fillHtml(n.fill)}
           <span class="stop-meta">${displayDistanceM(from, n)} · ${escapeHtml(n.area)}</span>
         </div>
+        ${batteryHtml(n.battery, true)}
         ${whyHtml(n.why)}
         <p class="hint">${n.source === "sensor" ? t("hintSensor") : t("hintFixed")}</p>
         <div class="actions" style="display:grid;gap:8px;margin-top:10px">
@@ -351,17 +435,15 @@
     }
 
     $("stops").innerHTML = stops.map((s, i) => {
-      const state = s.status === "fault" ? t("stateFault")
-        : s.status === "done" ? (s.result === "sensor" ? t("stateSensor") : t("stateEmptied"))
-        : s.status === "skipped" ? (s.result === "not-done" ? t("notDone") : problemLabel(s.result)) : i === next ? t("stateNext") : "";
+      const state = i === next ? t("stateNext") : s.status === "todo" ? "" : binStateLabel(s);
       const tag = s.source === "crew-added" ? `<span class="badge badge--added">${t("addedByCrew")}</span>` : "";
       return `<li><button class="stop stop--${i === next ? "next" : s.status}" type="button" data-open="${i}">
-          <span class="stop-num">${s.status === "done" ? "✓" : i + 1}</span>
+          ${statusBadge(s.status, "stop-num") || `<span class="stop-num">${i + 1}</span>`}
           <span>
             <span class="stop-name">${escapeHtml(s.name)}</span> ${tag}
             ${whyHtml(s.why)}
           </span>
-          <span class="stop-state">${fillHtml(s.fill)}<br>${state}</span>
+          <span class="stop-state">${fillHtml(s.fill)}${batteryHtml(s.battery)}${state ? `<br>${state}` : ""}</span>
         </button></li>`;
     }).join("");
 
@@ -390,11 +472,13 @@
   // Pencil = this row can be edited (inline SVG, not an emoji, so it takes the text colour)
   const PENCIL = `<svg class="pencil" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M13.5 6.5l4 4" stroke="currentColor" stroke-width="2"/></svg>`;
 
+  // The status badge already shows ✓ ✕ !, so the label drops its own leading symbol
   function binStateLabel(s) {
-    if (s.status === "todo") return t("lgTodo");
-    if (s.status === "fault") return s.result === "defect-other" ? t("fdOther") : t("stateFault");
-    if (s.status === "done") return s.result === "sensor" ? t("stateSensor") : t("stateEmptied");
-    return s.result === "not-done" ? t("notDone") : problemLabel(s.result);
+    const label = s.status === "todo" ? t("lgTodo")
+      : s.status === "fault" ? (s.result === "defect-other" ? t("fdOther") : t("stateFault"))
+      : s.status === "done" ? (s.result === "sensor" ? t("stateSensor") : t("stateEmptied"))
+      : s.result === "not-done" ? t("notDone") : problemLabel(s.result);
+    return label.replace(/^[✓⚠✕]\ufe0e?\s*/u, "");
   }
 
   // Correct a bin in today's report, also after Done. The correction is saved as feedback.
@@ -429,6 +513,10 @@
     openMenuPage("report");
   }
 
+  // Status bar segment: finished bins take their STATUS colour
+  const segHtml = (status, extra = "") =>
+    `<i class="seg seg--${status} ${extra}"${STATUS[status] ? ` style="background:${STATUS[status].color}"` : ""}></i>`;
+
   const reportHtml = (rows) => rows.map(([n, label]) => `<li><b>${n}</b> ${label}</li>`).join("");
 
   function renderDone() {
@@ -443,6 +531,7 @@
   // ---------- bottom sheet ----------
 
   function openSheet(html) {
+    guardBack();
     $("sheet").innerHTML = `<div class="sheet-grip"></div>${html}`;
     $("sheet").hidden = false;
     $("sheet-backdrop").hidden = false;
@@ -462,6 +551,7 @@
     openSheet(`
       <h2>${escapeHtml(s.name)}</h2>
       <p class="sub">${s.fill == null ? t("noValid") : t("predicted", { p: s.fill })} · ${escapeHtml(s.binId)}</p>
+      ${batteryHtml(s.battery, true)}
       ${whyHtml(s.why)}
       ${s.source === "sensor" ? "" : `<div class="actions"><button class="btn btn--primary" type="button" data-emptied="${i}">${t("emptied")}</button></div>`}
       <p class="question">${t("skipQ")}</p>
@@ -517,7 +607,7 @@
         <ul class="bin-report">
           ${list.map((s, i) => `<li><button class="bin-row" type="button" data-edit="${i}" ${s.status === "todo" ? "disabled" : ""}>
             <span><span class="stop-name">${escapeHtml(s.name)}</span><br><span class="stop-meta">${escapeHtml(s.area)}</span></span>
-            <span class="bin-state bin-state--${s.status}">${binStateLabel(s)}</span>${s.status === "todo" ? "" : PENCIL}</button></li>`).join("")}
+            <span class="bin-state bin-state--${s.status}">${statusBadge(s.status)}${binStateLabel(s)}</span>${s.status === "todo" ? "" : PENCIL}</button></li>`).join("")}
         </ul>
         ${backToMenu()}`);
     }
@@ -527,7 +617,7 @@
         <h2>${t("mProblems")}</h2>
         <ul class="nearby">
           ${list.map((s) => `<li class="problem-row"><span class="stop-name">${escapeHtml(s.name)}</span>
-            <span class="stop-meta">${s.result === "defect-other" ? t("fdOther") : s.status === "fault" ? t("stateFault") : problemLabel(s.result)}${s.note ? ` · ${escapeHtml(s.note)}` : ""}</span></li>`).join("")
+            <span class="stop-meta">${binStateLabel(s)}${s.note ? ` · ${escapeHtml(s.note)}` : ""}</span></li>`).join("")
             || `<li class="stop-meta">${t("noProblems")}</li>`}
         </ul>
         ${backToMenu()}`);
@@ -543,11 +633,12 @@
         ${backToMenu()}`);
     }
     if (page === "legend") {
-      const seg = (cls, key) => `<li><i class="seg seg--${cls} legend-seg"></i>${t(key)}</li>`;
+      const pin = (status) => `<span class="marker ${status === "next" ? "marker--next" : status === "todo" ? "" : "marker--finished"}">3${statusBadge(status)}</span>`;
+      const row = (status, key) => `<li>${pin(status)}${segHtml(status, "legend-seg")}${t(key)}</li>`;
       return openSheet(`
         <h2>${t("mLegend")}</h2>
         <ul class="legend">
-          ${seg("done", "lgDone")}${seg("next", "lgNext")}${seg("fault", "lgFault")}${seg("skipped", "lgSkipped")}${seg("todo", "lgTodo")}
+          ${Object.keys(STATUS).map((k) => row(k, STATUS[k].long)).join("")}${row("next", "lgNext")}${row("todo", "lgTodo")}
           <li><span class="badge badge--data">${DATA.dataLabel}</span>${t("lgSimulated")}</li>
           <li><span class="badge badge--fixed">${t("fixedSchedule")}</span>${t("lgFixed")}</li>
         </ul>
@@ -562,6 +653,7 @@
     started = true;
     clearTimeout(sensorTimer);
     window.scrollTo(0, 0);  // Start sits mid-page; the full-screen map is sized from the top
+    guardBack();
     render();
     startGeo();
     sensorTimer = setTimeout(sensorTick, SENSOR_TICK_MS);
@@ -603,10 +695,10 @@
     animateEvent(kind);
     sensorTimer = setTimeout(() => {
       if (s.status === "todo") {
-        if (kind === "tap") demoCrewTap(i);
+        if (kind === "tap") setStop(i, "done", "crew");
         else if (kind === "fault") openFaultAlert(i);
-        else if (kind === "skip") demoProblem(i, "bin-damaged");
-        else sensorEmptied(i);
+        else if (kind === "skip") setStop(i, "skipped", "bin-damaged");
+        else setStop(i, "done", "sensor");
         if (navigator.onLine) lastSync = new Date();
       }
       sensorTimer = setTimeout(sensorTick, SENSOR_TICK_MS);
@@ -642,20 +734,19 @@
     el.classList.add("live-event--in");
   }
 
-  function sensorEmptied(i) {
-    const s = stops[i];
-    s.status = "done";
-    s.result = "sensor";
-    liveEvent(t("tSensor", { name: s.name }), "ok");
-    render();
-  }
+  // Every status change of a stop goes through here: set it, show it on the live line, redraw.
+  // status: "done" | "skipped" | "fault"; result: how it got there (sensor, crew, a problem id, ...)
+  const EVENT = {
+    sensor: ["tSensor", "ok"], crew: ["tTap", "ok"], "sensor-fault": ["tFault", "fault"],
+    "defect-other": ["tOther", "fault"], "sensor-checked": ["tChecked", "ok"],
+  };
 
-  // Crew visited, but the fill level did not drop: the sensor is flagged for maintenance.
-  function sensorFault(i) {
+  function setStop(i, status, result, eventKey) {
     const s = stops[i];
-    s.status = "fault";
-    s.result = "sensor-fault";
-    liveEvent(t("tFault", { name: s.name }), "fault");
+    s.status = status;
+    s.result = result;
+    const [key, kind] = eventKey ? [eventKey, "ok"] : EVENT[result] || ["tSkipped", "skip"];
+    liveEvent(t(key, { name: s.name, reason: status === "skipped" ? problemLabel(result) : "" }), kind);
     render();
   }
 
@@ -735,19 +826,10 @@
     if (!s || s.status !== "todo") return;
     saveFeedback({ binId: s.binId, defect: kind === "ok" ? null : kind, note: note || undefined, at: new Date().toISOString() });
     s.note = note;
-    if (kind === "sensor") sensorFault(i);
-    else if (kind === "bin") demoProblem(i, "bin-damaged");
-    else if (kind === "other") {
-      s.status = "fault";
-      s.result = "defect-other";
-      liveEvent(t("tOther", { name: s.name }), "fault");
-      render();
-    } else {
-      s.status = "done";
-      s.result = "sensor-checked";
-      liveEvent(t("tChecked", { name: s.name }), "ok");
-      render();
-    }
+    if (kind === "sensor") setStop(i, "fault", "sensor-fault");  // visited, no fill drop: sensor to maintenance
+    else if (kind === "bin") setStop(i, "skipped", "bin-damaged");
+    else if (kind === "other") setStop(i, "fault", "defect-other");
+    else setStop(i, "done", "sensor-checked");
     // Wrong answer? It is corrected in today's report (pencil); the pause sheet also offers Undo.
   }
 
@@ -800,43 +882,19 @@
     render();
   }
 
-  function demoCrewTap(i) {
-    const s = stops[i];
-    s.status = "done";
-    s.result = "crew";
-    liveEvent(t("tTap", { name: s.name }), "ok");
-    render();
-  }
-
-  function demoProblem(i, problem) {
-    const s = stops[i];
-    s.status = "skipped";
-    s.result = problem;
-    liveEvent(t("tSkipped", { name: s.name, reason: problemLabel(problem) }), "skip");
-    render();
-  }
-
   // ---------- crew actions ----------
 
   // Bins without valid sensor data (fixed schedule) need one tap.
   function crewEmptied(i) {
-    const s = stops[i];
-    s.status = "done";
-    s.result = "crew";
-    saveFeedback({ binId: s.binId, emptied: true, at: new Date().toISOString() });
+    saveFeedback({ binId: stops[i].binId, emptied: true, at: new Date().toISOString() });
     closeSheet();
-    liveEvent(t("tEmptied", { name: s.name }), "ok");
-    render();
+    setStop(i, "done", "crew", "tEmptied");
   }
 
   function reportProblem(i, problem) {
-    const s = stops[i];
-    s.status = "skipped";
-    s.result = problem;
-    saveFeedback({ binId: s.binId, problem, at: new Date().toISOString() });
+    saveFeedback({ binId: stops[i].binId, problem, at: new Date().toISOString() });
     closeSheet();
-    liveEvent(t("tSkipped", { name: s.name, reason: problemLabel(problem) }), "skip");
-    render();
+    setStop(i, "skipped", problem);
   }
 
   // Adding a bin changes the route, so a supervisor confirms it with a code first.
@@ -925,6 +983,8 @@
   window.addEventListener("offline", () => { if (!$("sheet").hidden && $("sheet").querySelector(".sync")) openMenu(); });
   $("add-bin-btn").addEventListener("click", openSupervisor);
   $("menu-btn").addEventListener("click", openMenu);
+  // Logo = back to the start page (demo / today's routes / dashboard). The tour is saved and comes back paused.
+  window.addEventListener("popstate", onBack);
   window.addEventListener("resize", () => { if (map && sizeMap()) map.invalidateSize(); });
   // Phone back in the pocket: stop reading the location
   document.addEventListener("visibilitychange", () => (document.hidden ? stopGeo() : startGeo()));
@@ -937,18 +997,21 @@
     if (e.key === "Enter" && e.target.id === "sup-pin") checkSupervisor();
   });
 
-  // Start: live routes if bins.json is there (and no ?demo), otherwise the demo tour
+  // Start: today's routes from bins.json (real routes, simulated sensors) unless ?demo; without the file, the demo tour
   (async function init() {
     live = await window.SMART_TRASH_LIVE.load();
     if (live) {
       const teams = window.SMART_TRASH_LIVE.teams(live);
       DATA.teams = teams.map((x) => x.name);
       DATA.teamMeta = Object.fromEntries(teams.map((x) => [x.name, x.meta]));
-      if (!DATA.teams.includes(session.team)) session.team = null;
-      if (!DATA.teams.includes(loginTeam)) loginTeam = DATA.teams[0];
-      if (session.team) applyTeamTour(session.team);
     }
+    // A route in the URL wins over the last sign-in on this phone; unknown routes go back to sign-in
+    if (DATA.teams.includes(routeFromUrl())) session.team = routeFromUrl();
+    if (!DATA.teams.includes(session.team)) session.team = null;
+    if (!DATA.teams.includes(loginTeam)) loginTeam = session.team || DATA.teams[0];
+    if (session.team) { applyTeamTour(session.team); saveSession(); }
     reset();
+    restoreTour();
     render();
   })();
 })();

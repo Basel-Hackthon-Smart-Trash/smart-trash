@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Smart Bins – Dashboard</title>
+  <title>Smart Trash · City dashboard</title>
 
   <!-- Leaflet (map library) -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
@@ -12,8 +12,11 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <!-- Same brand bar as the crew app (logo: assets/brand, white version in crew-app/brand) -->
+  <header class="brandbar"><a href="../"><img src="../crew-app/brand/logo-light.svg" alt="Smart Trash · start page"></a></header>
+
   <aside class="sidebar">
-    <h1>Smart Bins</h1>
+    <h1>City dashboard</h1>
     <p class="data-badge" id="data-badge">Loading data…</p>
 
     <section>
@@ -28,7 +31,7 @@
 
     <section>
       <h2>Layers</h2>
-      <label class="layer-toggle"><input type="checkbox" id="toggle-hotspots" checked> Waste hotspots (real data)</label>
+      <label class="layer-toggle"><input type="checkbox" id="toggle-hotspots" checked><span class="row-text">Waste hotspots <small>real data · Basel open data</small></span></label>
     </section>
 
     <section>

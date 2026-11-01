@@ -17,7 +17,8 @@ const COLORS = {
 const ZONE_COLORS = ["#2b6cb0", "#c05621", "#2f855a", "#805ad5", "#b83280", "#2c7a7b"];
 
 // ===== Map =====
-const map = L.map("map").setView(START_VIEW, START_ZOOM);
+// On phones one finger scrolls the page (to reach the numbers below); pinch still zooms the map
+const map = L.map("map", { dragging: !L.Browser.mobile, tap: !L.Browser.mobile }).setView(START_VIEW, START_ZOOM);
 
 L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
   maxZoom: 19,
@@ -156,7 +157,7 @@ function buildZoneFilter(data) {
     const route = data.routes.find(r => r.zone === zone);
     if (zone === 0) {
       const label = document.createElement("label");
-      label.innerHTML = `<input type="checkbox" value="0" checked> Not emptied today`;
+      label.innerHTML = `<input type="checkbox" value="0" checked><span class="row-text">Not emptied today</span>`;
       label.querySelector("input").addEventListener("change", e => {
         const layer = zoneLayers[0];
         if (layer) e.target.checked ? layer.addTo(map) : map.removeLayer(layer);
@@ -168,7 +169,7 @@ function buildZoneFilter(data) {
     label.innerHTML = `
       <input type="checkbox" value="${zone}" checked>
       <span class="zone-swatch" style="background:${zoneColor(zone)}"></span>
-      Truck ${zone} · ${route && route.stops.length ? `${route.stops.length} stops · ${route.distance_km} km${route.duration_h ? ` · ${route.duration_h} h` : ""}` : "no tour today"}`;
+      <span class="row-text">Truck ${zone}<small>${route && route.stops.length ? `${route.stops.length} stops · ${route.distance_km} km${route.duration_h ? ` · ${route.duration_h} h` : ""}` : "no tour today"}</small></span>`;
     label.querySelector("input").addEventListener("change", e => {
       const layer = zoneLayers[zone];
       if (!layer) return;

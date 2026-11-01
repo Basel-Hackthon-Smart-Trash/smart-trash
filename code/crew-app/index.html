@@ -13,7 +13,7 @@
     <header class="topbar" id="topbar">
       <div class="topbar-row">
         <!-- Maria's logo, recoloured white for the dark top bar (source: assets/brand/) -->
-        <img class="brand" src="brand/logo-light.svg" alt="Smart Trash">
+        <a class="brand-link" id="brand-link" href="../"><img class="brand" src="brand/logo-light.svg" alt="Smart Trash · start page"></a>
         <div class="topbar-right" id="topbar-right" hidden>
           <div class="crew"><span class="crew-dot" aria-hidden="true"></span><span id="crew-name"></span></div>
           <button class="menu-btn" id="menu-btn" type="button" data-i18n-label="menu"><span class="menu-icon" aria-hidden="true"></span></button>
@@ -48,12 +48,15 @@
 
       <div id="map" class="map" role="img"></div>
 
-      <section class="next" id="next-card"></section>
+      <!-- Below the map on a phone, beside it on a tablet -->
+      <div class="tour-side" id="tour-side">
+        <section class="next" id="next-card"></section>
 
-      <h2 class="section-title" data-i18n="todaysStops"></h2>
-      <ol class="stops" id="stops"></ol>
+        <h2 class="section-title" data-i18n="todaysStops"></h2>
+        <ol class="stops" id="stops"></ol>
 
-      <button class="add-bin" id="add-bin-btn" type="button" data-i18n="addBin"></button>
+        <button class="add-bin" id="add-bin-btn" type="button" data-i18n="addBin"></button>
+      </div>
     </main>
 
     <main id="screen-done" class="screen" hidden>
