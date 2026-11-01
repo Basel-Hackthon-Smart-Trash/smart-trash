@@ -374,5 +374,29 @@ h1 { margin: 2px 0 0; font-size: 26px; line-height: 1.15; }
 
 .leaflet-control-attribution { font-size: 10px; }
 
+/* Tablet mounted in the truck: wide map with the stop list beside it, bigger text and targets
+   (read from a distance, used with gloves). Class set in app.js. */
+.tablet { --tap: 72px; }
+.tablet body { padding: 0; background: var(--bg); font-size: 21px; }
+.tablet .phone { max-width: none; min-height: 100vh; border-radius: 0; box-shadow: none; }
+.tablet #screen-login, .tablet #screen-done { max-width: 640px; margin: 0 auto; }
+.tablet #screen-tour { display: grid; grid-template-columns: minmax(0, 2fr) minmax(340px, 1fr); gap: 0 20px; align-items: start; }
+.tablet .tour-head { grid-column: 1 / -1; }
+.tablet h1, .tablet .collecting .tour-head h1 { font-size: 30px; }
+.tablet .tour-side { overflow-y: auto; padding-bottom: 16px; }
+.tablet .next { margin-top: 0; }
+.tablet .next h2 { font-size: 28px; }
+.tablet .stop-meta, .tablet .why span, .tablet .stop-state { font-size: 17px; }
+/* While collecting the tablet keeps the next stop and the list in view; the phone shows only the map */
+.tablet .collecting .next:not(:empty), .tablet .collecting .section-title { display: block; }
+.tablet .collecting .stops { display: grid; }
+.tablet .action-bar { max-width: none; }
+.tablet .stop-btn { min-height: 80px; font-size: 26px; }
+.tablet .bar-info { font-size: 20px; }
+.tablet .status-text { font-size: 18px; }
+.tablet .seg { height: 14px; }
+.tablet .live-event { font-size: 18px; }
+.tablet .sheet { max-width: 600px; }
+
 /* Numbers and data in the brand mono */
 .status-text b, #status-left, .fill-num, .done-report b, .stop-num, .marker, .pin, .badge--data { font-family: var(--font-mono); }

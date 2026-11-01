@@ -47,6 +47,10 @@
 
   const $ = (id) => document.getElementById(id);
 
+  // Tablet mounted in the truck (or ?tablet to preview it on a laptop): map and stop list side by side
+  const tablet = matchMedia("(min-width: 700px) and (pointer: coarse)").matches || new URLSearchParams(location.search).has("tablet");
+  document.documentElement.classList.toggle("tablet", tablet);
+
   function reset() {
     started = false;
     stopGeo();
@@ -254,6 +258,7 @@
     const h = !$("action-bar").hidden
       ? Math.max(260, Math.floor(window.innerHeight - (el.getBoundingClientRect().top + window.scrollY) - $("action-bar").offsetHeight - 12))
       : 340;
+    if (tablet) $("tour-side").style.maxHeight = `${h}px`;  // the list beside the map scrolls on its own
     if (el.offsetHeight === h) return false;
     el.style.height = `${h}px`;
     return true;
