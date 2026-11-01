@@ -85,6 +85,7 @@ For local API development, start `code/api/server.py` after generating the snaps
 | Stops in order | `routes[n].stops` → `bins[id]` |
 | Fill level | `fill_percent` |
 | Observed fill band | `fill_band` (`green`, `orange`, `red`) |
+| Sensor battery | `battery_percent` (last reading); below 15 % shown as "low". Until `bins.json` is regenerated, simulated data gets a stable stand-in per bin id |
 | "why" keywords | `predicted_full_at` and the context in `reason`, e.g. "full ~12:00 · weekend" |
 | Fixed schedule | `fault: true` |
 | Bins the crew may add | Bins on no route, sensor OK, closest to the route |
