@@ -9,7 +9,6 @@ window.SMART_TRASH_DATA = {
     id: "tour-2026-10-31-kb",
     name: "Kleinbasel & Centre",
     date: "2026-10-31",
-    crew: "Team KB-3", // a team, never a person: no worker tracking
     // Same depot as the prediction pipeline and the city dashboard (approx. position)
     depot: { name: "Werkhof Stadtreinigung, Brüssel-Strasse 22", lat: 47.536, lon: 7.606, phone: "+41610000000" }, // placeholder number, not a real line
   },
