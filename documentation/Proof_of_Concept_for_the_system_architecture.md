@@ -35,6 +35,18 @@ flowchart LR
 
 The sensors must not connect directly to the database. Only the processing service should possess database credentials.
 
+### Simplified Architecture
+
+```mermaid
+flowchart LR
+    Simulator["Sensor Simulator<br/>One script<br/>Simulated sensor data"]
+    Database[("PostgreSQL<br/>Measurements and metadata storage")]
+    Dashboard["Leaflet Dashboard<br/>Generic web dashboard<br/>Runs on different platforms"]
+
+    Simulator -->|"PostgreSQL protocol<br/>Direct writes"| Database
+    Database -->|"SQL queries<br/>Read-only account"| Dashboard
+```
+
 ## 3. Required Components
 
 | Component | Recommended software | Purpose | PoC requirement |
