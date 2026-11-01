@@ -335,6 +335,7 @@
     syncUrl(!signedIn ? "login" : nextIndex() === -1 ? "done" : "tour");
     if (!signedIn) {
       $("status").hidden = true;
+      $("action-bar").hidden = true;  // Start belongs to a route: never before sign-in
       $("screen-tour").hidden = true;
       $("screen-done").hidden = true;
       return renderLogin();
