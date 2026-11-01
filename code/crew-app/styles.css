@@ -215,6 +215,10 @@ h1 { margin: 2px 0 0; font-size: 26px; line-height: 1.15; }
 .fill { display: flex; align-items: center; gap: 8px; font-weight: 800; }
 .fill-bar { width: 64px; height: 10px; background: var(--line); border-radius: 99px; overflow: hidden; }
 .fill-bar i { display: block; height: 100%; }
+/* Sensor battery under the fill level; low battery in red so the crew can report it */
+.battery { display: block; margin-top: 4px; font-size: 14px; font-weight: 700; color: var(--ink-soft); }
+.next > .battery, .sheet .battery { margin: 0 0 10px; font-size: 16px; }
+.battery--low { color: var(--fill-over); }
 
 .btn {
   display: flex; align-items: center; justify-content: center; gap: 8px;

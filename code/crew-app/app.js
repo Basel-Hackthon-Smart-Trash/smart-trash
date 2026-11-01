@@ -25,6 +25,7 @@
   const EVENT_MS = 1300;
   const ALERT_MS = 6000;  // fault alert confirms itself after this, like a navigation alert
   const NEAR_M = 40;      // crew opens the app this close to a suspect bin: ask about it
+  const LOW_BATTERY = 15; // %, same threshold as the fault detector (code/prediction config.LOW_BATTERY)
 
   // One place for every finished-bin status: colour token, icon and labels.
   // Used by the map badges, the stop list, the status bar, the report and both legends.
@@ -167,6 +168,13 @@
   function fillHtml(pct) {
     if (pct == null) return `<span class="badge badge--fixed">${t("fixedSchedule")}</span>`;
     return `<span class="fill"><span class="fill-bar"><i style="width:${pct}%;background:${fillColor(pct)}"></i></span><span class="fill-num">${pct}%</span></span>`;
+  }
+
+  // Sensor battery: "Battery 82%" in lists, "Sensor battery 82%" on the next stop; low is highlighted
+  function batteryHtml(pct, long = false) {
+    if (pct == null) return "";
+    const low = pct < LOW_BATTERY;
+    return `<span class="battery ${low ? "battery--low" : ""}">${t(long ? "batteryLong" : "battery", { p: pct })}${low ? ` · ${t("batteryLow")}` : ""}</span>`;
   }
 
   function whyHtml(why) {
@@ -416,6 +424,7 @@
           ${fillHtml(n.fill)}
           <span class="stop-meta">${displayDistanceM(from, n)} · ${escapeHtml(n.area)}</span>
         </div>
+        ${batteryHtml(n.battery, true)}
         ${whyHtml(n.why)}
         <p class="hint">${n.source === "sensor" ? t("hintSensor") : t("hintFixed")}</p>
         <div class="actions" style="display:grid;gap:8px;margin-top:10px">
@@ -434,7 +443,7 @@
             <span class="stop-name">${escapeHtml(s.name)}</span> ${tag}
             ${whyHtml(s.why)}
           </span>
-          <span class="stop-state">${fillHtml(s.fill)}<br>${state}</span>
+          <span class="stop-state">${fillHtml(s.fill)}${batteryHtml(s.battery)}${state ? `<br>${state}` : ""}</span>
         </button></li>`;
     }).join("");
 
@@ -542,6 +551,7 @@
     openSheet(`
       <h2>${escapeHtml(s.name)}</h2>
       <p class="sub">${s.fill == null ? t("noValid") : t("predicted", { p: s.fill })} · ${escapeHtml(s.binId)}</p>
+      ${batteryHtml(s.battery, true)}
       ${whyHtml(s.why)}
       ${s.source === "sensor" ? "" : `<div class="actions"><button class="btn btn--primary" type="button" data-emptied="${i}">${t("emptied")}</button></div>`}
       <p class="question">${t("skipQ")}</p>

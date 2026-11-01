@@ -56,9 +56,20 @@ window.SMART_TRASH_LIVE = (function () {
     return tags.slice(0, 3);
   }
 
+  // Sensor battery in %: from the pipeline (battery_percent). Until bins.json is regenerated with it,
+  // simulated data gets a stable stand-in from the bin id, like the simulator (40–100 %, about 1 in 12 low);
+  // real data without it shows nothing.
+  function battery(b, simulated) {
+    if (Number.isFinite(b.battery_percent)) return Math.round(b.battery_percent);
+    if (!simulated) return null;
+    let h = 2166136261;  // FNV-1a: neighbouring ids get unrelated values
+    for (const c of String(b.id)) h = Math.imul(h ^ c.charCodeAt(0), 16777619) >>> 0;
+    return h % 12 === 0 ? 5 + (h % 10) : 40 + (h % 61);
+  }
+
   // Shape of one bin in data.js. The pipeline has no street names yet: fall back to the bin id.
-  function stop(b, plannedAt) {
-    const state = reading(b, plannedAt);
+  function stop(b, raw) {
+    const state = reading(b, raw.generated_at);
     return {
       binId: b.id,
       name: b.name || b.street || b.id,
@@ -69,6 +80,7 @@ window.SMART_TRASH_LIVE = (function () {
       fillBand: state === "ok" ? b.fill_band || null : null,
       source: state === "ok" ? "sensor" : "fixed-schedule",
       why: why(b, state),
+      battery: battery(b, raw.simulated),
     };
   }
 
@@ -84,7 +96,7 @@ window.SMART_TRASH_LIVE = (function () {
     const byId = new Map(raw.bins.map((b) => [b.id, b]));
     const routed = new Set(raw.routes.flatMap((r) => r.stops));
     const located = (b) => !!b && Number.isFinite(b.lat) && Number.isFinite(b.lon);  // no position: cannot be routed
-    const toStop = (b) => stop(b, raw.generated_at);
+    const toStop = (b) => stop(b, raw);
     const stops = (route.stops || []).map((id) => byId.get(id)).filter(located).map(toStop);
     if (!stops.length) return null;
     const mid = stops[Math.floor(stops.length / 2)];

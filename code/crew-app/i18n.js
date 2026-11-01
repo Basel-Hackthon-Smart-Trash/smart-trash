@@ -47,7 +47,7 @@ window.SMART_TRASH_I18N = {
     lgSkipped: "Skipped · problem reported", lgTodo: "To do", stDone: "Collected", stSkipped: "Not collected", stFault: "Sensor fault",
     lgSimulated: "Demo data, not real sensors", lgFixed: "No valid sensor: back on the fixed schedule",
     full: "full ~{t}", Saturday: "Saturday", "shopping Saturday": "shopping Saturday",
-    "sensor fault": "sensor fault", "fixed schedule": "fixed schedule", "added by crew": "added by crew", "full now": "full now", weekend: "weekend", "no recent data": "no recent data",
+    "sensor fault": "sensor fault", "fixed schedule": "fixed schedule", "added by crew": "added by crew", "full now": "full now", weekend: "weekend", battery: "Battery {p}%", batteryLong: "Sensor battery {p}%", batteryLow: "low", "no recent data": "no recent data",
   },
 
   de: {
@@ -89,7 +89,7 @@ window.SMART_TRASH_I18N = {
     lgSkipped: "Übersprungen · Problem gemeldet", lgTodo: "Offen", stDone: "Geleert", stSkipped: "Nicht geleert", stFault: "Sensorfehler",
     lgSimulated: "Demodaten, keine echten Sensoren", lgFixed: "Kein gültiger Sensor: zurück auf festem Plan",
     full: "voll ~{t}", Saturday: "Samstag", "shopping Saturday": "Einkaufssamstag",
-    "sensor fault": "Sensorfehler", "fixed schedule": "fester Plan", "added by crew": "vom Team ergänzt", "full now": "jetzt voll", weekend: "Wochenende", "no recent data": "keine neuen Daten",
+    "sensor fault": "Sensorfehler", "fixed schedule": "fester Plan", "added by crew": "vom Team ergänzt", "full now": "jetzt voll", weekend: "Wochenende", battery: "Batterie {p}%", batteryLong: "Sensorbatterie {p}%", batteryLow: "schwach", "no recent data": "keine neuen Daten",
   },
 
   fr: {
@@ -131,7 +131,7 @@ window.SMART_TRASH_I18N = {
     lgSkipped: "Passée · problème signalé", lgTodo: "À faire", stDone: "Vidée", stSkipped: "Non vidée", stFault: "Capteur en panne",
     lgSimulated: "Données de démo, pas de vrais capteurs", lgFixed: "Pas de capteur valide : retour à l'horaire fixe",
     full: "pleine ~{t}", Saturday: "samedi", "shopping Saturday": "samedi shopping",
-    "sensor fault": "capteur en panne", "fixed schedule": "horaire fixe", "added by crew": "ajoutée par l'équipe", "full now": "pleine maintenant", weekend: "week-end", "no recent data": "pas de données récentes",
+    "sensor fault": "capteur en panne", "fixed schedule": "horaire fixe", "added by crew": "ajoutée par l'équipe", "full now": "pleine maintenant", weekend: "week-end", battery: "Batterie {p}%", batteryLong: "Batterie du capteur {p}%", batteryLow: "faible", "no recent data": "pas de données récentes",
   },
 
   it: {
@@ -173,6 +173,6 @@ window.SMART_TRASH_I18N = {
     lgSkipped: "Saltato · problema segnalato", lgTodo: "Da fare", stDone: "Svuotato", stSkipped: "Non svuotato", stFault: "Sensore guasto",
     lgSimulated: "Dati demo, non sensori reali", lgFixed: "Nessun sensore valido: torna all'orario fisso",
     full: "pieno ~{t}", Saturday: "sabato", "shopping Saturday": "sabato di shopping",
-    "sensor fault": "sensore guasto", "fixed schedule": "orario fisso", "added by crew": "aggiunto dalla squadra", "full now": "pieno ora", weekend: "fine settimana", "no recent data": "nessun dato recente",
+    "sensor fault": "sensore guasto", "fixed schedule": "orario fisso", "added by crew": "aggiunto dalla squadra", "full now": "pieno ora", weekend: "fine settimana", battery: "Batteria {p}%", batteryLong: "Batteria del sensore {p}%", batteryLow: "scarica", "no recent data": "nessun dato recente",
   },
 };
