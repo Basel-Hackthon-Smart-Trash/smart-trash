@@ -347,7 +347,7 @@
     const next = nextIndex();
 
     $("data-label").textContent = DATA.dataLabel;
-    $("tour-date").textContent = new Date(DATA.tour.date).toLocaleDateString(locale(), { weekday: "long", day: "numeric", month: "long" });
+    $("tour-date").textContent = new Date(`${DATA.tour.date}T12:00`).toLocaleDateString(locale(), { weekday: "long", day: "numeric", month: "long" });
     $("tour-name").textContent = DATA.tour.name;
     $("crew-name").textContent = session.team;
     const route = routeProgress();
@@ -394,9 +394,7 @@
     }
 
     $("stops").innerHTML = stops.map((s, i) => {
-      const state = s.status === "fault" ? t("stateFault")
-        : s.status === "done" ? (s.result === "sensor" ? t("stateSensor") : t("stateEmptied"))
-        : s.status === "skipped" ? (s.result === "not-done" ? t("notDone") : problemLabel(s.result)) : i === next ? t("stateNext") : "";
+      const state = i === next ? t("stateNext") : s.status === "todo" ? "" : binStateLabel(s);
       const tag = s.source === "crew-added" ? `<span class="badge badge--added">${t("addedByCrew")}</span>` : "";
       return `<li><button class="stop stop--${i === next ? "next" : s.status}" type="button" data-open="${i}">
           ${statusBadge(s.status, "stop-num") || `<span class="stop-num">${i + 1}</span>`}
@@ -577,7 +575,7 @@
         <h2>${t("mProblems")}</h2>
         <ul class="nearby">
           ${list.map((s) => `<li class="problem-row"><span class="stop-name">${escapeHtml(s.name)}</span>
-            <span class="stop-meta">${s.result === "defect-other" ? t("fdOther") : s.status === "fault" ? t("stateFault") : problemLabel(s.result)}${s.note ? ` · ${escapeHtml(s.note)}` : ""}</span></li>`).join("")
+            <span class="stop-meta">${binStateLabel(s)}${s.note ? ` · ${escapeHtml(s.note)}` : ""}</span></li>`).join("")
             || `<li class="stop-meta">${t("noProblems")}</li>`}
         </ul>
         ${backToMenu()}`);
@@ -655,10 +653,10 @@
     animateEvent(kind);
     sensorTimer = setTimeout(() => {
       if (s.status === "todo") {
-        if (kind === "tap") demoCrewTap(i);
+        if (kind === "tap") setStop(i, "done", "crew");
         else if (kind === "fault") openFaultAlert(i);
-        else if (kind === "skip") demoProblem(i, "bin-damaged");
-        else sensorEmptied(i);
+        else if (kind === "skip") setStop(i, "skipped", "bin-damaged");
+        else setStop(i, "done", "sensor");
         if (navigator.onLine) lastSync = new Date();
       }
       sensorTimer = setTimeout(sensorTick, SENSOR_TICK_MS);
@@ -694,20 +692,19 @@
     el.classList.add("live-event--in");
   }
 
-  function sensorEmptied(i) {
-    const s = stops[i];
-    s.status = "done";
-    s.result = "sensor";
-    liveEvent(t("tSensor", { name: s.name }), "ok");
-    render();
-  }
+  // Every status change of a stop goes through here: set it, show it on the live line, redraw.
+  // status: "done" | "skipped" | "fault"; result: how it got there (sensor, crew, a problem id, ...)
+  const EVENT = {
+    sensor: ["tSensor", "ok"], crew: ["tTap", "ok"], "sensor-fault": ["tFault", "fault"],
+    "defect-other": ["tOther", "fault"], "sensor-checked": ["tChecked", "ok"],
+  };
 
-  // Crew visited, but the fill level did not drop: the sensor is flagged for maintenance.
-  function sensorFault(i) {
+  function setStop(i, status, result, eventKey) {
     const s = stops[i];
-    s.status = "fault";
-    s.result = "sensor-fault";
-    liveEvent(t("tFault", { name: s.name }), "fault");
+    s.status = status;
+    s.result = result;
+    const [key, kind] = eventKey ? [eventKey, "ok"] : EVENT[result] || ["tSkipped", "skip"];
+    liveEvent(t(key, { name: s.name, reason: status === "skipped" ? problemLabel(result) : "" }), kind);
     render();
   }
 
@@ -787,19 +784,10 @@
     if (!s || s.status !== "todo") return;
     saveFeedback({ binId: s.binId, defect: kind === "ok" ? null : kind, note: note || undefined, at: new Date().toISOString() });
     s.note = note;
-    if (kind === "sensor") sensorFault(i);
-    else if (kind === "bin") demoProblem(i, "bin-damaged");
-    else if (kind === "other") {
-      s.status = "fault";
-      s.result = "defect-other";
-      liveEvent(t("tOther", { name: s.name }), "fault");
-      render();
-    } else {
-      s.status = "done";
-      s.result = "sensor-checked";
-      liveEvent(t("tChecked", { name: s.name }), "ok");
-      render();
-    }
+    if (kind === "sensor") setStop(i, "fault", "sensor-fault");  // visited, no fill drop: sensor to maintenance
+    else if (kind === "bin") setStop(i, "skipped", "bin-damaged");
+    else if (kind === "other") setStop(i, "fault", "defect-other");
+    else setStop(i, "done", "sensor-checked");
     // Wrong answer? It is corrected in today's report (pencil); the pause sheet also offers Undo.
   }
 
@@ -852,43 +840,19 @@
     render();
   }
 
-  function demoCrewTap(i) {
-    const s = stops[i];
-    s.status = "done";
-    s.result = "crew";
-    liveEvent(t("tTap", { name: s.name }), "ok");
-    render();
-  }
-
-  function demoProblem(i, problem) {
-    const s = stops[i];
-    s.status = "skipped";
-    s.result = problem;
-    liveEvent(t("tSkipped", { name: s.name, reason: problemLabel(problem) }), "skip");
-    render();
-  }
-
   // ---------- crew actions ----------
 
   // Bins without valid sensor data (fixed schedule) need one tap.
   function crewEmptied(i) {
-    const s = stops[i];
-    s.status = "done";
-    s.result = "crew";
-    saveFeedback({ binId: s.binId, emptied: true, at: new Date().toISOString() });
+    saveFeedback({ binId: stops[i].binId, emptied: true, at: new Date().toISOString() });
     closeSheet();
-    liveEvent(t("tEmptied", { name: s.name }), "ok");
-    render();
+    setStop(i, "done", "crew", "tEmptied");
   }
 
   function reportProblem(i, problem) {
-    const s = stops[i];
-    s.status = "skipped";
-    s.result = problem;
-    saveFeedback({ binId: s.binId, problem, at: new Date().toISOString() });
+    saveFeedback({ binId: stops[i].binId, problem, at: new Date().toISOString() });
     closeSheet();
-    liveEvent(t("tSkipped", { name: s.name, reason: problemLabel(problem) }), "skip");
-    render();
+    setStop(i, "skipped", problem);
   }
 
   // Adding a bin changes the route, so a supervisor confirms it with a code first.
