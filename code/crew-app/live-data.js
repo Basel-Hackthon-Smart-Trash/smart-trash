@@ -25,15 +25,15 @@ window.SMART_TRASH_LIVE = (function () {
         const res = await fetch(url, { cache: "no-store", signal });
         const raw = res.ok ? await res.json() : null;
         if (valid(raw)) {
-          try { localStorage.setItem(CACHE_KEY, JSON.stringify(raw)); } catch (e) { /* storage full: keep going */ }
+          try { localStorage.setItem(CACHE_KEY, JSON.stringify(raw)); } catch { /* storage full: keep going */ }
           return raw;
         }
-      } catch (e) { /* offline, too slow or not served: try the next source */ }
+      } catch { /* offline, too slow or not served: try the next source */ }
     }
     try {
       const cached = JSON.parse(localStorage.getItem(CACHE_KEY) || "null");
       return valid(cached) ? cached : null;
-    } catch (e) { return null; }
+    } catch { return null; }
   }
 
   const teamName = (i) => `Truck ${i + 1}`;

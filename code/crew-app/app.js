@@ -99,14 +99,14 @@
     try {
       const s = JSON.parse(localStorage.getItem(SESSION_KEY) || "{}");
       return { team: s.team || null, lang: sessionStorage.getItem(LANG_KEY) || "en" }; // every launch starts in English
-    } catch (e) { return { team: null, lang: "en" }; }
+    } catch { return { team: null, lang: "en" }; }
   }
 
   function saveSession() {
     try {
       localStorage.setItem(SESSION_KEY, JSON.stringify({ team: session.team }));
       sessionStorage.setItem(LANG_KEY, session.lang);
-    } catch (e) { /* ignore */ }
+    } catch { /* ignore */ }
   }
 
   // The tour itself: which stops are done, skipped or faulty, and today's report.
@@ -116,7 +116,7 @@
   function saveTour() {
     try {
       sessionStorage.setItem(TOUR_KEY, JSON.stringify({ key: tourKey(), started, stops, nearby, lastTour }));
-    } catch (e) { /* storage unavailable: the tour still runs, it just is not kept */ }
+    } catch { /* storage unavailable: the tour still runs, it just is not kept */ }
   }
 
   // A running tour comes back paused: the crew taps Resume, nothing moves on its own.
@@ -126,7 +126,7 @@
       if (!saved || saved.key !== tourKey() || !Array.isArray(saved.stops)) return;
       ({ started, stops, nearby, lastTour } = saved);
       paused = started && nextIndex() !== -1;
-    } catch (e) { /* broken entry: start fresh */ }
+    } catch { /* broken entry: start fresh */ }
   }
 
   // Live data: the signed-in truck team gets its own route from bins.json
@@ -237,7 +237,7 @@
       const all = JSON.parse(localStorage.getItem(FEEDBACK_KEY) || "[]");
       all.push(entry);
       localStorage.setItem(FEEDBACK_KEY, JSON.stringify(all));
-    } catch (e) { /* storage unavailable: prototype keeps working */ }
+    } catch { /* storage unavailable: prototype keeps working */ }
   }
 
   function removeLastFeedback() {
@@ -245,7 +245,7 @@
       const all = JSON.parse(localStorage.getItem(FEEDBACK_KEY) || "[]");
       all.pop();
       localStorage.setItem(FEEDBACK_KEY, JSON.stringify(all));
-    } catch (e) { /* ignore */ }
+    } catch { /* ignore */ }
   }
 
   // ---------- map ----------
