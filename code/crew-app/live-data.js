@@ -7,6 +7,7 @@ window.SMART_TRASH_LIVE = (function () {
   const URL = "../web/data/bins.json";
   const CACHE_KEY = "smarttrash.bins";  // last good bins.json: the app still opens offline
   const TIMEOUT_MS = 5000;              // slow network: fall back instead of a blank screen
+  const STALE_H = 6;                    // a reading this much older than the plan counts as missing
 
   const valid = (raw) => !!raw && Array.isArray(raw.bins) && Array.isArray(raw.routes) && raw.routes.length > 0 && !!raw.depot;
 
@@ -30,26 +31,36 @@ window.SMART_TRASH_LIVE = (function () {
 
   const teamName = (i) => `Truck ${i + 1}`;
 
+  // Real sensors drop out or report late. No valid reading = the bin goes back on the fixed schedule.
+  // "ok" | "fault" (flagged, or no fill level) | "stale" (last reading too old when the plan was made)
+  function reading(b, plannedAt) {
+    if (b.fault || !Number.isFinite(b.fill_percent)) return "fault";
+    const age = (Date.parse(plannedAt) - Date.parse(b.observed_at)) / 3600000;
+    return age > STALE_H ? "stale" : "ok";  // no timestamp: age is NaN, the reading is used
+  }
+
   // "Full by Sun 12:00, before the next tour (weekend)" -> ["full ~12:00", "weekend"]
-  function why(b) {
-    if (b.fault) return ["sensor fault", "fixed schedule"];
-    const tags = [b.hours_until_full <= 0 ? "full now" : `full ~${String(b.predicted_full_at).slice(11, 16)}`];
+  function why(b, state) {
+    if (state !== "ok") return [state === "stale" ? "no recent data" : "sensor fault", "fixed schedule"];
+    const at = /T(\d\d:\d\d)/.exec(b.predicted_full_at || "");
+    const tags = b.hours_until_full <= 0 ? ["full now"] : at ? [`full ~${at[1]}`] : [];
     const context = /\(([^)]+)\)/.exec(b.reason || "");
     if (context) tags.push(...context[1].split(",").map((s) => s.trim()).filter(Boolean));
     return tags.slice(0, 3);
   }
 
   // Shape of one bin in data.js. The pipeline has no street names yet: fall back to the bin id.
-  function stop(b) {
+  function stop(b, plannedAt) {
+    const state = reading(b, plannedAt);
     return {
       binId: b.id,
       name: b.name || b.street || b.id,
       area: `Zone ${b.zone}`,
       lat: b.lat,
       lon: b.lon,
-      fill: b.fault ? null : Math.round(b.fill_percent),
-      source: b.fault ? "fixed-schedule" : "sensor",
-      why: why(b),
+      fill: state === "ok" ? Math.round(b.fill_percent) : null,
+      source: state === "ok" ? "sensor" : "fixed-schedule",
+      why: why(b, state),
     };
   }
 
@@ -64,13 +75,15 @@ window.SMART_TRASH_LIVE = (function () {
     const route = raw.routes[Math.max(0, i)];
     const byId = new Map(raw.bins.map((b) => [b.id, b]));
     const routed = new Set(raw.routes.flatMap((r) => r.stops));
-    const stops = (route.stops || []).map((id) => byId.get(id)).filter(Boolean).map(stop);
+    const located = (b) => !!b && Number.isFinite(b.lat) && Number.isFinite(b.lon);  // no position: cannot be routed
+    const toStop = (b) => stop(b, raw.generated_at);
+    const stops = (route.stops || []).map((id) => byId.get(id)).filter(located).map(toStop);
     if (!stops.length) return null;
     const mid = stops[Math.floor(stops.length / 2)];
     const dist = (b) => (b.lat - mid.lat) ** 2 + (b.lon - mid.lon) ** 2;
     // Bins the crew may add: not on any route, sensor working, closest to the middle of this route
-    const nearby = raw.bins.filter((b) => !routed.has(b.id) && !b.fault)
-      .sort((a, b) => dist(a) - dist(b)).slice(0, 6).map(stop);
+    const nearby = raw.bins.filter((b) => located(b) && !routed.has(b.id) && reading(b, raw.generated_at) === "ok")
+      .sort((a, b) => dist(a) - dist(b)).slice(0, 6).map(toStop);
     return {
       dataLabel: raw.simulated ? "SIMULATED" : "REAL",
       tour: {
