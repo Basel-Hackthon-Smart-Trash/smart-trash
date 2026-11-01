@@ -281,6 +281,7 @@
     const signedIn = !!session.team;
     $("topbar-right").hidden = !signedIn;
     $("screen-login").hidden = signedIn;
+    syncUrl(!signedIn ? "login" : nextIndex() === -1 ? "done" : "tour");
     if (!signedIn) {
       $("status").hidden = true;
       $("screen-tour").hidden = true;
@@ -288,6 +289,28 @@
       return renderLogin();
     }
     renderTour();
+  }
+
+  // The URL names the route and the screen (#route=Truck%202&view=tour): a reload or a shared link opens the same route.
+  // ?demo stays in the query string.
+  function syncUrl(view) {
+    const hash = session.team ? `#${new URLSearchParams({ route: session.team, view })}` : "";
+    if (location.hash !== hash) history.replaceState(history.state, "", location.pathname + location.search + hash);
+  }
+
+  const routeFromUrl = () => new URLSearchParams(location.hash.slice(1)).get("route");
+
+  // Back button: closes an open sheet first, pauses a running tour second, and only then leaves the app.
+  // One extra history entry catches the press; the tour is saved in any case.
+  function guardBack() {
+    if (!history.state || !history.state.guard) history.pushState({ guard: true }, "");
+  }
+
+  function onBack(e) {
+    if (e.state && e.state.guard) return;  // forward onto our own entry: nothing to do
+    if (!$("sheet").hidden) { closeSheet(); guardBack(); }
+    else if (started && !paused && nextIndex() !== -1) { stopTour(); guardBack(); }
+    else history.back();  // nothing to close: go where the user wanted
   }
 
   function renderLogin() {
@@ -444,6 +467,7 @@
   // ---------- bottom sheet ----------
 
   function openSheet(html) {
+    guardBack();
     $("sheet").innerHTML = `<div class="sheet-grip"></div>${html}`;
     $("sheet").hidden = false;
     $("sheet-backdrop").hidden = false;
@@ -563,6 +587,7 @@
     started = true;
     clearTimeout(sensorTimer);
     window.scrollTo(0, 0);  // Start sits mid-page; the full-screen map is sized from the top
+    guardBack();
     render();
     startGeo();
     sensorTimer = setTimeout(sensorTick, SENSOR_TICK_MS);
@@ -926,10 +951,8 @@
   window.addEventListener("offline", () => { if (!$("sheet").hidden && $("sheet").querySelector(".sync")) openMenu(); });
   $("add-bin-btn").addEventListener("click", openSupervisor);
   $("menu-btn").addEventListener("click", openMenu);
-  // Logo = back to the start page (demo / live / dashboard); during a tour, ask first
-  $("brand-link").addEventListener("click", (e) => {
-    if (started && nextIndex() !== -1 && !window.confirm(t("leaveTour"))) e.preventDefault();
-  });
+  // Logo = back to the start page (demo / today's routes / dashboard). The tour is saved and comes back paused.
+  window.addEventListener("popstate", onBack);
   window.addEventListener("resize", () => { if (map && sizeMap()) map.invalidateSize(); });
   // Phone back in the pocket: stop reading the location
   document.addEventListener("visibilitychange", () => (document.hidden ? stopGeo() : startGeo()));
@@ -949,10 +972,12 @@
       const teams = window.SMART_TRASH_LIVE.teams(live);
       DATA.teams = teams.map((x) => x.name);
       DATA.teamMeta = Object.fromEntries(teams.map((x) => [x.name, x.meta]));
-      if (!DATA.teams.includes(session.team)) session.team = null;
-      if (!DATA.teams.includes(loginTeam)) loginTeam = DATA.teams[0];
-      if (session.team) applyTeamTour(session.team);
     }
+    // A route in the URL wins over the last sign-in on this phone; unknown routes go back to sign-in
+    if (DATA.teams.includes(routeFromUrl())) session.team = routeFromUrl();
+    if (!DATA.teams.includes(session.team)) session.team = null;
+    if (!DATA.teams.includes(loginTeam)) loginTeam = session.team || DATA.teams[0];
+    if (session.team) { applyTeamTour(session.team); saveSession(); }
     reset();
     restoreTour();
     render();
