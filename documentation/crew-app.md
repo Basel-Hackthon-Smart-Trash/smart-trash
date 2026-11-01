@@ -17,9 +17,30 @@ python3 -m http.server 5050 --bind 0.0.0.0
 |---|---|
 | `http://localhost:5050/crew-app/` | Today's routes from `code/web/data/bins.json`, one truck per team: real routes, simulated sensors |
 | `http://localhost:5050/crew-app/?demo` | The pitch demo: four bins, one per case |
+| `http://localhost:5050/crew-app/#route=Truck%202&view=tour` | Opens one route directly (the URL always names the route and the screen) |
+| `http://localhost:5050/crew-app/?demo&tablet` | Tablet layout preview (on a real tablet it turns on by itself) |
 | `http://localhost:5050/web/` | City dashboard (all trucks) |
 
-Without `bins.json` the crew app falls back to the demo tour. On a phone on the same Wi-Fi, use the laptop's IP instead of `localhost`.
+Data fallbacks, in order: fresh `bins.json` (5 s timeout) → last good copy on the phone → demo tour.
+
+## Back button and saved state
+
+- The tour (stop states, today's report) and the language live in `sessionStorage`. Back, reload or a trip to the start page never loses them; a running tour comes back **paused**, Resume carries on.
+- Back closes an open sheet first, then pauses a running tour, and only then leaves the app.
+
+## Bin status
+
+One `STATUS` config in `app.js` sets the colour token and icon for map badges, stop list, status bar, report and both legends (menu and map corner):
+
+| Status | Icon | Colour token |
+|---|---|---|
+| Collected | ✓ | `--st-done` (blue) |
+| Not collected / skipped | ✕ | `--st-skipped` (grey) |
+| Sensor fault | ! | `--fault` (purple) |
+
+The colours stay clear of the fill-level scale (green, amber, orange, red).
+
+Real sensor gaps: a bin with no fill level, a flagged sensor, or a reading more than 6 h older than the plan goes back on the **fixed schedule**. Bins without a position are left out of the route. On a phone on the same Wi-Fi, use the laptop's IP instead of `localhost`.
 
 The map tiles and Leaflet load from the internet. Everything else works offline.
 
@@ -114,4 +135,6 @@ The supervisor code for **＋ Add a bin** is `1234`. It is a demo value, the app
 - With today's routes the sensor events along the real route are simulated; real events will come from the MQTT broker.
 - The location check (Defect alert near a suspect bin, 40 m) needs HTTPS, e.g. GitHub Pages; on plain http it does nothing and the demo feed triggers the alert instead.
 - FR and IT texts need a check by a native speaker.
+- No linter config in the repo; the JS was checked with ESLint's recommended rules (0 errors).
+- Crew app and dashboard use the same token values under different names (`--ink` / `--text`); one shared token file is a follow-up.
 - City administration and maintenance views are not built yet.
