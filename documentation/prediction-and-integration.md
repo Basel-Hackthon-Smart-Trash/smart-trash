@@ -37,6 +37,10 @@
    or `AVG_SPEED_KMH` for the straight-line fallback, plus service and walking time.
 5. **Pilot city:** Basel (demo data: Basel open data + OpenStreetMap).
 
+The committed demo route payload uses an urgency-ranked subset of at most 20 bins per truck.
+Each subset is re-optimized by the existing OR-Tools routing integration; this is a display/demo
+scope reduction, not a change to the routing core.
+
 ## Road-network requirement
 
 Real-road routes require the validated graph cache at

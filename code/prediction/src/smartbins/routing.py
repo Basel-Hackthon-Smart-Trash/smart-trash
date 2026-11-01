@@ -292,12 +292,39 @@ def _route_aware_groups(
     return groups
 
 
+def _urgency_key(bin_record: dict) -> tuple:
+    """Rank demo stops without changing the production collection policy."""
+    status_rank = {"red": 0, "orange": 1}.get(bin_record.get("status"), 2)
+    predicted_full_at = bin_record.get("predicted_full_at")
+    fill_percent = bin_record.get("fill_percent")
+    return (
+        status_rank,
+        predicted_full_at is None,
+        predicted_full_at or "",
+        -(float(fill_percent) if fill_percent is not None else -1.0),
+        str(bin_record.get("id", "")),
+    )
+
+
+def _urgency_subset(group: list[dict], max_stops: int) -> list[dict]:
+    """Select a deterministic urgent subset before route re-optimization."""
+    return sorted(group, key=_urgency_key)[:max_stops]
+
+
 def plan_routes(
     to_empty: list[dict],
     all_bins: list[dict],
     now: datetime | None = None,
     depot: dict | None = None,
+    max_stops_per_route: int | None = None,
 ) -> tuple[list[dict], str]:
+    if max_stops_per_route is not None and (
+        isinstance(max_stops_per_route, bool)
+        or not isinstance(max_stops_per_route, int)
+        or max_stops_per_route <= 0
+    ):
+        raise ValueError("max_stops_per_route must be a positive integer when provided")
+
     # Green-flagged bins must not affect clustering, truck sizing, or route output.
     to_empty = [
         bin_record for bin_record in to_empty if bin_record.get("fill_band") != "green"
@@ -334,6 +361,8 @@ def plan_routes(
     while True:
         routes = []
         groups = _route_aware_groups(to_empty, M, index, min(k, len(to_empty)))
+        if max_stops_per_route is not None:
+            groups = [_urgency_subset(group, max_stops_per_route) for group in groups]
         for group in groups:
             r = _solve_tour(group, M, snap_m, index, now, road)
             r["within_limits"] = bool(

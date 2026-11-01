@@ -118,9 +118,8 @@
 
   function fillColor(pct) {
     if (pct == null) return "var(--fault)";
-    if (pct >= 100) return "var(--fill-over)";
-    if (pct >= 85) return "var(--fill-high)";
-    if (pct >= 60) return "var(--fill-mid)";
+    if (pct >= 80) return "var(--fill-over)";
+    if (pct >= 55) return "var(--fill-mid)";
     return "var(--fill-low)";
   }
 

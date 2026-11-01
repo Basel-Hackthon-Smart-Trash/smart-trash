@@ -2,6 +2,8 @@
 
 from datetime import datetime
 
+import pytest
+
 from smartbins import config, routing
 
 
@@ -84,6 +86,27 @@ def test_capacity_forces_more_trucks(monkeypatch):
     routes, _ = routing.plan_routes(bins, bins, datetime(2026, 11, 1, 6, 0))
     assert len(routes) >= 2
     assert all(r["load_l"] <= 250 for r in routes)
+
+
+def test_demo_subset_keeps_only_the_most_urgent_stops(monkeypatch):
+    monkeypatch.setattr(routing, "GRAPH_DIR", "/nonexistent")
+    bins = _bins()
+    routes, _ = routing.plan_routes(
+        bins,
+        bins,
+        datetime(2026, 11, 1, 6, 0),
+        max_stops_per_route=2,
+    )
+
+    assert len(routes) == 1
+    assert set(routes[0]["stops"]) == {"T-0", "T-1"}
+    assert len(routes[0]["stops"]) <= 2
+
+
+def test_demo_subset_requires_positive_integer(monkeypatch):
+    monkeypatch.setattr(routing, "GRAPH_DIR", "/nonexistent")
+    with pytest.raises(ValueError, match="max_stops_per_route"):
+        routing.plan_routes([], _bins(), datetime(2026, 11, 1, 6, 0), max_stops_per_route=0)
 
 
 def test_nothing_to_empty_gives_no_routes(monkeypatch):

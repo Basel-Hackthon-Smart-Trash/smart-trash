@@ -91,6 +91,8 @@ batch at 05:30 before planning (06:00). See `config.py`.
 `BIN_VOLUME_L`, `MAX_TRUCKS`. Trucks are added until every tour keeps the load and time limit.
 Bins more than 150 m from a drivable street count as walking stops (needs the street matrix).
 Real-road shift time uses graph travel times; the straight-line fallback uses the configured average speed.
+The committed demo snapshot shows an urgency-ranked subset of at most
+`DEMO_ROUTE_MAX_STOPS` bins per truck; the selected subset is re-optimized for display.
 
 ## Tests and studies
 ```

@@ -58,9 +58,9 @@ function draw(data) {
   // 1. Bins as coloured circles
   data.bins.forEach(bin => {
     const layer = getZoneLayer(bin.zone);
-    const color = COLORS[bin.status] || COLORS.green;
+    const color = bin.fault ? COLORS.fault : COLORS[bin.fill_band] || COLORS.green;
     L.circleMarker([bin.lat, bin.lon], {
-      radius: bin.status === "red" ? 9 : 7,
+      radius: bin.fill_band === "red" ? 9 : 7,
       color: "#ffffff",
       weight: 2,
       fillColor: color,
@@ -179,7 +179,8 @@ function buildZoneFilter(data) {
 }
 
 function buildSummary(data) {
-  const count = s => data.bins.filter(b => b.status === s).length;
+  const routed = new Set(data.routes.flatMap(route => route.stops));
+  const count = s => data.bins.filter(b => routed.has(b.id) && b.status === s).length;
   const km = data.routes.reduce((sum, r) => sum + r.distance_km, 0).toFixed(1);
   document.getElementById("summary").innerHTML = `
     <li>Bins total <strong>${data.bins.length}</strong></li>

@@ -43,15 +43,28 @@ def main() -> None:
     ]
 
     # 4. Routes (placeholder until the routing algorithm is merged)
-    result["routes"], kind = routing.plan_routes(to_empty, bins, now, depot)
+    result["routes"], kind = routing.plan_routes(
+        to_empty,
+        bins,
+        now,
+        depot,
+        max_stops_per_route=config.DEMO_ROUTE_MAX_STOPS,
+    )
     truck_of = {sid: r["zone"] for r in result["routes"] for sid in r["stops"]}
     for b in result["bins"]:
         b.pop("issues", None)  # the website doesn't need the details
         b["zone"] = truck_of.get(b["id"], 0)  # 0 = not emptied today
     result["note"] = (
         f"Bin locations: OpenStreetMap. Fill levels: simulated. "
-        f"Routes: team routing package (OR-Tools) on {kind}."
+        f"Routes: urgency-ranked demo subset, max {config.DEMO_ROUTE_MAX_STOPS} stops per truck, "
+        f"re-optimized by team routing package (OR-Tools) on {kind}."
     )
+    result["route_demo"] = {
+        "enabled": True,
+        "max_stops_per_truck": config.DEMO_ROUTE_MAX_STOPS,
+        "selection": "urgency_ranked_subset",
+        "reoptimized": True,
+    }
 
     Path(a.out).write_text(
         json.dumps(result, indent=1, ensure_ascii=False), encoding="utf-8"
@@ -59,10 +72,12 @@ def main() -> None:
 
     counts = Counter(b["status"] for b in result["bins"])
     km = sum(r["distance_km"] for r in result["routes"])
+    routed_count = sum(len(r["stops"]) for r in result["routes"])
     print(f"Learned: {result['model']}")
     print(f"Status: {dict(counts)}")
     print(
-        f"Emptied today: {len(to_empty)} bins, {len(result['routes'])} trucks, {km:.1f} km ({kind})"
+        f"Eligible today: {len(to_empty)} bins; demo routed: {routed_count} bins, "
+        f"{len(result['routes'])} trucks, {km:.1f} km ({kind})"
     )
     for r in result["routes"]:
         ok = "ok" if r["within_limits"] else "OVER LIMIT"

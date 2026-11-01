@@ -27,6 +27,7 @@ AVG_SPEED_KMH = 18                 # average city driving speed incl. traffic li
 SERVICE_MIN_PER_BIN = 2.0          # stop, empty, new bag, go
 WALK_SPEED_KMH = 4.0               # for bins far from a drivable street (there and back)
 MAX_TRUCKS = 8                     # hard limit, warn if more are needed
+DEMO_ROUTE_MAX_STOPS = 20          # urgency-ranked subset shown per demo truck
 
 # Team routing package (code/routing): one OR-Tools solve per truck tour
 DEPOT_NODE_ID = "werkhof-bruessel-strasse"   # TO DISCUSS: routing team modelled "kva-basel" (KVA, Hagenaustrasse 40)
