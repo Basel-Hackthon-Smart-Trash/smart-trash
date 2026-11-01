@@ -119,6 +119,45 @@ def test_unknown_classification_is_visible_but_not_route_ready(synthetic_config,
     assert any(item.code == "unknown_classification_sensor_check" for item in result.diagnostics)
 
 
+def test_green_classification_is_visible_but_excluded_from_route(synthetic_config, synthetic_bin):
+    result = assemble_planning_input(
+        classified_snapshot(
+            synthetic_config,
+            bins=(synthetic_bin,),
+            observations=(FillObservation(synthetic_bin.bin_id, 0.4, PLANNING_TIME),),
+            demands=(CollectionDemand(synthetic_bin.bin_id, 2, "kg"),),
+        ),
+        costs("synthetic-depot", synthetic_bin.bin_id),
+    )
+
+    assert result.valid
+    assert result.planning_input.candidates == ()
+    assert any(item.code == "green_bin_excluded" for item in result.diagnostics)
+
+
+def test_mixed_classifications_admit_only_yellow_and_red(synthetic_config):
+    bins = (BinMetadata("green"), BinMetadata("yellow"), BinMetadata("red"))
+    result = assemble_planning_input(
+        classified_snapshot(
+            synthetic_config,
+            bins=bins,
+            observations=(
+                FillObservation("green", 0.4, PLANNING_TIME),
+                FillObservation("yellow", 0.7, PLANNING_TIME),
+                FillObservation("red", 0.9, PLANNING_TIME),
+            ),
+            demands=tuple(CollectionDemand(item.bin_id, 1, "kg") for item in bins),
+        ),
+        costs("synthetic-depot", "green", "yellow", "red"),
+    )
+
+    assert [candidate.bin_id for candidate in result.planning_input.candidates] == [
+        "yellow",
+        "red",
+    ]
+    assert any(item.code == "green_bin_excluded" for item in result.diagnostics)
+
+
 def test_missing_candidate_node_is_an_exclusion(
     synthetic_config, synthetic_bin, synthetic_observation
 ):

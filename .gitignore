@@ -3,6 +3,7 @@
 .env.local
 .env.*.local
 
+
 # Secrets and certificates
 *.key
 *.pfx
@@ -16,8 +17,18 @@
 *mosquitto/log/*
 *!mosquitto/log/.gitkeep
 
+
 # PostgreSQL runtime data
 *database/data/
+
+# Database runtime data
+code/database/data/
+*.sql.bak
+*.dump
+
+# PostgreSQL client password files
+.pgpass
+pgpass.conf
 
 # Grafana runtime data
 *grafana/data/
@@ -49,3 +60,8 @@ Thumbs.db
 *.log
 tmp/
 temp/
+
+
+# Python bytecode and caches
+**/__pycache__/
+*.pyc

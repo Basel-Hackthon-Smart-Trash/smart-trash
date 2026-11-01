@@ -4,7 +4,8 @@ Stages 1 and 2 provide source-independent Python contracts, structural
 validation, and deterministic contextual fill classification. Stage 3 assembles
 validated planning inputs, and Stage 4 provides a bounded OR-Tools optimizer
 for one mandatory-visit truck trip. G1 adds an offline GeoJSON adapter for the
-approved bin export; it does not use OSMnx or connect to a backend.
+approved bin export. G2 adds an explicit OSMnx graph adapter, but no graph is
+downloaded during imports, tests, or normal package use.
 
 Stage 5 adds `plan_collection`, an application-level composition of
 classification, planning-input assembly, and route optimization. It accepts
@@ -55,6 +56,49 @@ invalid coordinates, missing or duplicate identities, and ID mismatches. It
 does not create observations, demand, or snapped network positions. See
 `../../documentation/routing-g1-bin-geojson.md` for the verified asset and
 handoff.
+
+## OSMnx graph acquisition and reuse
+
+The graph cache is reusable geographic infrastructure, not a route request or
+cost matrix. It contains `graph.graphml` and a matching `graph.json` provenance
+sidecar. The sidecar records the graph hash, acquisition time, WGS84 area,
+margin, driving settings, speed assumptions, and relevant versions.
+
+The only online command is an explicit acquisition command. Supply a Basel
+municipality bounding box (or a bounding box from an approved Basel boundary),
+every bin coordinate, and the explicitly accepted depot coordinate:
+
+```text
+uv run python -m smart_bin_routing.adapters.osmnx_graph acquire \
+  --output .cache/basel-drive \
+  --bbox WEST SOUTH EAST NORTH \
+  --margin-meters 500 \
+  --coverage-point BIN_LON,BIN_LAT \
+  --coverage-point DEPOT_LON,DEPOT_LAT \
+  --speed-fallback-kph 40
+```
+
+This is a template only: coordinates and speed assumptions must come from an
+approved configuration. The `40 km/h` value is a synthetic demo fallback for
+missing speeds inside the Basel area, not a legal limit or measured traffic
+speed. Valid OSM speed tags always win. Missing speeds in the margin outside
+the Basel area fail instead of receiving the fallback. The command downloads
+nothing until deliberately executed. The area is checked to cover all listed
+bins and the depot; no depot coordinate is invented. A positive margin may
+include nearby roads outside Basel so border routes are not cut off.
+
+Reuse is offline and never falls back to another graph or downloads a missing
+one:
+
+```text
+uv run python -m smart_bin_routing.adapters.osmnx_graph load .cache/basel-drive
+```
+
+Missing, corrupt, hash-mismatched, or provenance-mismatched caches fail
+explicitly. Edge length, speed, and travel time are required finite positive
+values. Missing speeds fail unless a tagged-speed mapping or explicit fallback
+speed was configured. G2 does not yet snap bins to nodes or build a directed
+bin/depot cost matrix; that is G3.
 
 ## Contract boundaries
 
@@ -147,19 +191,23 @@ never rewritten.
 
 Structural errors are returned in `result.validation` and prevent classified
 entries from being produced. A structurally valid snapshot can still contain
-per-bin contextual diagnostics and unknown classifications. Color describes
-fill level only; it does not create collection demand or select a route. No
-sensor quality/status semantics are defined yet, so backend quality fields
-remain an unresolved integration requirement.
+per-bin contextual diagnostics and unknown classifications. Green is visible
+but below the collection threshold and is excluded from routing; yellow and
+red classifications are admitted when their other inputs are valid. Color
+does not create collection demand. No sensor quality/status semantics are
+defined yet, so backend quality fields remain an unresolved integration
+requirement.
 
 ## Stage 3 planning inputs
 
 `assemble_planning_input` combines a `ClassifiedSnapshot` and a validated,
 explicitly ordered `TravelCostMatrix` into immutable `PlanningInput` data for a
 future solver. Candidates retain their bin identity, classification, and
-explicit collection demand. Unknown classifications are excluded with a sensor
-review diagnostic; they are not silently treated as zero demand or declared
-faulty. Missing demand and missing travel nodes are visible exclusions.
+explicit collection demand. Green classifications remain visible but are
+excluded below the collection threshold. Unknown classifications are excluded
+with a sensor review diagnostic; they are not silently treated as zero demand
+or declared faulty. Missing demand and missing travel nodes are visible
+exclusions.
 
 An oversized demand remains intact and is marked with a diagnostic. `None` in a
 travel matrix is explicitly unreachable, while malformed dimensions and missing

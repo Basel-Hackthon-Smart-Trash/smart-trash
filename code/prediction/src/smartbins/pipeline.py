@@ -40,6 +40,8 @@ def run(bins: list[dict], readings: pd.DataFrame, now: datetime,
             # Don't trust the sensor: show it as a fault, route falls back to the fixed schedule
             out.append({**base,
                         "fill_percent": float(r.fill_percent.iloc[-1]) if not r.empty else None,
+                        "fill_band": (predict.fill_band(float(r.fill_percent.iloc[-1]))
+                                       if not r.empty else None),
                         "predicted_full_at": None, "hours_until_full": None,
                         "status": "fault", "fault": True,
                         "reason": "; ".join(i.message for i in issues if i.severity == "fault"),
@@ -50,6 +52,7 @@ def run(bins: list[dict], readings: pd.DataFrame, now: datetime,
         status = predict.status_for(p)
         out.append({**base,
                     "fill_percent": p.fill_percent,
+                    "fill_band": predict.fill_band(p.fill_percent),
                     "predicted_full_at": p.predicted_full_at.isoformat() if p.predicted_full_at else None,
                     "hours_until_full": p.hours_until_full,
                     "status": status, "fault": False,

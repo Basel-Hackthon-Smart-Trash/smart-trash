@@ -815,10 +815,14 @@ version = "0.1.0"
 source = { editable = "../routing" }
 dependencies = [
     { name = "ortools" },
+    { name = "osmnx" },
 ]
 
 [package.metadata]
-requires-dist = [{ name = "ortools", specifier = ">=9.12,<10.0" }]
+requires-dist = [
+    { name = "ortools", specifier = ">=9.12,<10.0" },
+    { name = "osmnx", specifier = ">=2.0,<3.0" },
+]
 
 [package.metadata.requires-dev]
 dev = [

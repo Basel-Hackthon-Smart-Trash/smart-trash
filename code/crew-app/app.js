@@ -159,9 +159,8 @@
 
   function fillColor(pct) {
     if (pct == null) return "var(--fault)";
-    if (pct >= 100) return "var(--fill-over)";
-    if (pct >= 85) return "var(--fill-high)";
-    if (pct >= 60) return "var(--fill-mid)";
+    if (pct >= 80) return "var(--fill-over)";
+    if (pct >= 55) return "var(--fill-mid)";
     return "var(--fill-low)";
   }
 
@@ -189,14 +188,34 @@
     return m < 1000 ? `${Math.round(m / 10) * 10} m` : `${(m / 1000).toFixed(1)} km`;
   }
 
-  // Route progress by distance: depot → stops in order; skipped stops drop out of the route.
+  function drivingDistanceM(from, to) {
+    const roadFeatures = DATA.tour.roadRoute?.features || [];
+    if (!roadFeatures.length) return distanceM(from, to);
+
+    const sourceId = from.binId || null;
+    const feature = roadFeatures.find((item) => {
+      const props = item.properties || {};
+      return props.target_id === to.binId
+        && (sourceId ? props.source_id === sourceId : !stops.some((s) => s.binId === props.source_id));
+    });
+    const value = feature?.properties?.distance_meters;
+    return Number.isFinite(value) ? value : null;
+  }
+
+  function displayDistanceM(from, to) {
+    const distance = drivingDistanceM(from, to);
+    return distance === null ? "—" : formatDistance(distance);
+  }
+
+  // Route progress by driving distance: skipped stops remain part of the travel sequence.
   function routeProgress() {
     let prev = DATA.tour.depot, total = 0, done = 0;
     stops.forEach((s) => {
-      if (s.status === "skipped") return;
-      const leg = distanceM(prev, s);
-      total += leg;
-      if (s.status !== "todo") done += leg;
+      const leg = drivingDistanceM(prev, s);
+      if (leg !== null) {
+        total += leg;
+        if (s.status !== "todo") done += leg;
+      }
       prev = s;
     });
     return { total, done };
@@ -273,8 +292,15 @@
     mapFit = false;
     routeLayer.clearLayers();
     const next = nextIndex();
-    const line = [DATA.tour.depot, ...stops.filter((s) => s.status !== "skipped")].map((s) => [s.lat, s.lon]);
-    L.polyline(line, { color: "#14231b", weight: 3, opacity: 0.5, dashArray: "6 6" }).addTo(routeLayer);
+    if (DATA.tour.roadRoute?.features?.length && !stops.some((s) => s.status === "skipped")) {
+      L.geoJSON(DATA.tour.roadRoute, {
+        style: { color: "#14231b", weight: 4, opacity: 0.75 },
+      }).addTo(routeLayer);
+    } else {
+      const line = [DATA.tour.depot, ...stops.filter((s) => s.status !== "skipped")]
+        .map((s) => [s.lat, s.lon]);
+      L.polyline(line, { color: "#14231b", weight: 3, opacity: 0.5, dashArray: "6 6" }).addTo(routeLayer);
+    }
 
     L.marker([DATA.tour.depot.lat, DATA.tour.depot.lon], {
       icon: L.divIcon({ className: "", html: `<div class="marker marker--depot">D</div>`, iconSize: [26, 26] }),
@@ -365,7 +391,7 @@
     if (next !== -1) {
       $("bar-info").textContent = !started ? t("barInfo", { n: total, d: DATA.tour.distanceKm ? `${DATA.tour.distanceKm} km` : formatDistance(route.total), name: stops[next].name })
         : paused ? t("pTitle")
-        : t("barNext", { name: stops[next].name, d: formatDistance(distanceM(currentPosition(), stops[next])) });
+        : t("barNext", { name: stops[next].name, d: displayDistanceM(currentPosition(), stops[next]) });
     }
     $("screen-tour").classList.toggle("collecting", started);
     $("status-stops").textContent = `${finished}/${total}`;
@@ -387,7 +413,7 @@
         <h2>${escapeHtml(n.name)}</h2>
         <div class="row">
           ${fillHtml(n.fill)}
-          <span class="stop-meta">${formatDistance(distanceM(from, n))} · ${escapeHtml(n.area)}</span>
+          <span class="stop-meta">${displayDistanceM(from, n)} · ${escapeHtml(n.area)}</span>
         </div>
         ${whyHtml(n.why)}
         <p class="hint">${n.source === "sensor" ? t("hintSensor") : t("hintFixed")}</p>

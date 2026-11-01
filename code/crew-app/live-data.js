@@ -1,28 +1,35 @@
-// Live data: the same bins.json the city dashboard (code/web) reads, made by the
+// Live data: the same snapshot the city dashboard (code/web) reads, made by the
 // prediction + routing pipeline (code/prediction, code/routing). One route = one truck team.
 // Without the file, or with ?demo in the URL, the app keeps the demo tour from data.js.
 window.SMART_TRASH_LIVE = (function () {
   "use strict";
 
-  const URL = "../web/data/bins.json";
+  // The API serves the same snapshot that the city dashboard uses.
+  // Set window.SMART_TRASH_API_URL before this script for another host.
+  const API_URL = window.SMART_TRASH_API_URL || "http://127.0.0.1:8000/api/bins";
+  const STATIC_URL = "../web/data/bins.json";
   const CACHE_KEY = "smarttrash.bins";  // last good bins.json: the app still opens offline
+  const API_TIMEOUT_MS = 2000;          // no local API (e.g. GitHub Pages, a phone): move on fast
   const TIMEOUT_MS = 5000;              // slow network: fall back instead of a blank screen
   const STALE_H = 6;                    // a reading this much older than the plan counts as missing
 
   const valid = (raw) => !!raw && Array.isArray(raw.bins) && Array.isArray(raw.routes) && raw.routes.length > 0 && !!raw.depot;
 
-  // Fresh file → last good copy on this phone → null (demo tour)
+  // API → committed snapshot → last good copy on this phone → null (demo tour)
   async function load() {
     if (new URLSearchParams(location.search).has("demo")) return null;
-    try {
-      const signal = AbortSignal.timeout ? AbortSignal.timeout(TIMEOUT_MS) : undefined;
-      const res = await fetch(URL, { cache: "no-store", signal });
-      const raw = res.ok ? await res.json() : null;
-      if (valid(raw)) {
-        try { localStorage.setItem(CACHE_KEY, JSON.stringify(raw)); } catch (e) { /* storage full: keep going */ }
-        return raw;
-      }
-    } catch (e) { /* offline, too slow or not served */ }
+    const sources = [[API_URL, API_TIMEOUT_MS], [STATIC_URL, TIMEOUT_MS]];
+    for (const [url, ms] of sources) {
+      try {
+        const signal = AbortSignal.timeout ? AbortSignal.timeout(ms) : undefined;
+        const res = await fetch(url, { cache: "no-store", signal });
+        const raw = res.ok ? await res.json() : null;
+        if (valid(raw)) {
+          try { localStorage.setItem(CACHE_KEY, JSON.stringify(raw)); } catch (e) { /* storage full: keep going */ }
+          return raw;
+        }
+      } catch (e) { /* offline, too slow or not served: try the next source */ }
+    }
     try {
       const cached = JSON.parse(localStorage.getItem(CACHE_KEY) || "null");
       return valid(cached) ? cached : null;
@@ -59,6 +66,7 @@ window.SMART_TRASH_LIVE = (function () {
       lat: b.lat,
       lon: b.lon,
       fill: state === "ok" ? Math.round(b.fill_percent) : null,
+      fillBand: state === "ok" ? b.fill_band || null : null,
       source: state === "ok" ? "sensor" : "fixed-schedule",
       why: why(b, state),
     };
@@ -91,6 +99,7 @@ window.SMART_TRASH_LIVE = (function () {
         name: `${teamName(Math.max(0, i))} · Zone ${route.zone}`,
         date: String(raw.generated_at).slice(0, 10),
         distanceKm: route.distance_km,  // same number as the city dashboard
+        roadRoute: route.road_route?.geometry || null,
         depot: { name: raw.depot.name, lat: raw.depot.lat, lon: raw.depot.lon, phone: "+41610000000" },  // placeholder number
       },
       stops,
