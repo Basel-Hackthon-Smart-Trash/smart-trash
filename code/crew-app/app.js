@@ -10,6 +10,8 @@
   const I18N = window.SMART_TRASH_I18N;
   const FEEDBACK_KEY = "smarttrash.feedback";
   const SESSION_KEY = "smarttrash.session";
+  const TOUR_KEY = "smarttrash.tour";  // sessionStorage: survives back, reload and a trip to the start page
+  const LANG_KEY = "smarttrash.lang";  // sessionStorage: a new launch starts in English again
 
   // Exceptions only. A normal stop needs no tap: the fill drop tells the system it was emptied.
   const PROBLEMS = [
@@ -81,12 +83,35 @@
   function loadSession() {
     try {
       const s = JSON.parse(localStorage.getItem(SESSION_KEY) || "{}");
-      return { team: s.team || null, lang: "en" }; // every launch starts in English
+      return { team: s.team || null, lang: sessionStorage.getItem(LANG_KEY) || "en" }; // every launch starts in English
     } catch (e) { return { team: null, lang: "en" }; }
   }
 
   function saveSession() {
-    try { localStorage.setItem(SESSION_KEY, JSON.stringify(session)); } catch (e) { /* ignore */ }
+    try {
+      localStorage.setItem(SESSION_KEY, JSON.stringify({ team: session.team }));
+      sessionStorage.setItem(LANG_KEY, session.lang);
+    } catch (e) { /* ignore */ }
+  }
+
+  // The tour itself: which stops are done, skipped or faulty, and today's report.
+  // Saved on every render, so pressing back or reloading never loses it.
+  const tourKey = () => `${DATA.tour.id}|${session.team}`;
+
+  function saveTour() {
+    try {
+      sessionStorage.setItem(TOUR_KEY, JSON.stringify({ key: tourKey(), started, stops, nearby, lastTour }));
+    } catch (e) { /* storage unavailable: the tour still runs, it just is not kept */ }
+  }
+
+  // A running tour comes back paused: the crew taps Resume, nothing moves on its own.
+  function restoreTour() {
+    try {
+      const saved = JSON.parse(sessionStorage.getItem(TOUR_KEY) || "null");
+      if (!saved || saved.key !== tourKey() || !Array.isArray(saved.stops)) return;
+      ({ started, stops, nearby, lastTour } = saved);
+      paused = started && nextIndex() !== -1;
+    } catch (e) { /* broken entry: start fresh */ }
   }
 
   // Live data: the signed-in truck team gets its own route from bins.json
@@ -251,6 +276,7 @@
   }
 
   function render() {
+    saveTour();
     renderStatic();
     const signedIn = !!session.team;
     $("topbar-right").hidden = !signedIn;
@@ -928,6 +954,7 @@
       if (session.team) applyTeamTour(session.team);
     }
     reset();
+    restoreTour();
     render();
   })();
 })();
