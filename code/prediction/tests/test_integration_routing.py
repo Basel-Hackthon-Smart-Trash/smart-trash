@@ -37,6 +37,13 @@ def test_every_selected_bin_is_routed_once(monkeypatch):
     stops = [s for r in routes for s in r["stops"]]
     assert sorted(stops) == sorted(b["id"] for b in bins)
     assert all(r["status"] == "feasible" and r["within_limits"] for r in routes)
+    assert all(
+        r["driving_duration_h"] == round(r["distance_km"] / config.AVG_SPEED_KMH, 2)
+        for r in routes
+    )
+    assert all(
+        r["service_duration_h"] == round(len(r["stops"]) * 2 / 60, 2) for r in routes
+    )
 
 
 def test_forecast_selected_low_fill_bin_is_routed(monkeypatch):

@@ -11,6 +11,7 @@ Division of work, without changing the team's routing logic:
 
 Output format (read by the website):
     [{"zone": 1, "stops": [...], "distance_km": 6.4, "duration_h": 3.1, "load_l": 4200,
+      "driving_duration_h": 1.2, "service_duration_h": 1.8, "walking_duration_h": 0.1,
       "on_foot_stops": 3, "within_limits": true, "status": "feasible", "diagnostics": [...]}, ...]
 """
 
@@ -197,39 +198,57 @@ def _solve_tour(
     result = plan_collection(request)
     sr = result.solver_result
     stops = list(result.stops)
-    km = (
-        float(sr.travel_distance) if sr and sr.travel_distance is not None else math.nan
-    )
-    on_foot = sum(1 for b in group if snap_m[index[b["id"]]] > streets.ON_FOOT_M)
+    route_geometry = None
+    if road is not None and result.status.value == "feasible":
+        route_geometry = build_route_geometry(result, road.costs, road.artifact)
+
+    routed_bins = {b["id"]: b for b in group if b["id"] in stops}
+    on_foot = sum(1 for bin_id in stops if snap_m[index[bin_id]] > streets.ON_FOOT_M)
     walk_km = sum(
-        2 * snap_m[index[b["id"]]] / 1000
-        for b in group
-        if snap_m[index[b["id"]]] > streets.ON_FOOT_M
+        2 * snap_m[index[bin_id]] / 1000
+        for bin_id in stops
+        if snap_m[index[bin_id]] > streets.ON_FOOT_M
     )
-    hours = (
-        (km / config.AVG_SPEED_KMH if not math.isnan(km) else math.nan)
-        + len(group) * config.SERVICE_MIN_PER_BIN / 60
-        + walk_km / config.WALK_SPEED_KMH
+    km = (
+        route_geometry.distance_meters / 1000
+        if route_geometry is not None
+        else float(sr.travel_distance)
+        if sr and sr.travel_distance is not None
+        else math.nan
     )
+    driving_hours = (
+        route_geometry.duration_seconds / 3600
+        if route_geometry is not None
+        else km / config.AVG_SPEED_KMH
+        if not math.isnan(km)
+        else math.nan
+    )
+    service_hours = len(stops) * config.SERVICE_MIN_PER_BIN / 60
+    walking_hours = walk_km / config.WALK_SPEED_KMH
+    hours = driving_hours + service_hours + walking_hours
     excluded = [a.bin_id for a in result.bins if not a.included_in_route]
     route = {
         "stops": stops,
         "distance_km": float(round(km, 1)) if not math.isnan(km) else None,
         "duration_h": float(round(hours, 2)) if not math.isnan(hours) else None,
-        "load_l": round(sum(_load_l(b) for b in group)),
+        "driving_duration_h": (
+            float(round(driving_hours, 2)) if not math.isnan(driving_hours) else None
+        ),
+        "service_duration_h": float(round(service_hours, 2)),
+        "walking_duration_h": float(round(walking_hours, 2)),
+        "load_l": round(sum(_load_l(b) for b in routed_bins.values())),
         "on_foot_stops": on_foot,
         "status": result.status.value,
         "excluded": excluded,
         "diagnostics": sorted({d.code for d in result.diagnostics}),
     }
-    if road is not None and result.status.value == "feasible":
-        geometry = build_route_geometry(result, road.costs, road.artifact)
+    if route_geometry is not None:
         route["route_mode"] = "REAL_ROAD_NETWORK"
         route["road_route"] = {
             "crs": "EPSG:4326",
-            "geometry": _geometry_payload(geometry),
+            "geometry": _geometry_payload(route_geometry),
             "physical_distance": {
-                "value": float(geometry.distance_meters),
+                "value": float(route_geometry.distance_meters),
                 "unit": "m",
             },
         }

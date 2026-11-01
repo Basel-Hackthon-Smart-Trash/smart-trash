@@ -33,7 +33,8 @@
 2. **Colours:** the forecast status from `smartbins` (red / orange / green) decides which bins are emptied and is
    the only colour shown in the UI. The fill-only classification of `smart_bin_routing` stays internal (validation).
 3. **Multiple trucks:** the split into tours stays in `smartbins`; `smart_bin_routing` plans each tour.
-4. **Shift time:** checked in `smartbins` (driving at AVG_SPEED_KMH + stops + walking). No duration matrix is passed.
+4. **Shift time:** checked in `smartbins` using graph travel times for real-road routes,
+   or `AVG_SPEED_KMH` for the straight-line fallback, plus service and walking time.
 5. **Pilot city:** Basel (demo data: Basel open data + OpenStreetMap).
 
 ## Road-network requirement

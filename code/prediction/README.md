@@ -90,7 +90,7 @@ batch at 05:30 before planning (06:00). See `config.py`.
 `TRUCK_CAPACITY_L`, `SHIFT_HOURS`, `AVG_SPEED_KMH`, `SERVICE_MIN_PER_BIN`, `WALK_SPEED_KMH`,
 `BIN_VOLUME_L`, `MAX_TRUCKS`. Trucks are added until every tour keeps the load and time limit.
 Bins more than 150 m from a drivable street count as walking stops (needs the street matrix).
-Shift time is an estimate with an average speed; real driving times per street come later.
+Real-road shift time uses graph travel times; the straight-line fallback uses the configured average speed.
 
 ## Tests and studies
 ```
