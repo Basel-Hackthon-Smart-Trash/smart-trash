@@ -26,6 +26,17 @@
   const ALERT_MS = 6000;  // fault alert confirms itself after this, like a navigation alert
   const NEAR_M = 40;      // crew opens the app this close to a suspect bin: ask about it
 
+  // One place for every finished-bin status: colour token, icon and labels.
+  // Used by the map badges, the stop list, the status bar, the report and both legends.
+  // Colours stay clear of the fill-level scale (green → amber → orange → red).
+  const STATUS = {
+    done: { color: "var(--st-done)", icon: "✓", short: "stDone", long: "lgDone" },
+    skipped: { color: "var(--st-skipped)", icon: "✕", short: "stSkipped", long: "lgSkipped" },
+    fault: { color: "var(--fault)", icon: "!", short: "stFault", long: "lgFault" },
+  };
+  const statusBadge = (status, cls = "st-badge") =>
+    STATUS[status] ? `<span class="${cls}" style="background:${STATUS[status].color}" aria-hidden="true">${STATUS[status].icon}</span>` : "";
+
   let stops, nearby, map, routeLayer, started, sensorTimer;
   let lastSync = new Date(), pending = 0, faultAlert = null, alertTimer, defectStop = null, paused = false, geoWatch = null;
   let lastTour = null;  // finished tour kept after Done, so today's report can still be opened and corrected
@@ -225,6 +236,14 @@
       attribution: "© OpenStreetMap contributors",
     }).addTo(map);
     routeLayer = L.layerGroup().addTo(map);
+    // Small legend for the status badges, in a corner of the map
+    const legend = L.control({ position: "bottomleft" });
+    legend.onAdd = () => {
+      const el = L.DomUtil.create("div", "map-legend");
+      el.id = "map-legend";
+      return el;
+    };
+    legend.addTo(map);
     const pts = [DATA.tour.depot, ...stops].map((s) => [s.lat, s.lon]);
     map.fitBounds(pts, { padding: [20, 20] });
   }
@@ -257,14 +276,15 @@
     }).addTo(routeLayer);
 
     stops.forEach((s, i) => {
-      const cls = i === next ? "marker--next" : s.status !== "todo" ? `marker--${s.status}` : "";
+      const cls = i === next ? "marker--next" : s.status !== "todo" ? "marker--finished" : "";
       const m = L.marker([s.lat, s.lon], {
-        icon: L.divIcon({ className: "", html: `<div class="marker ${cls}">${s.status === "done" ? "✓" : i + 1}</div>`, iconSize: [30, 30] }),
+        icon: L.divIcon({ className: "", html: `<div class="marker ${cls}">${i + 1}${statusBadge(s.status)}</div>`, iconSize: [30, 30] }),
         zIndexOffset: i === next ? 1000 : 0,
       }).on("click", () => openStop(i)).addTo(routeLayer);
       // Next stop's name sits on the map, since the card is hidden while collecting
       if (i === next) m.bindTooltip(escapeHtml(s.name), { permanent: true, direction: "top", offset: [0, -16], className: "next-tip" });
     });
+    $("map-legend").innerHTML = Object.keys(STATUS).map((k) => `<span>${statusBadge(k)}${t(STATUS[k].short)}</span>`).join("");
   }
 
   // ---------- screens ----------
@@ -346,8 +366,7 @@
     $("status-stops").textContent = `${finished}/${total}`;
     $("status-left").textContent = t("left", { d: formatDistance(route.total - route.done) });
     // One segment per bin, coloured by its status
-    $("segments").innerHTML = stops.map((s, i) =>
-      `<i class="seg seg--${i === next ? "next" : s.status}"></i>`).join("");
+    $("segments").innerHTML = stops.map((s, i) => segHtml(i === next ? "next" : s.status)).join("");
 
     $("screen-tour").hidden = next === -1;
     $("screen-done").hidden = next !== -1;
@@ -380,7 +399,7 @@
         : s.status === "skipped" ? (s.result === "not-done" ? t("notDone") : problemLabel(s.result)) : i === next ? t("stateNext") : "";
       const tag = s.source === "crew-added" ? `<span class="badge badge--added">${t("addedByCrew")}</span>` : "";
       return `<li><button class="stop stop--${i === next ? "next" : s.status}" type="button" data-open="${i}">
-          <span class="stop-num">${s.status === "done" ? "✓" : i + 1}</span>
+          ${statusBadge(s.status, "stop-num") || `<span class="stop-num">${i + 1}</span>`}
           <span>
             <span class="stop-name">${escapeHtml(s.name)}</span> ${tag}
             ${whyHtml(s.why)}
@@ -414,11 +433,13 @@
   // Pencil = this row can be edited (inline SVG, not an emoji, so it takes the text colour)
   const PENCIL = `<svg class="pencil" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M13.5 6.5l4 4" stroke="currentColor" stroke-width="2"/></svg>`;
 
+  // The status badge already shows ✓ ✕ !, so the label drops its own leading symbol
   function binStateLabel(s) {
-    if (s.status === "todo") return t("lgTodo");
-    if (s.status === "fault") return s.result === "defect-other" ? t("fdOther") : t("stateFault");
-    if (s.status === "done") return s.result === "sensor" ? t("stateSensor") : t("stateEmptied");
-    return s.result === "not-done" ? t("notDone") : problemLabel(s.result);
+    const label = s.status === "todo" ? t("lgTodo")
+      : s.status === "fault" ? (s.result === "defect-other" ? t("fdOther") : t("stateFault"))
+      : s.status === "done" ? (s.result === "sensor" ? t("stateSensor") : t("stateEmptied"))
+      : s.result === "not-done" ? t("notDone") : problemLabel(s.result);
+    return label.replace(/^[✓⚠✕]\ufe0e?\s*/u, "");
   }
 
   // Correct a bin in today's report, also after Done. The correction is saved as feedback.
@@ -452,6 +473,10 @@
     render();
     openMenuPage("report");
   }
+
+  // Status bar segment: finished bins take their STATUS colour
+  const segHtml = (status, extra = "") =>
+    `<i class="seg seg--${status} ${extra}"${STATUS[status] ? ` style="background:${STATUS[status].color}"` : ""}></i>`;
 
   const reportHtml = (rows) => rows.map(([n, label]) => `<li><b>${n}</b> ${label}</li>`).join("");
 
@@ -542,7 +567,7 @@
         <ul class="bin-report">
           ${list.map((s, i) => `<li><button class="bin-row" type="button" data-edit="${i}" ${s.status === "todo" ? "disabled" : ""}>
             <span><span class="stop-name">${escapeHtml(s.name)}</span><br><span class="stop-meta">${escapeHtml(s.area)}</span></span>
-            <span class="bin-state bin-state--${s.status}">${binStateLabel(s)}</span>${s.status === "todo" ? "" : PENCIL}</button></li>`).join("")}
+            <span class="bin-state bin-state--${s.status}">${statusBadge(s.status)}${binStateLabel(s)}</span>${s.status === "todo" ? "" : PENCIL}</button></li>`).join("")}
         </ul>
         ${backToMenu()}`);
     }
@@ -568,11 +593,12 @@
         ${backToMenu()}`);
     }
     if (page === "legend") {
-      const seg = (cls, key) => `<li><i class="seg seg--${cls} legend-seg"></i>${t(key)}</li>`;
+      const pin = (status) => `<span class="marker ${status === "next" ? "marker--next" : status === "todo" ? "" : "marker--finished"}">3${statusBadge(status)}</span>`;
+      const row = (status, key) => `<li>${pin(status)}${segHtml(status, "legend-seg")}${t(key)}</li>`;
       return openSheet(`
         <h2>${t("mLegend")}</h2>
         <ul class="legend">
-          ${seg("done", "lgDone")}${seg("next", "lgNext")}${seg("fault", "lgFault")}${seg("skipped", "lgSkipped")}${seg("todo", "lgTodo")}
+          ${Object.keys(STATUS).map((k) => row(k, STATUS[k].long)).join("")}${row("next", "lgNext")}${row("todo", "lgTodo")}
           <li><span class="badge badge--data">${DATA.dataLabel}</span>${t("lgSimulated")}</li>
           <li><span class="badge badge--fixed">${t("fixedSchedule")}</span>${t("lgFixed")}</li>
         </ul>

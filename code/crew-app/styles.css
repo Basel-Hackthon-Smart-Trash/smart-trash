@@ -19,7 +19,9 @@
   --fill-mid: #c98a00;
   --fill-high: #d9480f;
   --fill-over: #b3261e;
-  --fault: #5b4bb7;
+  --fault: #5b4bb7;          /* sensor fault: purple */
+  --st-done: #1f6fd1;        /* collected: blue, not a fill colour */
+  --st-skipped: #737a82;     /* not collected: grey */
 
   --radius: 10px;            /* cards, map */
   --radius-btn: 8px;         /* buttons */
@@ -120,7 +122,6 @@ h1 { margin: 2px 0 0; font-size: 26px; line-height: 1.15; }
 .undo-link { min-height: 40px; padding: 0 12px; border: 2px solid currentColor; border-radius: var(--radius-btn); background: transparent; color: inherit; font-weight: 800; }
 .segments { display: flex; gap: 4px; margin-top: 8px; }
 .seg { flex: 1; height: 10px; border-radius: 3px; background: rgba(255,255,255,.2); transition: background .3s; }
-.seg--done { background: var(--fill-low); }
 .seg--next { background: #fff; }
 /* Live line: latest sensor event, under the segments */
 .live-event {
@@ -129,11 +130,9 @@ h1 { margin: 2px 0 0; font-size: 26px; line-height: 1.15; }
 }
 .live-event::before { content: ""; flex: none; width: 10px; height: 10px; border-radius: 50%; background: var(--fill-low); }
 .live-event--fault::before { background: var(--fault); }
-.live-event--skip::before { background: var(--ink-soft); }
+.live-event--skip::before { background: var(--st-skipped); }
 .live-event--in { animation: live-in .4s ease-out; }
 @keyframes live-in { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
-.seg--fault { background: var(--fault); }
-.seg--skipped { background: repeating-linear-gradient(45deg, rgba(255,255,255,.45) 0 3px, transparent 3px 6px); }
 
 .map { height: 340px; border-radius: var(--radius); overflow: hidden; border: 1px solid var(--line); isolation: isolate; } /* keeps Leaflet's z-index under the sheet and bars */
 .marker {
@@ -143,8 +142,19 @@ h1 { margin: 2px 0 0; font-size: 26px; line-height: 1.15; }
   font: 800 14px/1 var(--font);
 }
 .marker--next { background: var(--accent); color: #fff; border-color: #fff; box-shadow: 0 0 0 3px var(--accent); }
-.marker--done, .marker--skipped { opacity: .45; }
-.marker--fault { border-color: var(--fault); color: var(--fault); }
+/* Finished bin: muted pin, the status badge (✓ ✕ !) carries the colour */
+.marker--finished { background: #eef0ee; color: var(--ink-soft); border-color: var(--ink-soft); }
+.st-badge {
+  display: inline-grid; place-items: center; flex: none; width: 18px; height: 18px; border-radius: 50%;
+  border: 2px solid #fff; color: #fff; font: 800 11px/1 var(--font);
+}
+.marker .st-badge { position: absolute; top: -9px; right: -10px; }
+.map-legend {
+  display: flex; gap: 10px; padding: 6px 10px; border-radius: var(--radius-btn);
+  background: rgba(255,255,255,.92); box-shadow: 0 1px 4px rgba(0,0,0,.2); font: 700 13px var(--font); color: var(--ink);
+}
+.map-legend span { display: flex; align-items: center; gap: 4px; }
+.map-legend .st-badge { border-color: transparent; }
 .marker--ping::after, .marker--ping-fault::after {
   content: ""; position: absolute; inset: -4px; border-radius: 50%;
   border: 3px solid var(--accent); animation: ping .65s ease-out 2;
@@ -190,7 +200,7 @@ h1 { margin: 2px 0 0; font-size: 26px; line-height: 1.15; }
 .stop--next { border: 2px solid var(--accent); }
 .stop--next .stop-num { background: var(--accent); border-color: var(--accent); color: #fff; }
 .stop--done, .stop--skipped { opacity: .55; }
-.stop--done .stop-num { background: var(--ink); color: #fff; }
+.stop .stop-num[style] { border: 0; color: #fff; }  /* finished: status colour and icon */
 .stop--fault { border-color: var(--fault); }
 .stop--fault .stop-state { color: var(--fault); }
 .stop-name { font-weight: 700; }
@@ -346,9 +356,8 @@ h1 { margin: 2px 0 0; font-size: 26px; line-height: 1.15; }
 .bin-row:disabled { opacity: .5; }
 .bin-row > span:first-child { margin-right: auto; }
 .pencil { flex: none; width: 22px; height: 22px; color: var(--ink-soft); }
-.bin-state { flex: none; padding: 4px 10px; border-radius: 999px; font-size: 14px; font-weight: 800; background: #e3f2ea; color: var(--accent); }
-.bin-state--fault { background: #ece9fb; color: var(--fault); }
-.bin-state--skipped { background: #eef0ee; color: var(--ink-soft); }
+.bin-state { display: flex; align-items: center; gap: 6px; flex: none; padding: 4px 10px 4px 4px; border-radius: 999px; font-size: 14px; font-weight: 800; background: #eef0ee; color: var(--ink); }
+.bin-state .st-badge { border-color: transparent; }
 .bin-state--todo { background: transparent; color: var(--ink-soft); }
 .problem-row {
   display: flex; justify-content: space-between; align-items: center; gap: 8px; min-height: var(--tap); padding: 12px;
@@ -358,7 +367,8 @@ h1 { margin: 2px 0 0; font-size: 26px; line-height: 1.15; }
 .legend li { display: flex; align-items: center; gap: 12px; }
 .legend-seg { flex: none; width: 40px; border: 1px solid var(--line); }
 .legend .seg--todo { background: var(--line); }
-.legend .seg--skipped { background: repeating-linear-gradient(45deg, var(--ink-soft) 0 3px, transparent 3px 6px); }
+.legend .seg--next { background: var(--accent); }
+.legend .marker { flex: none; }
 .legend .badge { flex: none; }
 .legend b { flex: none; width: 24px; text-align: center; font-size: 20px; }
 .pv-yes b { color: var(--accent); }
