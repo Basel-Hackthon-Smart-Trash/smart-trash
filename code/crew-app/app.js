@@ -532,7 +532,8 @@
 
   function openSheet(html) {
     guardBack();
-    $("sheet").innerHTML = `<div class="sheet-grip"></div>${html}`;
+    // ✕ stays in the top corner while a long sheet scrolls
+    $("sheet").innerHTML = `<button class="sheet-close" type="button" data-close aria-label="${t("close")}">✕</button><div class="sheet-grip"></div>${html}`;
     $("sheet").hidden = false;
     $("sheet-backdrop").hidden = false;
   }
