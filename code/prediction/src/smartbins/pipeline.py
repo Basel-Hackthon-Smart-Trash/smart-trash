@@ -34,7 +34,10 @@ def run(bins: list[dict], readings: pd.DataFrame, now: datetime,
         issues = issues_of[b["id"]]
         base = {"id": b["id"], "lat": b["lat"], "lon": b["lon"], "zone": b.get("zone"),
                 "observed_at": r.timestamp.max().isoformat() if not r.empty else None,
-                "osm_id": b.get("osm_id"), "volume_l": b.get("volume_l", config.BIN_VOLUME_L)}
+                "osm_id": b.get("osm_id"), "volume_l": b.get("volume_l", config.BIN_VOLUME_L),
+                # Sensor battery (last reading), shown to the crew; below config.LOW_BATTERY it is a warning
+                "battery_percent": (round(float(r.battery_percent.iloc[-1]), 1)
+                                    if not r.empty and "battery_percent" in r.columns else None)}
 
         if faults.has_fault(issues) or r.empty:
             # Don't trust the sensor: show it as a fault, route falls back to the fixed schedule
