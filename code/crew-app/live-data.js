@@ -4,12 +4,21 @@
 window.SMART_TRASH_LIVE = (function () {
   "use strict";
 
-  const URL = "../web/data/bins.json";
+  // The API serves the same snapshot that the city dashboard uses.
+  // Set window.SMART_TRASH_API_URL before this script for another host.
+  const URL = window.SMART_TRASH_API_URL || "http://127.0.0.1:8000/api/bins";
+  const STATIC_URL = "../web/data/bins.json";
 
   async function load() {
     if (new URLSearchParams(location.search).has("demo")) return null;
     try {
       const res = await fetch(URL, { cache: "no-store" });
+      if (res.ok) return await res.json();
+    } catch (e) {
+      // Public static hosting has no local API; use the committed snapshot.
+    }
+    try {
+      const res = await fetch(STATIC_URL, { cache: "no-store" });
       return res.ok ? await res.json() : null;
     } catch (e) {
       return null;  // offline or not served: demo tour
@@ -36,6 +45,7 @@ window.SMART_TRASH_LIVE = (function () {
       lat: b.lat,
       lon: b.lon,
       fill: b.fault ? null : Math.round(b.fill_percent),
+      fillBand: b.fill_band || null,
       source: b.fault ? "fixed-schedule" : "sensor",
       why: why(b),
     };
@@ -64,6 +74,7 @@ window.SMART_TRASH_LIVE = (function () {
         name: `${teamName(Math.max(0, i))} · Zone ${route.zone}`,
         date: String(raw.generated_at).slice(0, 10),
         distanceKm: route.distance_km,  // same number as the city dashboard
+        roadRoute: route.road_route?.geometry || null,
         depot: { name: raw.depot.name, lat: raw.depot.lat, lon: raw.depot.lon, phone: "+41610000000" },  // placeholder number
       },
       stops,

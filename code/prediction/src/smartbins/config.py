@@ -13,9 +13,9 @@ EMPTY_DROP_POINTS = 30
 
 # Status rules (match the dashboard colours)
 # Rule "E" from policy_test: almost no overflows, still less driving than the old schedule
-RED_FILL = 90                      # empty today if at least this full ...
+RED_FILL = 80                      # empty today if at least this full ...
 RED_FULL_WITHIN_H = 24             # ... or full before tomorrow's tour (clock hours)
-ORANGE_FILL = 70                   # orange = 70-89 %, also emptied today
+ORANGE_FILL = 55                   # orange = 55-79 %, also emptied today
 ORANGE_FULL_WITHIN_H = None        # no time rule for orange
 TAKE_ORANGE = True                 # routing takes red AND orange bins
 
@@ -27,6 +27,7 @@ AVG_SPEED_KMH = 18                 # average city driving speed incl. traffic li
 SERVICE_MIN_PER_BIN = 2.0          # stop, empty, new bag, go
 WALK_SPEED_KMH = 4.0               # for bins far from a drivable street (there and back)
 MAX_TRUCKS = 8                     # hard limit, warn if more are needed
+DEMO_ROUTE_MAX_STOPS = 20          # urgency-ranked subset shown per demo truck
 
 # Team routing package (code/routing): one OR-Tools solve per truck tour
 DEPOT_NODE_ID = "werkhof-bruessel-strasse"   # TO DISCUSS: routing team modelled "kva-basel" (KVA, Hagenaustrasse 40)

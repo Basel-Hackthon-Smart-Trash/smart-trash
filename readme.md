@@ -86,6 +86,18 @@ cd code
 python3 -m http.server 5050
 ```
 
+To use the local API-backed route data, run the daily pipeline and API in separate terminals:
+
+```bash
+cd code/prediction
+uv run python -m smartbins.run_daily --out ../web/data/bins.json
+python3 ../api/server.py
+```
+
+The API serves `http://127.0.0.1:8000/api/bins`. If it is unavailable, the crew app uses the
+committed snapshot; the pitch demo is the final fallback. The public GitHub Pages version
+continues to use the committed snapshot.
+
 - <http://localhost:5050/crew-app/>: sign in as a truck and see its real route from the prediction pipeline.
 - <http://localhost:5050/crew-app/?demo>: the pitch demo. Tap **▶ Start collecting**. The demo tour has four bins, one for each case (sensor OK, sensor fault, no sensor, bin damaged), and ends with the report after about 20 seconds. The phone stays in the pocket: it only asks the crew when a sensor looks broken.
 

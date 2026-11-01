@@ -3,3 +3,6 @@
 .ruff_cache/
 *.py[cod]
 __pycache__/
+.cache/
+cache/
+examples/real-bin-demo-streets.geojson

@@ -69,8 +69,9 @@ def assemble_planning_input(
     """Align classified, demanded bins with an explicitly ordered cost matrix.
 
     Candidate order follows classified input order. The cost matrix is never
-    reordered. Unknown classifications are excluded for sensor review, not
-    relabeled or treated as evidence of a faulty sensor.
+    reordered. Green classifications remain visible but are excluded below the
+    collection threshold. Unknown classifications are excluded for sensor
+    review, not relabeled or treated as evidence of a faulty sensor.
     """
 
     diagnostics = list(classified.validation.diagnostics)
@@ -104,6 +105,15 @@ def assemble_planning_input(
                 _diagnostic(
                     "unknown_classification_sensor_check",
                     "unknown classification is excluded pending sensor review",
+                    bin_id=entry.bin_id,
+                )
+            )
+            continue
+        if entry.classification == FillClassification.GREEN:
+            diagnostics.append(
+                _diagnostic(
+                    "green_bin_excluded",
+                    "green bin is below the collection threshold and is not routed",
                     bin_id=entry.bin_id,
                 )
             )
