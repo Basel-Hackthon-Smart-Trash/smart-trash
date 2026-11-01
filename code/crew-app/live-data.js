@@ -5,15 +5,27 @@ window.SMART_TRASH_LIVE = (function () {
   "use strict";
 
   const URL = "../web/data/bins.json";
+  const CACHE_KEY = "smarttrash.bins";  // last good bins.json: the app still opens offline
+  const TIMEOUT_MS = 5000;              // slow network: fall back instead of a blank screen
 
+  const valid = (raw) => !!raw && Array.isArray(raw.bins) && Array.isArray(raw.routes) && raw.routes.length > 0 && !!raw.depot;
+
+  // Fresh file → last good copy on this phone → null (demo tour)
   async function load() {
     if (new URLSearchParams(location.search).has("demo")) return null;
     try {
-      const res = await fetch(URL, { cache: "no-store" });
-      return res.ok ? await res.json() : null;
-    } catch (e) {
-      return null;  // offline or not served: demo tour
-    }
+      const signal = AbortSignal.timeout ? AbortSignal.timeout(TIMEOUT_MS) : undefined;
+      const res = await fetch(URL, { cache: "no-store", signal });
+      const raw = res.ok ? await res.json() : null;
+      if (valid(raw)) {
+        try { localStorage.setItem(CACHE_KEY, JSON.stringify(raw)); } catch (e) { /* storage full: keep going */ }
+        return raw;
+      }
+    } catch (e) { /* offline, too slow or not served */ }
+    try {
+      const cached = JSON.parse(localStorage.getItem(CACHE_KEY) || "null");
+      return valid(cached) ? cached : null;
+    } catch (e) { return null; }
   }
 
   const teamName = (i) => `Truck ${i + 1}`;
@@ -46,13 +58,15 @@ window.SMART_TRASH_LIVE = (function () {
     return raw.routes.map((r, i) => ({ name: teamName(i), meta: `${r.stops.length} stops · ${r.distance_km} km` }));
   }
 
+  // null when the route has no usable stops: the app then keeps the demo tour
   function tour(raw, team) {
     const i = raw.routes.findIndex((r, n) => teamName(n) === team);
     const route = raw.routes[Math.max(0, i)];
     const byId = new Map(raw.bins.map((b) => [b.id, b]));
     const routed = new Set(raw.routes.flatMap((r) => r.stops));
-    const stops = route.stops.map((id) => byId.get(id)).filter(Boolean).map(stop);
-    const mid = stops.length ? stops[Math.floor(stops.length / 2)] : raw.depot;
+    const stops = (route.stops || []).map((id) => byId.get(id)).filter(Boolean).map(stop);
+    if (!stops.length) return null;
+    const mid = stops[Math.floor(stops.length / 2)];
     const dist = (b) => (b.lat - mid.lat) ** 2 + (b.lon - mid.lon) ** 2;
     // Bins the crew may add: not on any route, sensor working, closest to the middle of this route
     const nearby = raw.bins.filter((b) => !routed.has(b.id) && !b.fault)

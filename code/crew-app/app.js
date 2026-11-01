@@ -91,8 +91,9 @@
 
   // Live data: the signed-in truck team gets its own route from bins.json
   function applyTeamTour(team) {
-    if (!live) return;
-    Object.assign(DATA, window.SMART_TRASH_LIVE.tour(live, team));
+    const route = live && window.SMART_TRASH_LIVE.tour(live, team);
+    if (!route) return;  // no usable stops: keep the demo tour
+    Object.assign(DATA, route);
     lastTour = null;
     mapFit = true;
   }
