@@ -17,12 +17,14 @@ OR-Tools does not support Python 3.15 yet.
 cd code/prediction
 uv sync --extra streets                     # installs this package + ../routing
 uv run python -m smartbins.simulate         # creates data/readings.csv, weather.csv, events.json
-uv run python -m smartbins.streets          # downloads Basel streets, creates data/street_matrix.npz (needs internet, once)
+uv run python -m smartbins.streets          # optional straight-line fallback matrix (needs internet, once)
 uv run pytest                               # 10 tests
 uv run python -m smartbins.run_daily        # whole chain -> data/bins.json
 ```
 Then copy `data/bins.json` to `../web/data/` and open `../web/index.html` with a local server
-(e.g. VS Code "Live Server"). Without the street step, routing falls back to straight-line distances.
+(e.g. VS Code "Live Server"). For real-road routing, the validated graph cache in
+`../routing/.cache/real-bin-demo-graph/` must be present. Without it, routing falls back
+to explicitly labelled straight-line distances.
 
 ## Generated files (not in Git)
 These are created by the commands above and listed in `.gitignore`:
@@ -41,7 +43,7 @@ Committed on purpose: `data/bins_locations.json`, `data/events.json`, `data/weat
 ## Daily flow (`run_daily`)
 1. **Fault detection** (`faults.py`): rule-based, no labels needed. Faulty bins are not routed (fixed schedule).
 2. **Forecast** (`predict.py`): when will each bin be full? -> status red / orange / green.
-3. **Selection** (`config.py`): red = at least 90 % or full before the next tour (24 h); orange = 70-89 %; both are emptied.
+3. **Selection** (`config.py`): red = at least 80 % or full before the next tour (24 h); orange = 55-79 %; both are emptied.
 4. **Truck limits** (`routing.py`): split the selected bins into tours that keep load and shift time.
 5. **Route order**: each tour -> `smart_bin_routing.plan_collection()` (OR-Tools).
 6. Result -> `data/bins.json` for the website.

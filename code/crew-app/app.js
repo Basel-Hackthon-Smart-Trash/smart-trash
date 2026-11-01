@@ -150,10 +150,20 @@
 
   // Route progress by distance: depot → stops in order; skipped stops drop out of the route.
   function routeProgress() {
+    const roadFeatures = DATA.tour.roadRoute?.features || [];
+    const roadDistance = (from, to) => {
+      const sourceId = from.binId || null;
+      const feature = roadFeatures.find((item) => {
+        const props = item.properties || {};
+        return props.target_id === to.binId
+          && (sourceId ? props.source_id === sourceId : !stops.some((s) => s.binId === props.source_id));
+      });
+      return feature?.properties?.distance_meters ?? distanceM(from, to);
+    };
     let prev = DATA.tour.depot, total = 0, done = 0;
     stops.forEach((s) => {
       if (s.status === "skipped") return;
-      const leg = distanceM(prev, s);
+      const leg = roadDistance(prev, s);
       total += leg;
       if (s.status !== "todo") done += leg;
       prev = s;
@@ -223,8 +233,15 @@
     mapFit = false;
     routeLayer.clearLayers();
     const next = nextIndex();
-    const line = [DATA.tour.depot, ...stops.filter((s) => s.status !== "skipped")].map((s) => [s.lat, s.lon]);
-    L.polyline(line, { color: "#14231b", weight: 3, opacity: 0.5, dashArray: "6 6" }).addTo(routeLayer);
+    if (DATA.tour.roadRoute?.features?.length && !stops.some((s) => s.status === "skipped")) {
+      L.geoJSON(DATA.tour.roadRoute, {
+        style: { color: "#14231b", weight: 4, opacity: 0.75 },
+      }).addTo(routeLayer);
+    } else {
+      const line = [DATA.tour.depot, ...stops.filter((s) => s.status !== "skipped")]
+        .map((s) => [s.lat, s.lon]);
+      L.polyline(line, { color: "#14231b", weight: 3, opacity: 0.5, dashArray: "6 6" }).addTo(routeLayer);
+    }
 
     L.marker([DATA.tour.depot.lat, DATA.tour.depot.lon], {
       icon: L.divIcon({ className: "", html: `<div class="marker marker--depot">D</div>`, iconSize: [26, 26] }),

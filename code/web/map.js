@@ -75,15 +75,22 @@ function draw(data) {
     const points = route.stops.map(id => binsById[id]).filter(Boolean).map(b => [b.lat, b.lon]);
     if (points.length === 0) return;
     const path = depot ? [[depot.lat, depot.lon], ...points, [depot.lat, depot.lon]] : points;
-    L.polyline(path, {
-      color: zoneColor(route.zone),
-      weight: 4,
-      opacity: 0.8,
-      dashArray: "8 6",
-    })
-      .bindTooltip(`Truck ${route.zone}: ${route.stops.length} stops, ${route.distance_km} km`
-        + (route.duration_h ? `, ${route.duration_h} h, ${route.load_l} L` : ""))
-      .addTo(getZoneLayer(route.zone));
+    const layer = getZoneLayer(route.zone);
+    const tooltip = `Truck ${route.zone}: ${route.stops.length} stops, ${route.distance_km} km`
+      + (route.duration_h ? `, ${route.duration_h} h, ${route.load_l} L` : "");
+    const geometry = route.road_route?.geometry;
+    if (geometry?.features?.length) {
+      L.geoJSON(geometry, {
+        style: { color: zoneColor(route.zone), weight: 5, opacity: 0.85 },
+      }).bindTooltip(`${tooltip} · road network`).addTo(layer);
+    } else {
+      L.polyline(path, {
+        color: zoneColor(route.zone),
+        weight: 4,
+        opacity: 0.8,
+        dashArray: "8 6",
+      }).bindTooltip(`${tooltip} · straight-line fallback`).addTo(layer);
+    }
   });
 
   // 3. Werkhof (depot)
@@ -126,12 +133,14 @@ function popupHtml(bin) {
     : "–";
   const fill = bin.fill_percent == null ? "–" : `${Math.round(bin.fill_percent)} %`;
   const statusText = {
-    red: "Empty today", orange: "Also empty today", green: "Skip", fault: "Sensor fault",
+    red: "Urgent collection", orange: "Collect today", green: "Skip this round", fault: "Sensor fault",
   }[bin.status] || bin.status;
+  const fillBand = bin.fill_band ? `Observed band: ${bin.fill_band}` : "Observed band: –";
   return `
     <div class="popup">
       <h3>${bin.id}</h3>
       <p><strong>${fill}</strong> full</p>
+      <p>${fillBand}</p>
       <p>${statusText}</p>
       <p>Predicted full: ${full}</p>
       <p class="reason">${bin.reason}</p>

@@ -13,9 +13,9 @@ EMPTY_DROP_POINTS = 30
 
 # Status rules (match the dashboard colours)
 # Rule "E" from policy_test: almost no overflows, still less driving than the old schedule
-RED_FILL = 90                      # empty today if at least this full ...
+RED_FILL = 80                      # empty today if at least this full ...
 RED_FULL_WITHIN_H = 24             # ... or full before tomorrow's tour (clock hours)
-ORANGE_FILL = 70                   # orange = 70-89 %, also emptied today
+ORANGE_FILL = 55                   # orange = 55-79 %, also emptied today
 ORANGE_FULL_WITHIN_H = None        # no time rule for orange
 TAKE_ORANGE = True                 # routing takes red AND orange bins
 

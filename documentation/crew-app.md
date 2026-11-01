@@ -54,13 +54,16 @@ The supervisor code for **＋ Add a bin** is `1234`. It is a demo value, the app
 
 ## Live data (prediction + routing)
 
-`live-data.js` reads `code/web/data/bins.json`, the output of the daily run in `code/prediction` (see [prediction-and-integration.md](prediction-and-integration.md)). The city dashboard reads the same file.
+`live-data.js` first reads `http://127.0.0.1:8000/api/bins`, served from the latest output of the daily run in `code/prediction` (see [prediction-and-integration.md](prediction-and-integration.md)). If the API is unavailable, it falls back to the committed `code/web/data/bins.json` snapshot. The city dashboard reads that snapshot directly.
+
+For local API development, start `code/api/server.py` after generating the snapshot. The crew app then reads `http://127.0.0.1:8000/api/bins`; it falls back to the committed snapshot, then to the pitch demo if neither source is available.
 
 | Crew app | `bins.json` |
 |---|---|
 | Teams on the sign-in screen | `routes[n]` → "Truck n+1 · stops · km" |
 | Stops in order | `routes[n].stops` → `bins[id]` |
 | Fill level | `fill_percent` |
+| Observed fill band | `fill_band` (`green`, `orange`, `red`) |
 | "why" keywords | `predicted_full_at` and the context in `reason`, e.g. "full ~12:00 · weekend" |
 | Fixed schedule | `fault: true` |
 | Bins the crew may add | Bins on no route, sensor OK, closest to the route |

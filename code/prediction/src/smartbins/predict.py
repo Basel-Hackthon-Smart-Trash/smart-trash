@@ -250,6 +250,15 @@ def status_for(p: Prediction) -> str:
     return "green"
 
 
+def fill_band(fill_percent: float) -> str:
+    """Classify the observed fill level independently of collection priority."""
+    if fill_percent >= config.RED_FILL:
+        return "red"
+    if fill_percent >= config.ORANGE_FILL:
+        return "orange"
+    return "green"
+
+
 def reason_for(p: Prediction, status: str) -> str:
     why = f" ({', '.join(p.drivers)})" if p.drivers else ""
     if status == "red":
